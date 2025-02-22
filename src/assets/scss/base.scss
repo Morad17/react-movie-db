@@ -1,0 +1,27 @@
+/*------Home Layout-------*/
+body{
+    padding: 0;
+    margin: 0;
+}
+.main-nav{
+    display: flex;
+    justify-content: space-between;
+    background-color: black;
+    align-items: center;
+}
+.nav-logo{
+    width: 9vw;
+    margin-left: 1vw;
+    color: white;
+}
+.main-nav-links{
+    display: flex;
+    justify-content: end;
+    width: 90vw;
+    list-style: none;
+    .link{
+        text-decoration: none;
+        color: white;
+        margin: 0 1.5rem;
+    }
+}
