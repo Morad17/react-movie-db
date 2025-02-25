@@ -1,15 +1,20 @@
 import mariadb from 'mariadb';
+import mysql2 from 'mysql2';
+
 import express from 'express';
 import dotenv from 'dotenv';
+
+dotenv.config()
 
 const app = express();
 const port = 3000;
 
-// Create a pool of connections
-const mdb = mariadb.createPool({
-    host: process.env.mariaHost , 
-    user: process.env.mariaUsername, 
-    password: process.env.mariaPassword,
+// // Create a pool of connections
+const pool = mariadb.createPool({
+    host: process.env.MARIA_HOST, 
+    user: process.env.MARIA_USERNAME, 
+    password: process.env.MARIA_PASSWORD,
+    port: 3307,
     database: 'test',
     connectionLimit: 5
 });
@@ -19,36 +24,58 @@ async function getConnection() {
     let conn;
     try {
         conn = await pool.getConnection();
-        console.log("Connected to MariaDB!");
+        const rows = await conn.query('SELECT 1 as val');
+        console.log("Connected to MariaDB!", rows);
         return conn;
     } catch (err) {
-        throw err;
-    }
+        console.error("Error connecting to MariaDB:", err);
+        throw err; 
+    } finally {
+        if (conn) conn.end(); 
+      }
 }
 
-// // Example route to test the connection
-// app.get('/test-connection', async (req, res) => {
-//     let conn;
-//     try {
-//         conn = await getConnection();
-//         const rows = await conn.query("SELECT 1 as val");
-//         res.send(rows);
-//     } catch (err) {
-//         res.status(500).send("Error connecting to the database");
-//     } finally {
-//         if (conn) conn.end();
-//     }
-// });
 
-// mdb.query(`SELECT * from test`, (err, res) => {
+  getConnection().then(() => {
+    pool.end();
+  }).catch(err => {
+    console.error("Failed to connect to MariaDb",err); 
+  })
+
+//     mdb.query(`SELECT * from test`, (err, res) => {
 //     if (err) {
 //         return console.log(err)
 //     } else {
-//         return console.log(res + "success")
+//         return console.log(res + "success") 
 //     }
 // })
-console.log(process.env.TEST)
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// const connection = mysql2.createConnection({
+//       host: process.env.MARIA_HOST, 
+//       user: process.env.MARIA_USERNAME, 
+//       password: process.env.MARIA_PASSWORD,
+//       database: 'test',
+//       port: 3307,
+//       connectionLimit: 5
+// });   
+ 
+// connection.connect(function(err) {
+//     if (err) {
+//         console.error('Error connecting to MariaDB:', err);
+//         return;
+//     }
+//     console.log('Connected to MariaDB');
+// });
+
+// // Example query
+// connection.query('SELECT 1', (err, results) => {
+//     if (err) throw err;
+//     console.log(results);
+// });  
+
+
+// Initialise Node App//
+
+app.listen(port, () => {   
+    console.log(`Server is running on http://localhost:${port}`);        
+});   
