@@ -20,58 +20,49 @@ const pool = mariadb.createPool({
 });
 
 // Function to get a connection from the pool
-async function getConnection() {
-    let conn;
-    try {
-        conn = await pool.getConnection();
-        const rows = await conn.query('SELECT 1 as val');
-        console.log("Connected to MariaDB!", rows);
-        return conn;
-    } catch (err) {
-        console.error("Error connecting to MariaDB:", err);
-        throw err; 
-    } finally {
-        if (conn) conn.end(); 
-      }
-}
+// async function getConnection() {
+//     let conn;
+//     try {
+//         conn = await pool.getConnection();
+//         const rows = await conn.query('SELECT 1 as val');
+//         console.log("Connected to MariaDB!", rows);
+//         return conn;
+//     } catch (err) {
+//         console.error("Error connecting to MariaDB:", err);
+//         throw err; 
+//     } finally {
+//         if (conn) conn.end(); 
+//       }
+// }
 
+//   getConnection().then(() => {
+//     pool.end();
+//   }).catch(err => {
+//     console.error("Failed to connect to MariaDb",err); 
+//   })
 
-  getConnection().then(() => {
-    pool.end();
-  }).catch(err => {
-    console.error("Failed to connect to MariaDb",err); 
-  })
-
-//     mdb.query(`SELECT * from test`, (err, res) => {
-//     if (err) {
-//         return console.log(err)
-//     } else {
-//         return console.log(res + "success") 
-//     }
-// })
-
-// const connection = mysql2.createConnection({
-//       host: process.env.MARIA_HOST, 
-//       user: process.env.MARIA_USERNAME, 
-//       password: process.env.MARIA_PASSWORD,
-//       database: 'test',
-//       port: 3307,
-//       connectionLimit: 5
-// });   
+const mdb = mysql2.createConnection({
+      host: process.env.MARIA_HOST, 
+      user: process.env.MARIA_USERNAME, 
+      password: process.env.MARIA_PASSWORD,
+      database: 'test',
+      port: 3307,
+      connectionLimit: 5
+});   
  
-// connection.connect(function(err) {
-//     if (err) {
-//         console.error('Error connecting to MariaDB:', err);
-//         return;
-//     }
-//     console.log('Connected to MariaDB');
-// });
+mdb.connect(function(err) {
+    if (err) {
+        console.error('Error connecting to MariaDB:', err);
+        return;
+    }
+    console.log('Connected to MariaDB');
+});
 
-// // Example query
-// connection.query('SELECT 1', (err, results) => {
-//     if (err) throw err;
-//     console.log(results);
-// });  
+// Example query
+mdb.query('SELECT 1', (err, results) => {
+    if (err) throw err;
+    console.log(results);
+});  
 
 
 // Initialise Node App//
