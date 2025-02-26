@@ -64,6 +64,9 @@ mdb.query('SELECT 1', (err, results) => {
     console.log(results);
 });  
 
+// Get Movie List //
+
+
 
 // Initialise Node App//
 
