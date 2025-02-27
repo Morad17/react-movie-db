@@ -10,14 +10,14 @@ const app = express();
 const port = 3000;
 
 // // Create a pool of connections
-const pool = mariadb.createPool({
-    host: process.env.MARIA_HOST, 
-    user: process.env.MARIA_USERNAME, 
-    password: process.env.MARIA_PASSWORD,
-    port: 3307,
-    database: 'test',
-    connectionLimit: 5
-});
+// const pool = mariadb.createPool({
+//     host: process.env.MARIA_HOST, 
+//     user: process.env.MARIA_USERNAME, 
+//     password: process.env.MARIA_PASSWORD,
+//     port: 3307,
+//     database: process.env.MARIA_DATABASE,
+//     connectionLimit: 5
+// });
 
 // Function to get a connection from the pool
 // async function getConnection() {
@@ -58,16 +58,26 @@ mdb.connect(function(err) {
     console.log('Connected to MariaDB');
 });
 
-// Example query
-mdb.query('SELECT 1', (err, results) => {
-    if (err) throw err;
-    console.log(results);
-});  
 
 // Get Movie List //
+const getMovies = async () => {
+    const url = 'https://api.themoviedb.org/3/account/21844600/rated/movies?language=en-US&page=1&sort_by=created_at.asc';
+    const options = {
+        method: 'GET',
+        headers: {
+        accept: 'application/json',
+            Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`
+    }
+    };
+    try {
+        const res = await fetch(url, options)
+        .then(res => res.json())
+        .then(json => console.log(json))
+    } catch (err) {
+        console.log(err)
+    }}
 
-
-
+getMovies();
 // Initialise Node App//
 
 app.listen(port, () => {   
