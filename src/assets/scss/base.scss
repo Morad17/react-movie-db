@@ -25,3 +25,31 @@ body{
         margin: 0 1.5rem;
     }
 }
+
+/*------------Home-------------*/
+.home-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 1vw;
+    flex-wrap: wrap;
+}
+.movie-card{
+    display: flex;
+    flex-direction: column;
+    width: 14vw;
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    h1{
+        padding-bottom: 5px;
+        margin: 0;
+    }
+    img{
+        width: 100%;
+    }
+    .movie-description{
+        display: none;
+    }
+}
