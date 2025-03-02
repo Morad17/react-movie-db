@@ -31,23 +31,64 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0 1vw;
+    padding: 1vh 10vw;
     flex-wrap: wrap;
+    column-gap: 1vw;
+    row-gap: 1vw;
 }
 .movie-card{
     display: flex;
     flex-direction: column;
-    width: 14vw;
-    margin: 10px;
-    padding: 20px;
-    border: 2px solid black;
+    justify-content: space-between;
+    width: 14.5vw;
+    border: 2px solid rgb(116, 115, 115);
     border-radius: 10px;
-    h1{
-        padding-bottom: 5px;
+    position: relative;
+    min-height: 42vh;
+    margin: 10px 0;
+    overflow: auto;
+    background-color: rgb(18, 80, 74);
+    color: #c3c3c3;
+    .movie-header{
+
+    }
+    .movie-footer{
+        width: 100%;
+        background-color: rgb(18, 80, 74);
+    }
+    .movie-title{
+        padding: 10px;
+        margin: 0;
+        font-size: 1.2rem;
+    }
+    $card-fade-amount:37%;
+    .movie-image{ 
+        width: 100%;
+        position: absolute;
+        background-color: #837960;
+        mask-image: linear-gradient(
+          to top, transparent, #ffffff00, 
+          $card-fade-amount, black calc(100% - $card-fade-amount)
+        )
+    }
+    
+    .movie-genres{
+        padding: 0 10px 5px 10px;
         margin: 0;
     }
-    img{
-        width: 100%;
+    .movie-links{
+        padding: 0 5px 5px 10px;
+        margin: 15px 0 10px 0;
+    }
+    .movie-trailer{
+
+    }
+    .movie-trailer{
+        border: 2px solid #c3c3c3;
+        padding: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        color: #c3c3c3;
     }
     .movie-description{
         display: none;
