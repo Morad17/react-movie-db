@@ -18,10 +18,13 @@ const MovieCard = ({
 },genres}) => {
 
     const displayGenres = () => {
-        genre_ids.forEach(ids => {
-           genres.filter(gen => gen.includes(ids))
-        });
-    }
+        console.log(genre_ids);
+        const genreNames = genre_ids.map(id => {
+            const genre = genres.find(gen => gen.id === id);
+            return genre ? genre.name : null;
+        }).filter(name => name !== null); // Filter out any null values
+        return genreNames.join(', '); // Join the genre names with a comma
+    };
 
   return (
 

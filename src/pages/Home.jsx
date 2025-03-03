@@ -46,9 +46,7 @@ const fetchGenres = async () => {
   try{
     const res = await fetch(url , options)
     const data = await res.json()
-    console.log(data)
     setGenres(data.genres)
-    console.log(genres)
   } catch (err) {
     console.log(err)
   }
