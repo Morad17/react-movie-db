@@ -1,4 +1,5 @@
 import React from 'react'
+import { TiStarFullOutline } from "react-icons/ti";
 
 const MovieCard = ({
     movie:{
@@ -30,14 +31,15 @@ const MovieCard = ({
 
     <div className="movie-card">
         <div className="movie-header">
-            <p>{vote_average}</p>
+            <p className="vote-number">{vote_average.toFixed(1)}</p>
+            <TiStarFullOutline />
         </div>
         <img src={`https://image.tmdb.org/t/p/w500/${poster_path}`} alt="" className="movie-image" />
         <div className="movie-footer">
                 <h3 className="movie-title">{title}</h3>
                 <p className="movie-genres">{displayGenres()}</p>
                 <div className="movie-links">
-                    <a href=""className="movie-trailer">Watch Trailer</a>  
+                    {/* <a href=""className="movie-trailer">Watch Trailer</a>   */}
                 </div>
 
         </div>

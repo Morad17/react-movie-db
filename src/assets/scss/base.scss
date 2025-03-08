@@ -37,7 +37,7 @@ body{
     row-gap: 1vw;
 }
 .movie-card{
-    display: flex;
+    display: flex;  
     flex-direction: column;
     justify-content: space-between;
     width: 14.5vw;
@@ -46,11 +46,18 @@ body{
     position: relative;
     min-height: 42vh;
     margin: 10px 0;
-    overflow: auto;
     background-color: rgb(18, 80, 74);
     color: #c3c3c3;
+    -webkit-box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
+    -moz-box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
+    box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
     .movie-header{
-
+        z-index: 1111;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        font-size: 30px;
+        margin: 0;
     }
     .movie-footer{
         width: 100%;
@@ -61,7 +68,10 @@ body{
         margin: 0;
         font-size: 1.2rem;
     }
-    $card-fade-amount:37%;
+    .vote-number{
+        margin: 0;
+    }
+    $card-fade-amount:30%;
     .movie-image{ 
         width: 100%;
         position: absolute;
