@@ -1,5 +1,7 @@
 import React from 'react'
 import { TiStarFullOutline } from "react-icons/ti";
+import { BsBookmarkStarFill } from "react-icons/bs";
+import { BiHeartCircle } from "react-icons/bi";
 
 const MovieCard = ({
     movie:{
@@ -31,17 +33,24 @@ const MovieCard = ({
 
     <div className="movie-card">
         <div className="movie-header">
-            <p className="vote-number">{vote_average.toFixed(1)}</p>
-            <TiStarFullOutline />
+            <div className="header-left">
+                <BsBookmarkStarFill />
+                <BiHeartCircle />
+            </div>
+            <div className="header-right">
+
+            </div>
+           
         </div>
         <img src={`https://image.tmdb.org/t/p/w500/${poster_path}`} alt="" className="movie-image" />
         <div className="movie-footer">
-                <h3 className="movie-title">{title}</h3>
-                <p className="movie-genres">{displayGenres()}</p>
-                <div className="movie-links">
-                    {/* <a href=""className="movie-trailer">Watch Trailer</a>   */}
-                </div>
-
+            <h3 className="movie-title">{title}</h3>
+            <div className="vote-group">
+                <p className="vote-number">{vote_average.toFixed(1)}/10</p>
+            </div>
+            <div className="genre-group">
+                <p className="movie-genres">{displayGenres()}</p>                    
+            </div>
         </div>
     </div>
     
