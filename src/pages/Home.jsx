@@ -31,6 +31,33 @@ useEffect(()=> {
   const [existingUserData, setExistingUserData] = useState({
 
   })
+  const inputHandler = (val) => {
+    setRegister(prev => ({...prev,[val.target.name]: val.target.value}))
+  }
+  const loginInputHandler = (val) => {
+    setLoginForm(prev => ({...prev,[val.target.name]: val.target.value}))
+  }
+  const [statusCode, setStatusCode] = useState('')
+///Handles Login
+  const [loginForm, setLoginForm] = useState({
+    username: '',
+    password: '',
+  })
+const loginHandler = async (e) => {
+  e.preventDefault()
+  if (loginForm.username && loginForm.password){
+     try{
+      console.log(loginForm)
+      const res = await axios.post("http://localhost:3070/login", loginForm)
+      console.log(res.data)
+        } catch (err){
+            console.log(err)
+          }
+  }
+ 
+}
+
+
 
   const [register, setRegister] = useState({
     username: '',
@@ -39,14 +66,9 @@ useEffect(()=> {
     password: '',
     confirm:'',
   })
-  
-  const [statusCode, setStatusCode] = useState('')
 
-  const inputHandler = (val) => {
-    setRegister(prev => ({...prev,[val.target.name]: val.target.value}))
-  }
   ///Runs checks then submits user form ///
-  const submitHandler = async (e) => {
+  const registerHandler = async (e) => {
    // Checks for Existing users error and length error //
    e.preventDefault()
    if (register.username.length < 6 || register.username.length > 15 ) {
@@ -132,35 +154,51 @@ useEffect(()=> {
 
   return (
     <div>
-      <form onSubmit={submitHandler}>
-    <div className="form-group">
-      <label >Username</label>
-      <input required type="text" name="username" value={register.username} onChange={inputHandler}/>
-    </div>
-    <div className="form-group">
-      <label >Name</label>
-      <input required type="text" name="name" value={register.name} onChange={inputHandler}/>
-    </div>
-    <div className="form-group">
-      <label >Email</label>
-      <input required type="email" name="email" value={register.email} onChange={inputHandler}/>
-    </div>
-    <div className="form-group">
-      <label >Password</label>
-      <input required type="password" name="password" value={register.password} onChange={inputHandler}/>
-    </div>
-    <div className="form-group">
-      <label >Re-Type Password</label>
-      <input required type="password" name="confirm" value={register.confirm}onChange={inputHandler}/>
-    </div>
-    {
-      statusCode && 
-      <div className="status-code-message">
-        {statusCode}
+      <div className="register-form">
+        <form onSubmit={registerHandler}>
+            <div className="form-group">
+            <label >Username</label>
+            <input required type="text" name="username" value={register.username} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Name</label>
+            <input required type="text" name="name" value={register.name} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Email</label>
+            <input required type="email" name="email" value={register.email} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Password</label>
+            <input required type="password" name="password" value={register.password} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Re-Type Password</label>
+            <input required type="password" name="confirm" value={register.confirm}onChange={inputHandler}/>
+          </div>
+          {
+            statusCode && 
+            <div className="status-code-message">
+              {statusCode}
+            </div>
+          }
+          <button type="submit">Submit</button>
+        </form>
       </div>
-    }
-    <button type="submit">Submit</button>
-  </form>
+      <div className="login-form">
+        <form onSubmit={loginHandler}>
+          <div className="form-group">
+            <label >Username</label>
+            <input required type="text" name="username" value={loginForm.username} onChange={loginInputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Password</label>
+            <input required type="password" name="password" value={loginForm.password} onChange={loginInputHandler}/>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+     
     </div>
   )
 }

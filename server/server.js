@@ -53,6 +53,21 @@ app.post('/create-user',(req,res)=> {
         else return res.json("success")
     })
 })
+/// Login
+app.post('/login',(req,res)=> {
+    const q = "SELECT * FROM users WHERE `username` = ? AND `password` = ?"
+    const val = [
+        req.body.username,
+        req.body.password,
+    ]
+    mdb.query(q,[...val], (err,data)=> {
+        if (err) return res.json("login unsuccessfull, try again")
+        if (data.length > 0){
+            return res.json(data)
+        } else return res.json("login unsuccessfull")
+        
+    })
+})
     
 
 // Initialise Node App//
