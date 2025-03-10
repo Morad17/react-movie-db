@@ -34,8 +34,8 @@ const MovieCard = ({
     <div className="movie-card">
         <div className="movie-header">
             <div className="header-left">
-                <BsBookmarkStarFill />
-                <BiHeartCircle />
+                <BsBookmarkStarFill className="save-svg"/>
+                <BiHeartCircle className="heart-svg"/>
             </div>
             <div className="header-right">
 

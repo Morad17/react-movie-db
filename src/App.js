@@ -3,6 +3,8 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
+import MovieLibrary from "./pages/MovieLibrary";
+import User from "./pages/User";
 
 function App() {
 
@@ -10,7 +12,7 @@ function App() {
     return(
       <div className="main-layout">
         <Navbar />
-        <Home />
+        <Outlet />
         <Footer />
       </div>
     
@@ -26,6 +28,14 @@ function App() {
         path: '/',
         element: <Home />
       },
+      {
+        path:'/library',
+        element:<MovieLibrary />,
+      },
+      {
+        path: '/user',
+        element: <User />
+      }
     ]
     }
   ])
