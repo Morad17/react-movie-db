@@ -10,9 +10,11 @@ const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null)
     const [token, setToken ] = useState("")
     const navigate = useNavigate()
+
     const loginAction = async ({username, password}) => {
       try{
-        const res = await axios.post("https://project-expenses-app.onrender.com/login", {"username":username, "password": password})      
+        const res = await axios.post("http://localhost:3070/login", {"username":username, "password": password})    
+
         if (res.data.length > 0 ) {
             console.log(res.data)
             setUser(res.data.username)

@@ -6,14 +6,19 @@ import Footer from "./components/Footer";
 import MovieLibrary from "./pages/MovieLibrary";
 import User from "./pages/User";
 
+import AuthProvider from "./hooks/Authprovider";
+
 function App() {
 
   const Layout = () => {
     return(
       <div className="main-layout">
-        <Navbar />
-        <Outlet />
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <Outlet />
+          <Footer />
+        </AuthProvider>
+        
       </div>
     
     )

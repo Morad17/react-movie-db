@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import {useAuth} from '../hooks/Authprovider'
+import { Link, useNavigate } from 'react-router'
 
 const Home = () => {
+
+const navigate = useNavigate()
+const auth = useAuth()
+
+// Check if users already logged in
+const [user, setUser] = useState(null)
+const checkUser = () => {
+  setUser(localStorage.getItem("username"))
+}
+
+useEffect(()=> {
+  checkUser()
+},[user])
 
   //Get Existing User Data //
 const getExistingUserData = async () => {
@@ -38,6 +53,7 @@ useEffect(()=> {
     setLoginForm(prev => ({...prev,[val.target.name]: val.target.value}))
   }
   const [statusCode, setStatusCode] = useState('')
+
 ///Handles Login
   const [loginForm, setLoginForm] = useState({
     username: '',
@@ -45,20 +61,8 @@ useEffect(()=> {
   })
 const loginHandler = async (e) => {
   e.preventDefault()
-  if (loginForm.username && loginForm.password){
-     try{
-      console.log(loginForm)
-      const res = await axios.post("http://localhost:3070/login", loginForm)
-      console.log(res.data)
-        } catch (err){
-            console.log(err)
-          }
-  }
- 
+  auth.loginAction(loginForm)
 }
-
-
-
   const [register, setRegister] = useState({
     username: '',
     name: '',
@@ -90,16 +94,6 @@ const loginHandler = async (e) => {
   } catch (err) {
     console.log(err)
   }
-  }
-  ///Check Password Is Valid
-  const passwordChecker = () => {
-    const password  = document.querySelector('input[name=password]')
-    const confirm = document.querySelector('input[name=confirm]')
-    if (password.value  === confirm.value ){
-      confirm.setCustomValidity('')
-    } else {
-      confirm.setCustomValidity('Passwords do not match')
-    }
   }
 
   const statusCodeHandler = (statusCode) => {
