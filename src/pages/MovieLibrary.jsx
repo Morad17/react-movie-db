@@ -63,7 +63,7 @@ const displayDescription = (id) => {
 
 
   return (
-    <div className="home-section">
+    <div className="movie-library-section">
       { movieData && movieData.map((movie, key)=> {
         return <MovieCard movie={movie} genres={genres}/>
         })

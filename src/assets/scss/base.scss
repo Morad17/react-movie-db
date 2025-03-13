@@ -30,8 +30,50 @@ body{
     }
 }
 
-/*------------Home-------------*/
+/*-------------Home Section------------*/
 .home-section{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.forms-container{
+    margin-bottom: 2vh;
+    width: 30vw;
+    min-height: 50vh;
+    padding: 20px;
+    background-color:#cac6c6; 
+    
+    border-radius: 5px;
+}
+.login-heading{
+    font-size: 23px;
+    text-align: center;
+    padding: 15px;
+    margin: 0;
+    border: 1px solid #929292;
+    background-color:#929292 ;
+}
+.login-and-register{
+    margin-bottom: 2vh;
+}
+//Buttons
+.btn{
+    min-width:180px;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+    border: 1px solid rgb(146, 146, 146);
+    cursor: pointer;
+}
+#loginBtn{
+    background-color: $turquoise;
+}
+#registerBtn{
+    background-color: $silver;
+}
+/*------------Movie Library-------------*/
+.movie-library-section{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
