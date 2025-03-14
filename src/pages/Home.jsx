@@ -89,7 +89,10 @@ useEffect(()=> {
   })
 const loginHandler = async (e) => {
   e.preventDefault()
-  auth.loginAction(loginForm)
+  const result = await auth.loginAction(loginForm)
+  if (result === 400) {
+    statusCodeHandler(400)
+  }
 }
 ///Form Changer
 const [loginButton, setLoginButton] = useState(true)
@@ -109,6 +112,12 @@ const [loginButton, setLoginButton] = useState(true)
           setStatusCode(null)
         }, 3000)
         break
+      case 400:
+        setStatusCode("Incorrect login details, Please try again")
+        setTimeout(()=> {
+          setStatusCode(null)
+        }, 3000)
+      break
       case 401:
         setStatusCode("Username must be between 6 and 15 characters long")
         setTimeout(()=> {
@@ -179,51 +188,51 @@ const [loginButton, setLoginButton] = useState(true)
       
        { loginButton ?
         <div className="login-form">
-        <form onSubmit={loginHandler}>
-          <div className="form-group">
+          <form onSubmit={loginHandler}>
+            <div className="form-group">
+              <label >Username</label>
+              <input required type="text" name="username" value={loginForm.username} 
+                onChange={loginInputHandler}/>
+            </div>
+            <div className="form-group">
+              <label >Password</label>
+              <input required type="password" name="password" value={loginForm.password} 
+                onChange={loginInputHandler}/>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+        </div> :
+        <div className="register-form">
+        <form onSubmit={registerHandler}>
+            <div className="form-group">
             <label >Username</label>
-            <input required type="text" name="username" value={loginForm.username} 
-              onChange={loginInputHandler}/>
+            <input required type="text" name="username" value={register.username} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Name</label>
+            <input required type="text" name="name" value={register.name} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Email</label>
+            <input required type="email" name="email" value={register.email} onChange={inputHandler}/>
           </div>
           <div className="form-group">
             <label >Password</label>
-            <input required type="password" name="password" value={loginForm.password} 
-              onChange={loginInputHandler}/>
+            <input required type="password" name="password" value={register.password} onChange={inputHandler}/>
+          </div>
+          <div className="form-group">
+            <label >Re-Type Password</label>
+            <input required type="password" name="confirm" value={register.confirm}onChange={inputHandler}/>
           </div>
           <button type="submit">Submit</button>
         </form>
-      </div> :
-      <div className="register-form">
-      <form onSubmit={registerHandler}>
-          <div className="form-group">
-          <label >Username</label>
-          <input required type="text" name="username" value={register.username} onChange={inputHandler}/>
-        </div>
-        <div className="form-group">
-          <label >Name</label>
-          <input required type="text" name="name" value={register.name} onChange={inputHandler}/>
-        </div>
-        <div className="form-group">
-          <label >Email</label>
-          <input required type="email" name="email" value={register.email} onChange={inputHandler}/>
-        </div>
-        <div className="form-group">
-          <label >Password</label>
-          <input required type="password" name="password" value={register.password} onChange={inputHandler}/>
-        </div>
-        <div className="form-group">
-          <label >Re-Type Password</label>
-          <input required type="password" name="confirm" value={register.confirm}onChange={inputHandler}/>
-        </div>
-        {
+      </div> }
+      {
           statusCode && 
           <div className="status-code-message">
             {statusCode}
           </div>
         }
-        <button type="submit">Submit</button>
-      </form>
-      </div> }
      </div>
     </div>
   )

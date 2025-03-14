@@ -20,10 +20,10 @@ const AuthProvider = ({children}) => {
             setUser(res.data.username)
             setToken(username)
             localStorage.setItem("username", username)
-            return
+            return navigate("/userPage")
           }
         else {
-          console.log("try again")
+          return 400
         }
       } catch (err) {
         console.error(err)

@@ -7,6 +7,7 @@ import MovieLibrary from "./pages/MovieLibrary";
 import User from "./pages/User";
 
 import AuthProvider from "./hooks/Authprovider";
+import UserPage from "./pages/UserPage";
 
 function App() {
 
@@ -38,8 +39,8 @@ function App() {
         element:<MovieLibrary />,
       },
       {
-        path: '/user',
-        element: <User />
+        path: '/userPage',
+        element: <UserPage />
       }
     ]
     }

@@ -64,7 +64,7 @@ app.post('/login',(req,res)=> {
         if (err) return res.json("login unsuccessfull, try again")
         if (data.length > 0){
             return res.json(data)
-        } else return res.json("login unsuccessfull")
+        } else return res.json(0)
         
     })
 })
