@@ -49,7 +49,7 @@ const checkUser = () => {
                             <Link className="link"to="/">Home</Link>
                         </li>
                         <li>
-                            <Link className="link"to="/">Movies</Link>
+                            <Link className="link"to="/userPage">Movies</Link>
                         </li>
                         <li>
                             <Link className="link"to="/">About</Link>

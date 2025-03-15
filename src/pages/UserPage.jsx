@@ -4,6 +4,7 @@ const UserPage = () => {
 
 const checkUser = () => {
     const user = localStorage.getItem("username")
+    
 }    
 
     useEffect(()=> {

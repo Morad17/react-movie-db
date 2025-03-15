@@ -40,19 +40,45 @@ app.get('/get-existing-users',(req,res)=> {
 })
 /// Create user
 app.post('/create-user',(req,res)=> {
-    const q = "INSERT into users (`username`,`name`,`email`, `password`)VALUES (?)"
-    const val = [
+    const uniqueId = req.body.username.replace(/[^a-zA-Z0-9_]/g, '')+'_'+ Date.now()
+    const createUserQuery = "INSERT into users (`username`,`name`,`email`, `password`,`tableName`)VALUES (?)"
+    const createUserVal = [
         req.body.username,
         req.body.name,
         req.body.email,
         req.body.password,
-
+        uniqueId
     ]
-    mdb.query(q,[val], (err,data)=> {
-        if (err) return res.json(err)
-        else return res.json("success")
-    })
-})
+
+    const createUserTable = `CREATE TABLE ${uniqueId}(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        movie_id INT UNIQUE,
+        watchList BOOLEAN DEFAULT FALSE,
+        likedList BOOLEAN DEFAULT FALSE,
+        review TEXT,
+        rating INT CHECK (rating >= 1 AND rating <= 10)
+    )`
+
+   // Execute the first query to create the user
+   mdb.query(createUserQuery, [createUserVal], (err, data) => {
+    if (err) {
+        console.error('Error executing createUserQuery:', err);
+        return res.json(err);
+    } else {
+        console.log('successfully added user data:', data);
+
+        // Execute the second query to create the user's table
+        mdb.query(createUserTable, (err, data) => {
+            if (err) {
+                console.error('Error executing createUserTable:', err);
+                return res.json(err);
+            } else {
+                console.log('createUserTable executed successfully:', data);
+                return res.json("success");
+            }
+        });
+    }
+})})
 /// Login
 app.post('/login',(req,res)=> {
     const q = "SELECT * FROM users WHERE `username` = ? AND `password` = ?"
