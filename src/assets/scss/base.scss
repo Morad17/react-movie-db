@@ -176,23 +176,19 @@ body{
         position: relative;
         padding: 2vw 0;
         .top-row,.bottom-row{
-            width: 100%;
             min-height: 40vh;
             display: flex;
             justify-content: center;
+            margin: 1vh;
+            background-color: rgb(132, 122, 98);
+            padding: 1vw;
         }
-        .middle-row{
-            position: absolute;
-            width:23vw;
-            min-height: 23vw;
-            background-color: #929292;
+        .user-icon svg{
+            width: 100px;
+            height: 100px;
         }
         .liked-section,.watch-list-section,.reviewed-movies-section,
         .stats-section{
-            width: 46vw;
-            min-height: 20vh;
-            background-color: rgb(132, 122, 98);
-            margin: 1vh;
         }
 
     }

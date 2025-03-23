@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { IoPersonCircleOutline } from "react-icons/io5";
+
 
 const UserPage = () => {
 
+  const [loggedUser, setLoggedUser ] = useState()
+
 const checkUser = () => {
-    const user = localStorage.getItem("username")
+    setLoggedUser(localStorage.getItem("username"))
     
 }    
 
@@ -18,14 +23,15 @@ const checkUser = () => {
         <section className="liked-section">
           <p>Test</p>
         </section>
+        <section className="user-overview-section">
+          <div className="user-icon">
+            <IoPersonCircleOutline />
+          </div>
+          <h3>{ loggedUser && loggedUser}</h3>
+        </section>
         <section className="watch-list-section">
         </section>
       </div>
-      <div className="middle-row">
-        <section className="user-overview-section">
-        </section>
-      </div>
-      
       <div className="bottom-row">
         <section className="reviewed-movies-section">
         </section> 
