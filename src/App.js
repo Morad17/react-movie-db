@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -10,6 +10,13 @@ import AuthProvider from "./hooks/Authprovider";
 import UserPage from "./pages/UserPage";
 
 function App() {
+
+  const [loggedUser, setLoggedUser ] = useState('')
+
+  useEffect(()=> {
+     const username = setLoggedUser(localStorage.getItem("username"))
+    if(username) setLoggedUser(username)
+    },[])
 
   const Layout = () => {
     return(
@@ -32,7 +39,7 @@ function App() {
       children: [
         {
         path: '/',
-        element: <Home />
+        element: loggedUser ? <UserPage /> :<Home />
       },
       {
         path:'/library',
