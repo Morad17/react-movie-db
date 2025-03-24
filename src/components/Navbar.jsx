@@ -4,18 +4,16 @@ import { useAuth } from '../hooks/Authprovider'
 
 const Navbar = () => {
 
-const [loggedUser, setLoggedUser ] = useState('')
-
-    
-const checkUser = () => {
-    setLoggedUser(localStorage.getItem("username"))
-}    
+    const [loggedUser, setLoggedUser ] = useState('')
+    const auth = useAuth()
 
     useEffect(()=> {
-        checkUser()
-    },[])
+       const username = localStorage.getItem("username")
+       if (username) {
+        setLoggedUser(username)
+       }
+    },[ auth.user])
 
-    const auth = useAuth()
     const logout = () => {
         auth.logout()
         setLoggedUser('')

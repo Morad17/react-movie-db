@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Outlet, createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
@@ -8,15 +8,17 @@ import User from "./pages/User";
 
 import AuthProvider from "./hooks/Authprovider";
 import UserPage from "./pages/UserPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
 
-  const [loggedUser, setLoggedUser ] = useState('')
+  const [loggedUser, setLoggedUser ] = useState(null)
 
   useEffect(()=> {
-     const username = setLoggedUser(localStorage.getItem("username"))
-    if(username) setLoggedUser(username)
-    },[])
+    const username = localStorage.getItem("username")
+    console.log(username)
+    if (username) setLoggedUser(username)
+    },[loggedUser])
 
   const Layout = () => {
     return(
@@ -39,7 +41,7 @@ function App() {
       children: [
         {
         path: '/',
-        element: loggedUser ? <UserPage /> :<Home />
+        element: <ProtectedRoute />
       },
       {
         path:'/library',
@@ -55,7 +57,7 @@ function App() {
 
   return (
     <div className="App">
-     <RouterProvider router={router} />
+     <RouterProvider  router={router} />
     </div>
   );
 }

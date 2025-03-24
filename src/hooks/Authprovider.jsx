@@ -13,13 +13,16 @@ const AuthProvider = ({children}) => {
 
     const loginAction = async ({username, password}) => {
       try{
-        const res = await axios.post("http://localhost:3070/login", {"username":username, "password": password})    
+        const res = await axios.post("http://localhost:3070/login", {"username":username, 
+          "password": password})    
 
         if (res.data.length > 0 ) {
             console.log(res.data)
-            setUser(res.data.username)
+            const user = res.data[0]
+            setUser(user.username)
             setToken(username)
             localStorage.setItem("username", username)
+            console.log(user)
             return navigate("/userPage")
           }
         else {

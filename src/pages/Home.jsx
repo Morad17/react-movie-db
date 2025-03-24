@@ -179,6 +179,16 @@ const [loginButton, setLoginButton] = useState(true)
       <div className="header-section">
 
       </div>
+      {
+        user ? 
+          <div className="">
+            <h2>Click on the Button To Get Started</h2>
+            <div className="navigate-link">
+               <Link to="/userPage">Get Started</Link>
+            </div>
+           
+          </div> :
+      
       <div className="forms-container">
       <div className="login-and-register">
         <p className="login-heading">Login To Get Started</p>
@@ -234,6 +244,7 @@ const [loginButton, setLoginButton] = useState(true)
           </div>
         }
      </div>
+    }
     </div>
   )
 }
