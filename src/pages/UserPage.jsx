@@ -21,7 +21,8 @@ const checkUser = () => {
     <div className="user-page-section">
       <div className="top-row">
         <section className="liked-section">
-          <p>Test</p>
+          <h2>My Liked List</h2>
+          .
         </section>
         <section className="user-overview-section">
           <div className="user-icon">
@@ -30,6 +31,7 @@ const checkUser = () => {
           <h3>{ loggedUser && loggedUser}</h3>
         </section>
         <section className="watch-list-section">
+        <h2>My Watch List</h2>
         </section>
       </div>
       <div className="bottom-row">
