@@ -94,6 +94,24 @@ app.post('/login',(req,res)=> {
         
     })
 })
+
+////Add Movie To Database
+
+//Watch List
+app.post('/addTowatchList',(req,res) => {
+    const queryTable = "SELECT tableName FROM users WHERE `username` = ?"
+    const valTable = [
+        req.body.username,
+    ]
+    mdb.query(queryTable,[...valTable], (err,data) => {
+        console.log(val)
+        if (err) return res.json("error",err)
+            if (data.length > 0) {
+                const tableName = data[0].tableName
+                const watchQuery = `INSERT into ${tableName} ('id','') `
+            }
+    })
+})
     
 
 // Initialise Node App//

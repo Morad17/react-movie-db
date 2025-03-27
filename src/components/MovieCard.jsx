@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { TiStarFullOutline } from "react-icons/ti";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
+import axios from 'axios';
+
+
 
 const MovieCard = ({
     movie:{
+        id,
         backdrop_path,
         genre_ids,
         IdleDeadline,
@@ -18,10 +22,18 @@ const MovieCard = ({
         video,
         vote_average,
         vote_count,
-},genres}) => {
+        },genres}) => {
+
+    const [loggedUser, setLoggedUser ] = useState()
+
+    const checkUser = () => {
+        setLoggedUser(localStorage.getItem("username"))
+    }    
+    useEffect(()=> 
+        {checkUser()},[])
+
 
     const displayGenres = () => {
-        console.log(genre_ids);
         const genreNames = genre_ids.map(id => {
             const genre = genres.find(gen => gen.id === id);
             return genre ? genre.name : null;
@@ -29,12 +41,24 @@ const MovieCard = ({
         return genreNames.join(', '); // Join the genre names with a comma
     };
 
+    const watchList = async (id) => {
+        if (loggedUser){
+           try{
+             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser})
+             console.log(res.data)
+           } catch (err){
+            console.log(err)
+           }
+        }
+        
+    }
+
   return (
 
     <div className="movie-card">
         <div className="movie-header">
             <div className="header-left">
-                <BsBookmarkStarFill className="save-svg"/>
+                <BsBookmarkStarFill className="save-svg" onClick={(id)=> watchList(id)}/>
                 <BiHeartCircle className="heart-svg"/>
             </div>
             <div className="header-right">

@@ -36,8 +36,10 @@ const checkUser = () => {
       </div>
       <div className="bottom-row">
         <section className="reviewed-movies-section">
+          <h2>Reviewed Movies</h2>
         </section> 
         <section className="stats-section">
+          <h2>Stats</h2>
         </section>
       </div>
 

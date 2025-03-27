@@ -16,7 +16,6 @@ function App() {
 
   useEffect(()=> {
     const username = localStorage.getItem("username")
-    console.log(username)
     if (username) setLoggedUser(username)
     },[loggedUser])
 
