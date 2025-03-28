@@ -65,7 +65,7 @@ const displayDescription = (id) => {
   return (
     <div className="movie-library-section">
       { movieData && movieData.map((movie, key)=> {
-        return <MovieCard movie={movie} genres={genres}/>
+        return <MovieCard key={key} movie={movie} genres={genres}/>
         })
       } 
     </div>

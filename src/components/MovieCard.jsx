@@ -41,11 +41,11 @@ const MovieCard = ({
         return genreNames.join(', '); // Join the genre names with a comma
     };
 
-    const watchList = async (id) => {
+    const addToWatchList = async ({id,title}) => {
         if (loggedUser){
-           try{
-             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser})
-             console.log(res.data)
+           try{ 
+             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title})
+            return res.data
            } catch (err){
             console.log(err)
            }
@@ -58,7 +58,7 @@ const MovieCard = ({
     <div className="movie-card">
         <div className="movie-header">
             <div className="header-left">
-                <BsBookmarkStarFill className="save-svg" onClick={(id)=> watchList(id)}/>
+                <BsBookmarkStarFill className="save-svg" onClick={()=> addToWatchList({id,title})}/>
                 <BiHeartCircle className="heart-svg"/>
             </div>
             <div className="header-right">

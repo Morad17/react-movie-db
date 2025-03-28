@@ -52,7 +52,8 @@ app.post('/create-user',(req,res)=> {
 
     const createUserTable = `CREATE TABLE ${uniqueId}(
         id INT AUTO_INCREMENT PRIMARY KEY,
-        movie_id INT UNIQUE,
+        movieId INT UNIQUE,
+        movieName TEXT,
         watchList BOOLEAN DEFAULT FALSE,
         likedList BOOLEAN DEFAULT FALSE,
         review TEXT,
@@ -104,14 +105,26 @@ app.post('/addTowatchList',(req,res) => {
         req.body.username,
     ]
     mdb.query(queryTable,[...valTable], (err,data) => {
-        console.log(val)
+        ///Find Users Table base on users name (in user table)
         if (err) return res.json("error",err)
             if (data.length > 0) {
                 const tableName = data[0].tableName
-                const watchQuery = `INSERT into ${tableName} ('id','') `
-            }
-    })
-})
+                const watchQuery = `INSERT into ${tableName} (movieId,movieName,watchList)VALUE (?, ?, ?) `
+                const valWatch = [
+                    req.body.movieId,
+                    req.body.movieName,
+                    true
+                ]
+                ///Add To Users Table watchList
+                mdb.query(watchQuery,[...valWatch], (err,data) => {
+                    if (err) return console.log(err, "error whilst pushing to table")
+                    if (data.length > 0){
+                        return res.json(data) 
+                    } else return res.json(err)
+                })
+            }     
+    })   
+})  
     
 
 // Initialise Node App//
