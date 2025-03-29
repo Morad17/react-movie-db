@@ -44,7 +44,7 @@ const MovieCard = ({
     const addToWatchList = async ({id,title}) => {
         if (loggedUser){
            try{ 
-             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title})
+             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path})
             return res.data
            } catch (err){
             console.log(err)

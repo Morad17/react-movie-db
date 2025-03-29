@@ -58,6 +58,7 @@ app.post('/create-user',(req,res)=> {
         likedList BOOLEAN DEFAULT FALSE,
         review TEXT,
         rating INT CHECK (rating >= 1 AND rating <= 10)
+        poster_path TEXT,
     )`
 
    // Execute the first query to create the user
@@ -96,6 +97,28 @@ app.post('/login',(req,res)=> {
     })
 })
 
+/// Get User Personal Table
+app.post('/getUserTable',(req,res)=>{
+    const queryTable = "SELECT tableName FROM users WHERE `username` = ?"
+    const valTable = [
+        req.body.username,
+    ]
+    mdb.query(queryTable,[...valTable], (err,data) => {
+        ///Find Users Table base on users name (in user table)
+        if (err) return res.json("error",err)
+            if (data.length > 0) {
+                const tableName = data[0].tableName
+                const qTable = `SELECT * FROM ${tableName}`
+                mdb.query(qTable,(err,data)=> {
+                    if (err) return console.log(err, "error finding table info")
+                        if (data.length > 0){
+                            return res.json(data) 
+                        } else return res.json(err)
+                }) 
+            } else return console.log(err,"table not found") 
+    })   
+})
+
 ////Add Movie To Database
 
 //Watch List
@@ -109,10 +132,11 @@ app.post('/addTowatchList',(req,res) => {
         if (err) return res.json("error",err)
             if (data.length > 0) {
                 const tableName = data[0].tableName
-                const watchQuery = `INSERT into ${tableName} (movieId,movieName,watchList)VALUE (?, ?, ?) `
+                const watchQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watchList)VALUE (?, ?, ?,?) `
                 const valWatch = [
                     req.body.movieId,
                     req.body.movieName,
+                    req.body.poster_path,
                     true
                 ]
                 ///Add To Users Table watchList
@@ -125,6 +149,7 @@ app.post('/addTowatchList',(req,res) => {
             }     
     })   
 })  
+
     
 
 // Initialise Node App//

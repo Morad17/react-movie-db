@@ -162,9 +162,6 @@ body{
             margin: 15px 0 10px 0;
         }
         .movie-trailer{
-
-        }
-        .movie-trailer{
             border: 2px solid #c3c3c3;
             padding: 5px;
             text-decoration: none;
@@ -174,6 +171,46 @@ body{
         .movie-description{
             display: none;
         }
+    }
+/*-------User Movie Card -----*/
+.user-movie-card{
+    display: flex;  
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 30vh;
+    width: 7vw;
+    border: 2px solid $silver;
+    border-radius: 10px;
+    position: relative;
+    margin: 10px 0;
+    background-color: $turquoise;
+    color: #c3c3c3;
+    -webkit-box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
+    -moz-box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
+    box-shadow: -6px 7px 6px -4px rgba(0,0,0,0.63);
+
+    $card-fade-amount:10%;
+    .user-movie-image{ 
+        width: 100%;
+        position: absolute;
+        border-radius: 5px;
+        background-color: #837960;
+        mask-image: linear-gradient(
+        to top, transparent, #ffffff00, 
+        $card-fade-amount, black calc(100% - $card-fade-amount)
+        )
+    }
+    
+    .user-movie-footer{
+        width: 100%;
+        background-color: $turquoise;
+        border-radius: 10px;
+    }
+    .user-movie-title{
+        padding:0 0 10px 10px;
+        margin: 0;
+        font-size: 1rem;
+    }
     }
 /*------------User Page-------------*/
     .user-page-section{
@@ -192,8 +229,9 @@ body{
             width: 100px;
             height: 100px;
         }
-        .liked-section,.watch-list-section,.reviewed-movies-section,
-        .stats-section{
+        .watch-list-cards{
+            display: flex;
+            flex-direction: row;
         }
 
     }
