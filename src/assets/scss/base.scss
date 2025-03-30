@@ -176,8 +176,6 @@ body{
 .user-movie-card{
     display: flex;  
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 30vh;
     width: 7vw;
     border: 2px solid $silver;
     border-radius: 10px;
@@ -192,7 +190,6 @@ body{
     $card-fade-amount:10%;
     .user-movie-image{ 
         width: 100%;
-        position: absolute;
         border-radius: 5px;
         background-color: #837960;
         mask-image: linear-gradient(
@@ -216,7 +213,7 @@ body{
     .user-page-section{
         position: relative;
         padding-top: 2vw;
-        .top-row{}
+
         .top-row,.bottom-row{
             min-height: 40vh;
             display: flex;
@@ -232,6 +229,7 @@ body{
         .watch-list-cards{
             display: flex;
             flex-direction: row;
+            column-gap: 10px;
         }
 
     }
