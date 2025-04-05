@@ -202,6 +202,9 @@ body{
         width: 100%;
         background-color: $turquoise;
         border-radius: 10px;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
     }
     .user-movie-title{
         padding:0 0 10px 10px;
@@ -220,7 +223,10 @@ body{
             justify-content: space-between;
             margin: 1vh;
             background-color: rgb(132, 122, 98);
-            padding: 1vw;
+            padding: 10px;
+        }
+        .liked-section,.watch-list-section,.reviewed-movies-section,.stats-section{
+            width:40%;
         }
         .user-icon svg{
             width: 100px;
@@ -231,5 +237,17 @@ body{
             flex-direction: row;
             column-gap: 10px;
         }
-
+        .swiper{
+            padding: 10px 0;
+        }
+        .swiper-pagination{
+            background-color: rgb(132, 122, 98);
+            padding: 1px;
+        } 
+        .swiper-pagination-progressbar-fill{
+            background-color: $turquoise;
+        }
+        .swiper-button-prev,.swiper-button-next{
+            color: $turquoise;
+        }
     }

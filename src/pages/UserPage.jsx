@@ -1,5 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { Swiper, SwiperSlide} from 'swiper/react'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
+import {Pagination,Navigation } from 'swiper/modules'
 
 import { IoPersonCircleOutline } from "react-icons/io5";
 import MovieCard from '../components/MovieCard';
@@ -48,11 +54,25 @@ const checkUser = async () => {
         <h2>My Watch List</h2>
         <div className="watch-list-cards">
           {
-            userInfo?.map((movie, key)=> {
+            userInfo &&
+              <Swiper
+                spaceBetween={5}
+                slidesPerView={4}
+                pagination={{
+                  type: "progressbar",
+                }}
+                modules={[Pagination, Navigation]}
+                navigation={true}
+                onSlideChange={() => console.log('slide change')}
+                onSwiper={(swiper) => console.log(userInfo)}>
+              
+              {userInfo.map((movie, key)=> {
               if (movie.watchList === 1){
-                return <UserMovieCard key={key} movie={movie} />
-              }
-            })
+              return  <SwiperSlide className="swiper-slide" key={key}>
+                        <UserMovieCard  movie={movie} />
+                      </SwiperSlide>}})
+                }
+              </Swiper>
           }
         </div>
         </section>
