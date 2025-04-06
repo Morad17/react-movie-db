@@ -16,6 +16,7 @@ const UserPage = () => {
 
   const [loggedUser, setLoggedUser ] = useState()
   const [userInfo, setUserInfo] = useState([])
+  const [listToggle, setListToggle] = useState('watched')
 
 const checkUser = async () => {
     const username = localStorage.getItem("username")
@@ -23,7 +24,6 @@ const checkUser = async () => {
     if (username) {
       try {
         const res = await axios.post("http://localhost:3070/getUserTable", {"username":username})
-        console.log(res.data)
         setUserInfo(res.data)
       } catch (err) {
         console.log(err)
@@ -40,53 +40,100 @@ const checkUser = async () => {
   return (
     <div className="user-page-section">
       <div className="top-row">
-        <section className="liked-section">
-          <h2>My Liked List</h2>
-          
+        <section className="stats-left">
+
         </section>
         <section className="user-overview-section">
-          <div className="user-icon">
-            <IoPersonCircleOutline />
-          </div>
-          <h3>{ loggedUser && loggedUser}</h3>
+            <div className="user-icon">
+              <IoPersonCircleOutline />
+            </div>
+            <h3>{ loggedUser && loggedUser}</h3>
         </section>
-        <section className="watch-list-section">
-        <h2>My Watch List</h2>
-        <div className="watch-list-cards">
-          {
-            userInfo &&
-              <Swiper
-                spaceBetween={5}
-                slidesPerView={4}
-                pagination={{
-                  type: "progressbar",
-                }}
-                modules={[Pagination, Navigation]}
-                navigation={true}
-                onSlideChange={() => console.log('slide change')}
-                onSwiper={(swiper) => console.log(userInfo)}>
-              
-              {userInfo.map((movie, key)=> {
-              if (movie.watchList === 1){
-              return  <SwiperSlide className="swiper-slide" key={key}>
-                        <UserMovieCard  movie={movie} />
-                      </SwiperSlide>}})
-                }
-              </Swiper>
-          }
-        </div>
+        <section className="stats-right">
+
         </section>
+        
       </div>
       <div className="bottom-row">
-        <section className="reviewed-movies-section">
-          <h2>Reviewed Movies</h2>
-        </section> 
-        <section className="stats-section">
-          <h2>Stats</h2>
+        
+        <section className="my-lists-section">
+          <h2>My Lists</h2>
+          <div className="list-name">
+            <button 
+              className={`list-button ${listToggle === 'watched' ? 'list-button-active' : ''}`} 
+              onClick={() => setListToggle('watched')}>To Watch</button>
+            <button 
+              className={`list-button ${listToggle === 'like' ? 'list-button-active' : ''}`} 
+              onClick={() => setListToggle('like')}>Liked</button>
+            
+          </div>
+          <div className="list-slider">
+            {
+            listToggle === 'watched' ?           
+                <div className="watch-list-section">
+                  <div className="watch-list-cards">
+                  {
+                  userInfo &&
+                    <Swiper
+                      spaceBetween={1}
+                      slidesPerView={6}
+                      pagination={{
+                        type: "progressbar",
+                      }}
+                      modules={[Pagination, Navigation]}
+                      navigation={true}>
+                    
+                    {userInfo.map((movie, key)=> {
+                    if (movie.watchList === 1){
+                    return  <SwiperSlide className="swiper-slide" key={key}>
+                              <UserMovieCard  movie={movie} />
+                              <div className="watch-list-buttons">
+                                <button className="watched-button">Watched</button>
+                              </div>
+                            </SwiperSlide>}})
+                      }
+                    </Swiper>
+                    }
+                    </div>
+                </div>:
+                <div className="liked-section">
+                {
+                  userInfo &&
+                    <Swiper
+                      spaceBetween={1}
+                      slidesPerView={7}
+                      pagination={{
+                        type: "progressbar",
+                      }}
+                      modules={[Pagination, Navigation]}
+                      navigation={true}
+                      onSlideChange={() => console.log('slide change')}
+                      onSwiper={(swiper) => console.log(userInfo)}>
+                    
+                    {userInfo.map((movie, key)=> {
+                    if (movie.likedList === 1){
+                    return  <SwiperSlide className="swiper-slide" key={key}>
+                              <UserMovieCard  movie={movie} />
+                              <div className="liked-list-buttons">
+                                <button className="liked-button">Watched</button>
+                              </div>
+                            </SwiperSlide>}})
+                      }
+                    </Swiper>
+                }
+                </div>
+
+                }
+          </div>
+          
+
+          
+        </section>
+        <section className="review-section">
+          <h2>Review A Movie</h2>
+          <div className="review"></div>
         </section>
       </div>
-
-     
     </div>
   )
 }

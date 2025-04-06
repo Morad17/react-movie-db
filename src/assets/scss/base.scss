@@ -1,11 +1,13 @@
 /*--------Variables-----*/
 $turquoise: #12504A;
 $silver: #c3c3c3;
+$gray:#bebebe;
 
 /*------Home Layout-------*/
 body{
     padding: 0;
     margin: 0;
+    background-color: $gray;
 }
 .home-section,.movie-library-section,.user-page-section{
     padding: 0 7vw;
@@ -85,6 +87,9 @@ body{
     row-gap: 1vw;
 }
 /*-------Movie Card -----*/
+    .Toastify{
+        position: absolute;
+    }
     .movie-card{
         display: flex;  
         flex-direction: column;
@@ -215,33 +220,38 @@ body{
 /*------------User Page-------------*/
     .user-page-section{
         position: relative;
-        padding-top: 2vw;
-
+        
         .top-row,.bottom-row{
             min-height: 40vh;
             display: flex;
             justify-content: space-between;
             margin: 1vh;
-            background-color: rgb(132, 122, 98);
+            background-color: $silver;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+            border-radius: 10px;
             padding: 10px;
-        }
-        .liked-section,.watch-list-section,.reviewed-movies-section,.stats-section{
-            width:40%;
         }
         .user-icon svg{
             width: 100px;
             height: 100px;
         }
+        .my-lists-section{
+            width: 70%;
+        }
+        .review-section{
+            width:29% ;
+        }
+        /// card slider ///
         .watch-list-cards{
             display: flex;
             flex-direction: row;
             column-gap: 10px;
         }
         .swiper{
-            padding: 10px 0;
+            padding: 10px 5px;
         }
         .swiper-pagination{
-            background-color: rgb(132, 122, 98);
+            background-color: $silver;
             padding: 1px;
         } 
         .swiper-pagination-progressbar-fill{
@@ -249,5 +259,27 @@ body{
         }
         .swiper-button-prev,.swiper-button-next{
             color: $turquoise;
+        }
+        //Buttons//
+        .list-name{
+            margin-bottom: 10px;
+        }
+        .list-button-active{
+            background-color:$turquoise !important;
+            color: white !important;
+            padding: 8px 10px;
+            border: none;
+        }
+        .list-button{
+            background-color:white ;
+            color: black;
+            padding: 8px 12px;
+            border: none;
+        }
+        .watched-button,.liked-button{
+            width: 7vw;
+            padding: 5px 0px;
+            border-radius: 5px;
+            border: none;
         }
     }

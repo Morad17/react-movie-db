@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+
 import { TiStarFullOutline } from "react-icons/ti";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
-import axios from 'axios';
-
-
 
 const MovieCard = ({
     movie:{
@@ -45,7 +45,21 @@ const MovieCard = ({
         if (loggedUser){
            try{ 
              const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path})
-            return res.data
+             toast('Successfully Added To Watch List')
+             return res.data
+           } catch (err){
+            console.log(err)
+            toast('Your Movie Was not added')
+           }
+        }
+        
+    }
+    const addToLikedList = async ({id,title}) => {
+        if (loggedUser){
+           try{ 
+             const res = await axios.post('http://localhost:3070/addToLikedList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path})
+             toast('Successfully Added To Liked List')
+             return res.data
            } catch (err){
             console.log(err)
            }
@@ -59,7 +73,7 @@ const MovieCard = ({
         <div className="movie-header">
             <div className="header-left">
                 <BsBookmarkStarFill className="save-svg" onClick={()=> addToWatchList({id,title})}/>
-                <BiHeartCircle className="heart-svg"/>
+                <BiHeartCircle className="heart-svg" onClick={()=> addToLikedList({id,title})}/>
             </div>
             <div className="header-right">
 
@@ -76,6 +90,7 @@ const MovieCard = ({
                 <p className="movie-genres">{displayGenres()}</p>                    
             </div>
         </div>
+        <ToastContainer autoClose={3000} draggable={false} />
     </div>
     
   )

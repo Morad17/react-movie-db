@@ -148,7 +148,37 @@ app.post('/addTowatchList',(req,res) => {
                 })
             }     
     })   
+})
+
+//Like List
+app.post('/addToLikedList',(req,res) => {
+    const queryTable = "SELECT tableName FROM users WHERE `username` = ?"
+    const valTable = [
+        req.body.username,
+    ]
+    mdb.query(queryTable,[...valTable], (err,data) => {
+        ///Find Users Table base on users name (in user table)
+        if (err) return res.json("error",err)
+            if (data.length > 0) {
+                const tableName = data[0].tableName
+                const likeQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,likedList)VALUE (?, ?, ?,?) `
+                const valLike = [
+                    req.body.movieId,
+                    req.body.movieName,
+                    req.body.poster_path,
+                    true
+                ]
+                ///Add To Users Table watchList
+                mdb.query(likeQuery,[...valLike], (err,data) => {
+                    if (err) return console.log(err, "error whilst pushing to table")
+                    if (data.length > 0){
+                        return res.json(data) 
+                    } else return res.json(err)
+                })
+            }     
+    })   
 })  
+
 
     
 
