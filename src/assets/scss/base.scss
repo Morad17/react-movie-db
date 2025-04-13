@@ -86,6 +86,12 @@ body{
     flex-wrap: wrap;
     row-gap: 1vw;
 }
+.bookmarked{
+        color:goldenrod;
+}
+.liked{
+    color: rgb(189, 18, 18);
+}
 /*-------Movie Card -----*/
     .Toastify{
         position: absolute;
@@ -231,9 +237,15 @@ body{
             border-radius: 10px;
             padding: 10px;
         }
+        .user-overview-section, .stats-left,.stats-right{
+            width: 32%;
+        }
+        .user-overview-section{
+            text-align: center;
+        }
         .user-icon svg{
-            width: 100px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
         }
         .my-lists-section{
             width: 70%;

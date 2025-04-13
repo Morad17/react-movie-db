@@ -81,7 +81,7 @@ app.post('/create-user',(req,res)=> {
         });
     }
 })})
-/// Login
+/// Login ///
 app.post('/login',(req,res)=> {
     const q = "SELECT * FROM users WHERE `username` = ? AND `password` = ?"
     const val = [

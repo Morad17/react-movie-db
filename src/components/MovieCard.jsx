@@ -22,7 +22,8 @@ const MovieCard = ({
         video,
         vote_average,
         vote_count,
-        },genres}) => {
+        },genres,userData
+    }) => {
 
     const [loggedUser, setLoggedUser ] = useState()
 
@@ -72,11 +73,11 @@ const MovieCard = ({
     <div className="movie-card">
         <div className="movie-header">
             <div className="header-left">
-                <BsBookmarkStarFill className="save-svg" onClick={()=> addToWatchList({id,title})}/>
-                <BiHeartCircle className="heart-svg" onClick={()=> addToLikedList({id,title})}/>
+                <BsBookmarkStarFill className={`save-svg ${userData && userData.watchList ? 'bookmarked': '' }`} onClick={()=> addToWatchList({id,title})}/>
+                <BiHeartCircle className={`heart-svg ${userData && userData.likedList ? 'liked': '' }`} onClick={()=> addToLikedList({id,title})}/>
             </div>
             <div className="header-right">
-
+                <p>Test</p>
             </div>
            
         </div>

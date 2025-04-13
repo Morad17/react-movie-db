@@ -1,5 +1,7 @@
 import React,{useEffect, useState} from 'react'
 import MovieCard from '../components/MovieCard';
+import { ToastContainer, toast } from "react-toastify";
+import axios from 'axios';
 
 
 const MovieLibrary = () => {
@@ -7,8 +9,9 @@ const MovieLibrary = () => {
 //Use States//
 const [movieData, setMovieData ] = useState([])
 const [genres, setGenres ] = useState([])
+const [userMovieData, setUserMovieData ] = useState({})
 
-
+// Get All Movies//
 const fetchMovies = async () => {
   const options = {
     method: 'GET',
@@ -34,6 +37,7 @@ useEffect(() => {
  fetchMovies()
 },[])
 
+// Get Genre Name from Genre Id //
 const fetchGenres = async () => {
   const options = {
     method: 'GET',
@@ -55,6 +59,25 @@ useEffect(() => {
  fetchGenres()
 },[])
 
+// Get User Liked and Bookmarked data //
+
+const getUserMovieData = async () => {
+  const user = localStorage.getItem("username")
+  if (user) {
+     try {
+    const res = await axios.post('http://localhost:3070/getUserTable', {"username":user})
+    setUserMovieData(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+    }
+ 
+}
+useEffect(() => {
+  getUserMovieData()
+}, [])
+
+
 const displayDescription = (id) => {
   const card = document.getElementById(id)
   card.style.display = "block"
@@ -65,9 +88,11 @@ const displayDescription = (id) => {
   return (
     <div className="movie-library-section">
       { movieData && movieData.map((movie, key)=> {
-        return <MovieCard key={key} movie={movie} genres={genres}/>
+        const userMovie = userMovieData.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
+        return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
-      } 
+      }
+      <ToastContainer autoClose={3000} draggable={false} />
     </div>
   )
 }
