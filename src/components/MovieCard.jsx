@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import { TiStarFullOutline } from "react-icons/ti";
 import { BsBookmarkStarFill } from "react-icons/bs";
@@ -26,12 +27,28 @@ const MovieCard = ({
     }) => {
 
     const [loggedUser, setLoggedUser ] = useState()
+    const [movieInfo ,setMovieInfo] = useState({
+        watchList: null,
+        likedList: null
+    })
+    const [isDisabled, setIsDisabled] = useState(false); // State to disable buttons
 
     const checkUser = () => {
         setLoggedUser(localStorage.getItem("username"))
+    }
+    useEffect(() => {
+      checkUser()
+    }, [])
+    
+
+    const checkMovieData = () => {
+        userData && setMovieInfo({
+            watchList: userData.watchList,
+            likedList: userData.likedList
+        })
     }    
     useEffect(()=> 
-        {checkUser()},[])
+        {checkMovieData()},[])
 
 
     const displayGenres = () => {
@@ -41,30 +58,78 @@ const MovieCard = ({
         }).filter(name => name !== null); // Filter out any null values
         return genreNames.join(', '); // Join the genre names with a comma
     };
-
-    const addToWatchList = async ({id,title}) => {
+    const addToWatchList = async ({id,title}) => { 
         if (loggedUser){
-           try{ 
-             const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path})
-             toast('Successfully Added To Watch List')
-             return res.data
-           } catch (err){
-            console.log(err)
-            toast('Your Movie Was not added')
-           }
-        }
-        
+            setIsDisabled(true)
+            if (movieInfo.watchList === true || movieInfo.watchList === 1){
+                try{
+                    const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path,"watchList":false})
+                    toast(`Successfully removed ${title} from watch list`)
+                    setMovieInfo({...movieInfo, watchList:null})
+                    setTimeout(() => {
+                        setIsDisabled(false)
+                        
+                    }, 2000)
+                    return res.data
+                    } catch (err){
+                    console.log(err)
+                    toast('Your movie was not added')
+                    }
+            }else if(movieInfo.watchList === null ||movieInfo.watchList === 0) {
+                try{ 
+                    const res = await axios.post('http://localhost:3070/addToWatchList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path,"watchList":true})
+                    toast(`Successfully added ${title} to watch list`)
+                    setMovieInfo({...movieInfo, watchList:true})
+                    setTimeout(() => {
+                        setIsDisabled(false)
+                        
+                    }, 2000)
+                    return res.data
+                } catch (err){
+                    console.log(err)
+                    toast('Your Movie Was not added')
+                }
+            }
+            
+            } else {
+                toast('You must be logged in to add movies to lists')
+            }
     }
     const addToLikedList = async ({id,title}) => {
         if (loggedUser){
-           try{ 
-             const res = await axios.post('http://localhost:3070/addToLikedList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path})
-             toast('Successfully Added To Liked List')
-             return res.data
-           } catch (err){
-            console.log(err)
-           }
-        }
+            setIsDisabled(true)
+            if (movieInfo.likedList === true || movieInfo.likedList === 1){
+                try{
+                    const res = await axios.post('http://localhost:3070/addToLikedList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path,"likedList":false})
+                    toast(`Successfully removed ${title} from liked list`)
+                    setMovieInfo({...movieInfo, likedList:null})
+                    setTimeout(() => {
+                        setIsDisabled(false)
+                        
+                    }, 2000)
+                    return res.data
+                    } catch (err){
+                    console.log(err)
+                    toast('Your movie was not added')
+                    }
+            }else if(movieInfo.likedList === null ||movieInfo.likedList === 0) {
+                try{ 
+                    const res = await axios.post('http://localhost:3070/addTolikedList',{"username":loggedUser, "movieId":id, "movieName":title,poster_path,"likedList":true})
+                    toast(`Successfully added ${title} to liked list`)
+                    setMovieInfo({...movieInfo, likedList:true})
+                    setTimeout(() => {
+                        setIsDisabled(false)
+                    }, 2000)
+                    return res.data
+                } catch (err){
+                    console.log(err)
+                    toast('Your Movie Was not added')
+                }
+            }
+            
+            } else {
+                toast('You must be logged in to add movies to lists')
+            }
         
     }
 
@@ -73,11 +138,10 @@ const MovieCard = ({
     <div className="movie-card">
         <div className="movie-header">
             <div className="header-left">
-                <BsBookmarkStarFill className={`save-svg ${userData && userData.watchList ? 'bookmarked': '' }`} onClick={()=> addToWatchList({id,title})}/>
-                <BiHeartCircle className={`heart-svg ${userData && userData.likedList ? 'liked': '' }`} onClick={()=> addToLikedList({id,title})}/>
+                <BsBookmarkStarFill id="bookmarkIcon" className={`save-svg ${movieInfo.watchList ? 'bookmarked': '' }`} onClick={()=> !isDisabled && addToWatchList({id,title})}/>
+                <BiHeartCircle id="likeIcon"className={`heart-svg ${movieInfo.likedList ? 'liked': '' }`} onClick={()=> !isDisabled && addToLikedList({id,title})}/>
             </div>
             <div className="header-right">
-                <p>Test</p>
             </div>
            
         </div>
@@ -91,9 +155,8 @@ const MovieCard = ({
                 <p className="movie-genres">{displayGenres()}</p>                    
             </div>
         </div>
-        <ToastContainer autoClose={3000} draggable={false} />
     </div>
-    
+     
   )
 }
 

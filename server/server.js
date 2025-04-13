@@ -86,7 +86,7 @@ app.post('/login',(req,res)=> {
     const q = "SELECT * FROM users WHERE `username` = ? AND `password` = ?"
     const val = [
         req.body.username,
-        req.body.password,
+        req.body.password, 
     ]
     mdb.query(q,[...val], (err,data)=> {
         if (err) return res.json("login unsuccessfull, try again")
@@ -132,12 +132,15 @@ app.post('/addTowatchList',(req,res) => {
         if (err) return res.json("error",err)
             if (data.length > 0) {
                 const tableName = data[0].tableName
-                const watchQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watchList)VALUE (?, ?, ?,?) `
+                const watchQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watchList)VALUE (?, ?, ?,?)
+                ON DUPLICATE KEY UPDATE
+                watchList = VALUES(watchList)
+                `
                 const valWatch = [
                     req.body.movieId,
                     req.body.movieName,
                     req.body.poster_path,
-                    true
+                    req.body.watchList
                 ]
                 ///Add To Users Table watchList
                 mdb.query(watchQuery,[...valWatch], (err,data) => {
@@ -161,12 +164,15 @@ app.post('/addToLikedList',(req,res) => {
         if (err) return res.json("error",err)
             if (data.length > 0) {
                 const tableName = data[0].tableName
-                const likeQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,likedList)VALUE (?, ?, ?,?) `
+                const likeQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,likedList)VALUE (?, ?, ?,?)
+                ON DUPLICATE KEY UPDATE
+                likedList = VALUES(likedList)
+                `
                 const valLike = [
                     req.body.movieId,
                     req.body.movieName,
                     req.body.poster_path,
-                    true
+                    req.body.likedList  
                 ]
                 ///Add To Users Table watchList
                 mdb.query(likeQuery,[...valLike], (err,data) => {

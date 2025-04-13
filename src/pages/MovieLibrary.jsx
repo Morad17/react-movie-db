@@ -92,7 +92,6 @@ const displayDescription = (id) => {
         return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
       }
-      <ToastContainer autoClose={3000} draggable={false} />
     </div>
   )
 }

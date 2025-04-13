@@ -9,6 +9,7 @@ import User from "./pages/User";
 import AuthProvider from "./hooks/Authprovider";
 import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
 function App() {
 
@@ -57,6 +58,7 @@ function App() {
   return (
     <div className="App">
      <RouterProvider  router={router} />
+     <ToastContainer autoClose={2000} draggable={false} />
     </div>
   );
 }
