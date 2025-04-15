@@ -67,7 +67,6 @@ const getUserMovieData = async () => {
      try {
     const res = await axios.post('http://localhost:3070/getUserTable', {"username":user})
     setUserMovieData(res.data)
-    console.log(userMovieData)
     } catch (err) {
       console.log(err)
     }
@@ -77,14 +76,6 @@ const getUserMovieData = async () => {
 useEffect(() => {
   getUserMovieData()
 }, [])
-
-
-const displayDescription = (id) => {
-  const card = document.getElementById(id)
-  card.style.display = "block"
-  console.log(card)
-}
-
 
   return (
     <div className="movie-library-section">
