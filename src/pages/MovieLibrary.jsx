@@ -88,7 +88,7 @@ const displayDescription = (id) => {
   return (
     <div className="movie-library-section">
       { movieData && movieData.map((movie, key)=> {
-        const userMovie = userMovieData.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
+        const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
         return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
       }

@@ -10,31 +10,38 @@ import {Pagination,Navigation } from 'swiper/modules'
 import { IoPersonCircleOutline } from "react-icons/io5";
 import MovieCard from '../components/MovieCard';
 import UserMovieCard from '../components/UserMovieCard';
+import { Link } from 'react-router';
 
 
-const UserPage = () => {
+  const UserPage = () => {
 
-  const [loggedUser, setLoggedUser ] = useState()
-  const [userInfo, setUserInfo] = useState([])
-  const [listToggle, setListToggle] = useState('watched')
+    const [loggedUser, setLoggedUser ] = useState()
+    const [userInfo, setUserInfo] = useState([])
+    const [listToggle, setListToggle] = useState('watched')
 
-const checkUser = async () => {
-    const username = localStorage.getItem("username")
-    setLoggedUser(username)
-    if (username) {
-      try {
-        const res = await axios.post("http://localhost:3070/getUserTable", {"username":username})
-        setUserInfo(res.data)
-      } catch (err) {
-        console.log(err)
-      }
-      
-    }
-}    
-
+  const checkUser = async () => {
+      const username = localStorage.getItem("username")
+      setLoggedUser(username)
+      if (username) {
+        try {
+          const res = await axios.post("http://localhost:3070/getUserTable", {"username":username})
+          setUserInfo(res.data)
+        } catch (err) {
+          console.log(err)
+        }
+        }}    
     useEffect(()=> {
         checkUser()
     },[])
+
+    const checkIfEmpty = () => {
+      const hasWatchList = userInfo.some((row) => row.watchList === 1);
+      if (hasWatchList) {
+        console.log("true");
+      } else {
+        console.log("testing");
+      }
+    };
 
 
   return (
@@ -106,20 +113,30 @@ const checkUser = async () => {
                         type: "progressbar",
                       }}
                       modules={[Pagination, Navigation]}
-                      navigation={true}
-                      onSlideChange={() => console.log('slide change')}
-                      onSwiper={(swiper) => console.log(userInfo)}>
+                      navigation={true}>
                     
-                    {userInfo.map((movie, key)=> {
-                    if (movie.likedList === 1){
-                    return  <SwiperSlide className="swiper-slide" key={key}>
-                              <UserMovieCard  movie={movie} />
-                              <div className="liked-list-buttons">
-                                <button className="liked-button">Watched</button>
-                              </div>
-                            </SwiperSlide>}})
+                    {
+                      //  if{
+                      //   return  <div className="empty-card-slide">
+                      //             <h2>Your List is empty</h2>
+                      //             <p>Click <Link to="/library">Here</Link> to add more Movies</p>
+                      //           </div>
+                      // }
+                    
+                    userInfo.map((movie, key)=> {
+                    if (movie.likedList === 1)
+                      { return  <SwiperSlide className="swiper-slide" key={key}>
+                                  <UserMovieCard  movie={movie} />
+                                  <div className="liked-list-buttons">
+                                    <button className="liked-button">Watched</button>
+                                  </div>
+                                </SwiperSlide>
                       }
+                    })} 
                     </Swiper>
+                }
+                {
+                  checkIfEmpty()
                 }
                 </div>
 
