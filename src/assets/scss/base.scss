@@ -127,9 +127,14 @@ body{
         .save-svg{
             padding-bottom: 15px;
             font-size: 30px;
+            cursor: pointer;
         }
         .heart-svg{
             font-size: 35px;
+            cursor: pointer;
+        }
+        .heart-svg:hover,.save-svg:hover{
+            color: $turquoise;
         }
         .movie-footer{
             width: 100%;
@@ -261,6 +266,7 @@ body{
         }
         .swiper{
             padding: 10px 5px;
+            width: 100%;
         }
         .swiper-pagination{
             background-color: $silver;

@@ -34,15 +34,14 @@ import { Link } from 'react-router';
         checkUser()
     },[])
 
-    const checkIfEmpty = () => {
-      const hasWatchList = userInfo.some((row) => row.watchList === 1);
-      if (hasWatchList) {
-        console.log("true");
-      } else {
-        console.log("testing");
+    const checkIfEmpty = (listType) => {
+      if (listType === 'watched') {
+        return !userInfo.some((row) => row.watchList === 1);
+      } else if (listType === 'liked') {
+        return !userInfo.some((row) => row.likedList === 1);
       }
+      return true; // Default to true if listType is invalid
     };
-
 
   return (
     <div className="user-page-section">
@@ -75,38 +74,38 @@ import { Link } from 'react-router';
             
           </div>
           <div className="list-slider">
-            {
-            listToggle === 'watched' ?           
-                <div className="watch-list-section">
+            {listToggle === 'watched' ?           
+              <div className="watch-list-section">
                   <div className="watch-list-cards">
-                  {
-                  userInfo &&
-                    <Swiper
-                      spaceBetween={1}
-                      slidesPerView={6}
-                      pagination={{
-                        type: "progressbar",
-                      }}
-                      modules={[Pagination, Navigation]}
-                      navigation={true}>
-                    
-                    {userInfo.map((movie, key)=> {
-                    if (movie.watchList === 1){
-                    return  <SwiperSlide className="swiper-slide" key={key}>
-                              <UserMovieCard  movie={movie} />
-                              <div className="watch-list-buttons">
-                                <button className="watched-button">Watched</button>
-                              </div>
-                            </SwiperSlide>}})
+                    {checkIfEmpty('watched') ? (
+                        <p>Your List is empty. Click <Link to="/library">here</Link> to add movies.</p>
+                      ) :
+                      <Swiper
+                        spaceBetween={1}
+                        slidesPerView={6}
+                        pagination={{
+                          type: "progressbar",
+                        }}
+                        modules={[Pagination, Navigation]}
+                        navigation={true}>
+                      
+                      {userInfo.map((movie, key)=> {
+                      if (movie.watchList === 1){
+                      return  <SwiperSlide className="swiper-slide" key={key}>
+                                <UserMovieCard  movie={movie} />
+                                <div className="watch-list-buttons">
+                                  <button className="watched-button">Watched</button>
+                                </div>
+                              </SwiperSlide>}})
+                        }
+                      </Swiper>
                       }
-                    </Swiper>
-                    }
                     </div>
                 </div>:
                 <div className="liked-section">
-                {
-                  userInfo &&
-                    <Swiper
+                {checkIfEmpty('liked') ? (
+                    <p>Your List is empty. Click <Link to="/library">here</Link> to add movies.</p>)
+                    : <Swiper
                       spaceBetween={1}
                       slidesPerView={7}
                       pagination={{
@@ -116,13 +115,6 @@ import { Link } from 'react-router';
                       navigation={true}>
                     
                     {
-                      //  if{
-                      //   return  <div className="empty-card-slide">
-                      //             <h2>Your List is empty</h2>
-                      //             <p>Click <Link to="/library">Here</Link> to add more Movies</p>
-                      //           </div>
-                      // }
-                    
                     userInfo.map((movie, key)=> {
                     if (movie.likedList === 1)
                       { return  <SwiperSlide className="swiper-slide" key={key}>
@@ -134,9 +126,6 @@ import { Link } from 'react-router';
                       }
                     })} 
                     </Swiper>
-                }
-                {
-                  checkIfEmpty()
                 }
                 </div>
 
