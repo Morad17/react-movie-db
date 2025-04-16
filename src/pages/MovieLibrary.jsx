@@ -6,10 +6,13 @@ import axios from 'axios';
 
 const MovieLibrary = () => {
 
-//Use States//
+////Use States////
 const [movieData, setMovieData ] = useState([])
 const [genres, setGenres ] = useState([])
 const [userMovieData, setUserMovieData ] = useState({})
+//Pagination
+const [currentPage,getCurrentPage ] = useState(1)
+const [cardsPerPage, setCardsPerPage] = useState(21)
 
 // Get All Movies//
 const fetchMovies = async () => {
@@ -60,7 +63,6 @@ useEffect(() => {
 },[])
 
 // Get User Liked and Bookmarked data //
-
 const getUserMovieData = async () => {
   const user = localStorage.getItem("username")
   if (user) {
@@ -76,6 +78,12 @@ const getUserMovieData = async () => {
 useEffect(() => {
   getUserMovieData()
 }, [])
+
+//Pagination
+const indexOfLastCard = currentPage * cardsPerPage
+const indexOfFirstCard = indexOfLastCard - cardsPerPage
+// const currentCards 
+
 
   return (
     <div className="movie-library-section">
