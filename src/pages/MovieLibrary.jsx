@@ -3,6 +3,8 @@ import MovieCard from '../components/MovieCard';
 import { ToastContainer, toast } from "react-toastify";
 import axios from 'axios';
 import Pagination from '../components/Pagination';
+import { BsBookmarkStarFill } from 'react-icons/bs';
+import { BiHeartCircle } from 'react-icons/bi';
 
 
 const MovieLibrary = () => {
@@ -28,7 +30,6 @@ const fetchMovies = async () => {
   try{
     const res = await fetch(url , options)
     const data = await res.json()
-    console.log(currentPage,data)
     let arr = []
     data.results.forEach ( movie =>{
       arr.push(movie)
@@ -91,12 +92,39 @@ const paginate = (number) => setCurrentPage(number)
 
   return (
     <div className="movie-library-section">
-      { movieData && movieData.map((movie, key)=> {
+      <section className="movie-library-header">
+        <div className="movie-left">
+          <div className="info-div">
+            <h3>Get Started</h3>
+            <p>Click on the movie for more info </p>
+            <p> <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to watch list.
+             Click again to remove from list</p>
+            <p><BiHeartCircle /> Click the Like icon to add movie to liked list. Click again to 
+            remove.</p>
+           
+          
+          </div>
+        </div>
+        <div className="movie-center">
+          <h2>All Movies</h2>
+          <div className="search-div">
+            <input type="text" />
+          </div>
+        </div>
+        <div className="movie-right">
+          <a href="" className="sort-btn">Sort</a>
+          <a href="" className="filter-btn">Filter</a>
+        </div>
+      </section>
+      <div className="all-movies">
+        { movieData && movieData.map((movie, key)=> {
         const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
         return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
       }
       <Pagination paginate={paginate} totalPages={totalPages}/>
+      </div>
+      
     </div>
   )
 }
