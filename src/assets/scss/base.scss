@@ -10,7 +10,7 @@ body{
     background-color: $gray;
 }
 .home-section,.movie-library-section,.user-page-section{
-    padding: 0 7vw;
+    padding: 0 20vw;
 }
 .main-nav{
     display: flex;
@@ -18,7 +18,7 @@ body{
     background-color: $turquoise;
     align-items: center;
 }
-.nav-logo{
+.nav-logo{          
     width: 9vw;
     margin-left: 1vw;
     color: white;
@@ -192,7 +192,7 @@ body{
 .user-movie-card{
     display: flex;  
     flex-direction: column;
-    width: 7vw;
+    width: 11vw;
     border: 2px solid $silver;
     border-radius: 10px;
     position: relative;
@@ -300,5 +300,27 @@ body{
             padding: 5px 0px;
             border-radius: 5px;
             border: none;
+        }
+    }
+    ///Pagination///
+    .pagination{
+        width: 100%;
+       
+        .pagination-list{
+            list-style: none; 
+            display: flex;
+            justify-content: space-between;
+        }
+        .page-link{
+            padding: 10px;
+            background-color: #12504A;
+            color: white;
+            border-radius: 5px;
+            margin: 0;
+            border: 3px solid white;
+            width: 30px;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
         }
     }

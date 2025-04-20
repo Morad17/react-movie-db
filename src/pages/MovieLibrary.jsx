@@ -13,7 +13,7 @@ const [genres, setGenres ] = useState([])
 const [userMovieData, setUserMovieData ] = useState([])
 //Pagination
 const [currentPage,setCurrentPage ] = useState(1)
-const [cardsPerPage, setCardsPerPage] = useState(21)
+const [totalPages, setTotalPages] = useState()
 
 // Get All Movies//
 const fetchMovies = async () => {
@@ -24,23 +24,24 @@ const fetchMovies = async () => {
       Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
     }
   };
-  const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US'
+  const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage || 1 }`
   try{
     const res = await fetch(url , options)
     const data = await res.json()
-    console.log(data)
+    console.log(currentPage,data)
     let arr = []
     data.results.forEach ( movie =>{
       arr.push(movie)
     })
     setMovieData(arr)
+    setTotalPages(data.total_pages)
   } catch (err) {
     console.log(err)
   }
 }
 useEffect(() => {
  fetchMovies()
-},[])
+},[currentPage])
 
 // Get Genre Name from Genre Id //
 const fetchGenres = async () => {
@@ -82,20 +83,20 @@ useEffect(() => {
 }, [])
 
 //Pagination
-const indexOfLastCard = currentPage * cardsPerPage
-const indexOfFirstCard = indexOfLastCard - cardsPerPage
-const currentCards  = movieData.slice(indexOfFirstCard,indexOfLastCard)
-const paginate = (pageNumber) => setCurrentPage(pageNumber)
+// const indexOfLastCard = currentPage * 20
+// const indexOfFirstCard = indexOfLastCard - 20
+// const currentCards  = movieData
+const paginate = (number) => setCurrentPage(number)
 
 
   return (
     <div className="movie-library-section">
-      { currentCards && currentCards.map((movie, key)=> {
+      { movieData && movieData.map((movie, key)=> {
         const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
         return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
       }
-      <Pagination paginate={paginate} cardsPerPage currentPage />
+      <Pagination paginate={paginate} totalPages={totalPages}/>
     </div>
   )
 }
