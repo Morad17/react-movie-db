@@ -5,6 +5,7 @@ import axios from 'axios';
 import Pagination from '../components/Pagination';
 import { BsBookmarkStarFill } from 'react-icons/bs';
 import { BiHeartCircle } from 'react-icons/bi';
+import SearchMovie from '../components/SearchMovie';
 
 
 const MovieLibrary = () => {
@@ -13,6 +14,7 @@ const MovieLibrary = () => {
 const [movieData, setMovieData ] = useState([])
 const [genres, setGenres ] = useState([])
 const [userMovieData, setUserMovieData ] = useState([])
+const [movieSearchRes, setMovieSearchRes] = useState(null)
 //Pagination
 const [currentPage,setCurrentPage ] = useState(1)
 const [totalPages, setTotalPages] = useState()
@@ -83,11 +85,8 @@ useEffect(() => {
   getUserMovieData()
 }, [])
 
-//Pagination
-// const indexOfLastCard = currentPage * 20
-// const indexOfFirstCard = indexOfLastCard - 20
-// const currentCards  = movieData
 const paginate = (number) => setCurrentPage(number)
+const movieSearch = (movieRes) => setMovieSearchRes(movieRes)
 
 
   return (
@@ -108,7 +107,7 @@ const paginate = (number) => setCurrentPage(number)
         <div className="movie-center">
           <h2>All Movies</h2>
           <div className="search-div">
-            <input type="text" />
+            <SearchMovie movieSearch={movieSearch}/>
           </div>
         </div>
         <div className="movie-right">
@@ -117,11 +116,14 @@ const paginate = (number) => setCurrentPage(number)
         </div>
       </section>
       <div className="all-movies">
-        { movieData && movieData.map((movie, key)=> {
-        const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
-        return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
+        { movieSearchRes ? movieSearchRes.map((movie, key)=> {
+          const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
+          return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
         })
-      }
+          : movieData && movieData.map((movie, key)=> {
+          const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
+          return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
+          })}
       <Pagination paginate={paginate} totalPages={totalPages}/>
       </div>
       
