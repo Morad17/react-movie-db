@@ -11,83 +11,83 @@ import SearchMovie from '../components/SearchMovie';
 const MovieLibrary = () => {
 
 ////Use States////
-const [movieData, setMovieData ] = useState([])
-const [genres, setGenres ] = useState([])
-const [userMovieData, setUserMovieData ] = useState([])
-const [movieSearchRes, setMovieSearchRes] = useState(null)
-//Pagination
-const [currentPage,setCurrentPage ] = useState(1)
-const [totalPages, setTotalPages] = useState()
+  const [movies, setMovies ] = useState([])
+  const [genres, setGenres ] = useState([])
+  const [userMovieData, setUserMovieData ] = useState([])
+  const [searchQuery, setSearchQuery] = useState('');
+  //Pagination
+  const [currentPage,setCurrentPage ] = useState(1)
+  const [totalPages, setTotalPages] = useState()
 
-// Get All Movies//
-const fetchMovies = async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
-    }
-  };
-  const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage || 1 }`
-  try{
-    const res = await fetch(url , options)
-    const data = await res.json()
-    let arr = []
-    data.results.forEach ( movie =>{
-      arr.push(movie)
-    })
-    setMovieData(arr)
-    setTotalPages(data.total_pages)
-  } catch (err) {
-    console.log(err)
-  }
-}
-useEffect(() => {
- fetchMovies()
-},[currentPage])
-
-// Get Genre Name from Genre Id //
-const fetchGenres = async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
-    }
-  };
-  const url = 'https://api.themoviedb.org/3/genre/movie/list?language=en'
-  try{
-    const res = await fetch(url , options)
-    const data = await res.json()
-    setGenres(data.genres)
-  } catch (err) {
-    console.log(err)
-  }
-}
-useEffect(() => {
- fetchGenres()
-},[])
-
-// Get User Liked and Bookmarked data //
-const getUserMovieData = async () => {
-  const user = localStorage.getItem("username")
-  if (user) {
-     try {
-    const res = await axios.post('http://localhost:3070/getUserTable', {"username":user})
-    setUserMovieData(res.data)
+  // Get All Movies//
+  const fetchMovies = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
+      }
+    };
+    const url = searchQuery
+        ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
+        : `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage}`;
+    try{
+      const res = await fetch(url , options)
+      const data = await res.json()
+      setMovies(data.results)
+      setTotalPages(data.total_pages)
     } catch (err) {
       console.log(err)
     }
+  }
+  useEffect(() => {
+  fetchMovies()
+  },[searchQuery, currentPage])
+
+  // Get Genre Name from Genre Id //
+  const fetchGenres = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
+      }
+    };
+    const url = 'https://api.themoviedb.org/3/genre/movie/list?language=en'
+    try{
+      const res = await fetch(url , options)
+      const data = await res.json()
+      setGenres(data.genres)
+    } catch (err) {
+      console.log(err)
     }
- 
-}
-useEffect(() => {
-  getUserMovieData()
-}, [])
+  }
+  useEffect(() => {
+  fetchGenres()
+  },[])
 
-const paginate = (number) => setCurrentPage(number)
-const movieSearch = (movieRes) => setMovieSearchRes(movieRes)
+  // Get User Liked and Bookmarked data //
+  const getUserMovieData = async () => {
+    const user = localStorage.getItem("username")
+    if (user) {
+      try {
+      const res = await axios.post('http://localhost:3070/getUserTable', {"username":user})
+      setUserMovieData(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+      }
+  
+  }
+  useEffect(() => {
+    getUserMovieData()
+  }, [])
 
+  const paginate = (number) => setCurrentPage(number)
+  const handleMovieSearch = (query) => {
+    setSearchQuery(query); // Update the search query
+    setCurrentPage(1); // Reset to the first page
+  };
 
   return (
     <div className="movie-library-section">
@@ -107,7 +107,7 @@ const movieSearch = (movieRes) => setMovieSearchRes(movieRes)
         <div className="movie-center">
           <h2>All Movies</h2>
           <div className="search-div">
-            <SearchMovie movieSearch={movieSearch}/>
+            <SearchMovie movieSearch={handleMovieSearch}/>
           </div>
         </div>
         <div className="movie-right">
@@ -116,15 +116,12 @@ const movieSearch = (movieRes) => setMovieSearchRes(movieRes)
         </div>
       </section>
       <div className="all-movies">
-        { movieSearchRes ? movieSearchRes.map((movie, key)=> {
-          const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
-          return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
-        })
-          : movieData && movieData.map((movie, key)=> {
-          const userMovie = userMovieData?.filter((userMovie)=> userMovie.movieName === movie.title)[0] || null
+        { movies.map((movie, key)=> {
+          const userMovie = userMovieData?.find((userMovie)=> userMovie.movieName === movie.title) || null
           return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
           })}
-      <Pagination paginate={paginate} totalPages={totalPages}/>
+          
+        <Pagination paginate={paginate} totalPages={totalPages}/>
       </div>
       
     </div>
