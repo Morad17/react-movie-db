@@ -14,7 +14,7 @@ const MovieLibrary = () => {
   const [movies, setMovies ] = useState([])
   const [genres, setGenres ] = useState([])
   const [userMovieData, setUserMovieData ] = useState([])
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('')
   //Pagination
   const [currentPage,setCurrentPage ] = useState(1)
   const [totalPages, setTotalPages] = useState()
@@ -34,10 +34,13 @@ const MovieLibrary = () => {
     try{
       const res = await fetch(url , options)
       const data = await res.json()
+      console.log(data)
       setMovies(data.results)
       setTotalPages(data.total_pages)
+      toast(`Your Search For ${searchQuery} returned ${data.total_pages} Pages from ${data.total_results} results`,{position: "top-center",autoClose: 5000,
+      hideProgressBar: false,})
     } catch (err) {
-      console.log(err)
+      console.log(err) 
     }
   }
   useEffect(() => {
@@ -88,6 +91,15 @@ const MovieLibrary = () => {
     setSearchQuery(query); // Update the search query
     setCurrentPage(1); // Reset to the first page
   };
+
+  //sort:
+  // Name
+  // year
+  // score
+  // //Filter:
+  // Genres
+  // movieSeen
+  // release year
 
   return (
     <div className="movie-library-section">
