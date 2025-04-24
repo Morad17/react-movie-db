@@ -100,6 +100,7 @@ const MovieLibrary = () => {
   // Genres
   // movieSeen
   // release year
+  //Actors
 
   return (
     <div className="movie-library-section">

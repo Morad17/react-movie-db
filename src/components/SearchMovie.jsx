@@ -14,7 +14,7 @@ const SearchMovie = ({movieSearch}) => {
 
     return (
         <div className="search-movie">
-            <input className="search-input" type="text" value={searchQuery} onChange={(e)=>  setSearchQuery(e.target.value)} />
+            <input className="search-input"placeholder="Search A Movie" type="text" value={searchQuery} onChange={(e)=>  setSearchQuery(e.target.value)} />
             <button onClick={handleSearch} className="search-btn" type="submit">Search</button>
         </div>
     )}
