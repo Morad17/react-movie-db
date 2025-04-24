@@ -10,7 +10,7 @@ body{
     background-color: $gray;
 }
 .home-section,.user-page-section, .all-movies{
-    padding: 0 20vw;
+    padding: 0 21vw;
 }
 .main-nav{
     display: flex;
@@ -166,7 +166,6 @@ body{
         border: 2px solid $silver;
         border-radius: 10px;
         position: relative;
-        min-height: 36vh;
         margin: 10px 0;
         background-color: $turquoise;
         color: #c3c3c3;
@@ -180,6 +179,7 @@ body{
             padding: 5px;
             font-size: 20px;
             margin: 0;
+            position: absolute;
         }
         .header-left{
             display: flex;
@@ -222,7 +222,6 @@ body{
         $card-fade-amount:10%;
         .movie-image{ 
             width: 100%;
-            position: absolute;
             border-radius: 5px;
             background-color: #837960;
             mask-image: linear-gradient(

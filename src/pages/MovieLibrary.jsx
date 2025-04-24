@@ -37,8 +37,10 @@ const MovieLibrary = () => {
       console.log(data)
       setMovies(data.results)
       setTotalPages(data.total_pages)
+     if(searchQuery){
       toast(`Your Search For ${searchQuery} returned ${data.total_pages} Pages from ${data.total_results} results`,{position: "top-center",autoClose: 5000,
-      hideProgressBar: false,})
+        hideProgressBar: false,})
+     }
     } catch (err) {
       console.log(err) 
     }
