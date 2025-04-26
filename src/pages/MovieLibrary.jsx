@@ -14,7 +14,10 @@ const MovieLibrary = () => {
   const [movies, setMovies ] = useState([])
   const [genres, setGenres ] = useState([])
   const [userMovieData, setUserMovieData ] = useState([])
+  // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState('')
+  const [sortOption, setSortOption ] = useState('popularity.desc')
+  const [sorting, setSorting] = useState(false)
   //Pagination
   const [currentPage,setCurrentPage ] = useState(1)
   const [totalPages, setTotalPages] = useState()
@@ -30,7 +33,7 @@ const MovieLibrary = () => {
     };
     const url = searchQuery
         ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-        : `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage}`;
+        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&sort_by=${sortOption}`
     try{
       const res = await fetch(url , options)
       const data = await res.json()
@@ -47,7 +50,7 @@ const MovieLibrary = () => {
   }
   useEffect(() => {
   fetchMovies()
-  },[searchQuery, currentPage])
+  },[searchQuery, currentPage, sortOption])
 
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
@@ -94,10 +97,11 @@ const MovieLibrary = () => {
     setCurrentPage(1); // Reset to the first page
   };
 
-  //sort:
-  // Name
-  // year
-  // score
+  const sortHandler = (e) => {
+    setSortOption(e.target.value)
+
+  }
+
   // //Filter:
   // Genres
   // movieSeen
@@ -105,42 +109,85 @@ const MovieLibrary = () => {
   //Actors
 
   return (
-    <div className="movie-library-section">
+    <div className="movie-library">
       <section className="movie-library-header">
-        <div className="movie-left">
+        <div className="movie-header-left">
           <div className="info-div">
             <h3>Get Started</h3>
             <p>Click on the movie for more info </p>
-            <p> <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to watch list.
-             Click again to remove from list</p>
-            <p><BiHeartCircle /> Click the Like icon to add movie to liked list. Click again to 
-            remove.</p>
-           
-          
+            <p>
+              <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to
+              watch list. Click again to remove from list
+            </p>
+            <p>
+              <BiHeartCircle /> Click the Like icon to add movie to liked list.
+              Click again to remove.
+            </p>
           </div>
+          <p className="filter-btn">
+            Filter
+          </p>
         </div>
-        <div className="movie-center">
+        <div className="movie-header-center">
           <h2>All Movies</h2>
           <div className="search-div">
-            <SearchMovie movieSearch={handleMovieSearch}/>
+            <SearchMovie movieSearch={handleMovieSearch} />
           </div>
         </div>
-        <div className="movie-right">
-          <a href="" className="sort-btn">Sort</a>
-          <a href="" className="filter-btn">Filter</a>
+        <div className="movie-header-right">
+          <a onClick={()=> setSorting(!sorting)} className="sort-btn">
+            Sort
+          </a>
         </div>
       </section>
-      <div className="all-movies">
-        { movies.map((movie, key)=> {
-          const userMovie = userMovieData?.find((userMovie)=> userMovie.movieName === movie.title) || null
-          return <MovieCard userData={userMovie} key={key} movie={movie} genres={genres}/>
+      <section className="movie-library-content">
+        <div className="movie-content-left"></div>
+        <div className="all-movies">
+          {movies.map((movie, key) => {
+            const userMovie =
+              userMovieData?.find(
+                (userMovie) => userMovie.movieName === movie.title
+              ) || null;
+            return (
+              <MovieCard
+                userData={userMovie}
+                key={key}
+                movie={movie}
+                genres={genres}
+              />
+            );
           })}
+
+          <Pagination paginate={paginate} totalPages={totalPages} />
+        </div>
+        <div className="movie-content-right">
+          {
+            sorting && 
+            <div className="sort-function">
+            <p>Sort Results By:</p>
+              <select id="sort-element" onChange={sortHandler}>
+                <option className="sort-options" value="popularity.desc" >
+                  Popularity Descending
+                </option>
+                <option className="sort-options" value="popularity.asc">Popularity Ascending</option>
+                <option className="sort-options" value="vote_average.desc">Rating Descending</option>
+                <option className="sort-options" value="vote_average.asc">Rating Ascending</option>
+                <option className="sort-options" value="release_date.desc">
+                  Release Date Descending
+                </option>
+                <option className="sort-options" value="releas_-date.asc">
+                  Release Date Ascending
+                </option>
+                <option className="sort-options" value="title.asc">Title (A-Z)</option>
+                <option className="sort-options" value="title.desc">Title (Z-A)</option>
+              </select>
+          </div>
+          }
           
-        <Pagination paginate={paginate} totalPages={totalPages}/>
-      </div>
-      
+        </div>
+      </section>
     </div>
-  )
+  );
 }
 
 export default MovieLibrary 
