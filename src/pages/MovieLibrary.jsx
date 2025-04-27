@@ -1,12 +1,14 @@
 import React,{useEffect, useState} from 'react'
-import MovieCard from '../components/MovieCard';
 import { ToastContainer, toast } from "react-toastify";
 import axios from 'axios';
+import Select from 'react-select' 
+
+import MovieCard from '../components/MovieCard';
 import Pagination from '../components/Pagination';
-import { BsBookmarkStarFill } from 'react-icons/bs';
-import { BiHeartCircle } from 'react-icons/bi';
 import SearchMovie from '../components/SearchMovie';
 
+import { BsBookmarkStarFill } from 'react-icons/bs';
+import { BiHeartCircle } from 'react-icons/bi';
 
 const MovieLibrary = () => {
 
@@ -101,6 +103,48 @@ const MovieLibrary = () => {
     setSortOption(e.target.value)
 
   }
+  const selectOptions = [
+    { label: "Popularity Ascending", value: "popularity.asc" },
+    { label: "Popularity Descending", value: "popularity.desc" },
+    { label: "Vote Average Ascending", value: "vote_average.asc" },
+    { label: "Vote Average Descending", value: "vote_average.desc" },
+    { label: "Release Date Ascending", value: "releas_-date.asc" },
+    { label: "Release Data Descending", value: "release_date.desc" },
+    { label: "Title (A-Z)", value: "title.desc" },
+    { label: "Title (Z -A)", value: "title.asc" },
+  ];
+  const selectStyles = {
+    control: (baseStyles, state) => ({
+      ...baseStyles,
+      backgroundColor: '#c3c3c3',
+      margin: '0',
+      cursor: 'pointer',
+      borderColor: state.isFocused ? '#12504A' : baseStyles.borderColor,
+      boxShadow: state.isFocused ? 'none' : 'none',
+    '&:hover': {
+      borderColor: '#12504A', 
+    },
+      outlineColor: state.isFocused && '#12504A',
+      '&:hover':{backgroundColor: '12504A'},
+    }),
+    option: (baseStyles, state) => ({
+      ...baseStyles,
+      backgroundColor: state.isFocused ? '#12504A' : '#c3c3c3',
+      '&:hover': {backgroundColor: '12504A'},
+      cursor: 'pointer',
+      color: 'black'
+    }),
+    menu: (baseStyles) => ({
+      ...baseStyles,
+      backgroundColor: '#c3c3c3',
+      color: 'black',
+      zIndex: 5,
+    }),
+    dropdownIndicator: (baseStyles) => ({
+      ...baseStyles,
+      color: 'black',
+    })
+  };
 
   // //Filter:
   // Genres
@@ -165,22 +209,13 @@ const MovieLibrary = () => {
             sorting && 
             <div className="sort-function">
             <p>Sort Results By:</p>
-              <select id="sort-element" onChange={sortHandler}>
-                <option className="sort-options" value="popularity.desc" >
-                  Popularity Descending
-                </option>
-                <option className="sort-options" value="popularity.asc">Popularity Ascending</option>
-                <option className="sort-options" value="vote_average.desc">Rating Descending</option>
-                <option className="sort-options" value="vote_average.asc">Rating Ascending</option>
-                <option className="sort-options" value="release_date.desc">
-                  Release Date Descending
-                </option>
-                <option className="sort-options" value="releas_-date.asc">
-                  Release Date Ascending
-                </option>
-                <option className="sort-options" value="title.asc">Title (A-Z)</option>
-                <option className="sort-options" value="title.desc">Title (Z-A)</option>
-              </select>
+              <Select 
+                options={selectOptions}
+                classNamePrefix={"react-select"}
+                styles={selectStyles}
+                value={selectOptions.find((option) => option.value === sortOption)}
+                onChange={(selectedOption) => setSortOption(selectedOption.value)}
+              />
           </div>
           }
           

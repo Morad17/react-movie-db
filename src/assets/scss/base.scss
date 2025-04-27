@@ -147,6 +147,10 @@ body{
             background-color: $turquoise;
         }
     }
+    .react-select__input {
+        color: transparent !important;
+        cursor: pointer !important;
+      }
     .search-movie{
         width: 100%;
     }
