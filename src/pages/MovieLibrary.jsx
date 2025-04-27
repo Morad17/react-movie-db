@@ -6,9 +6,12 @@ import Select from 'react-select'
 import MovieCard from '../components/MovieCard';
 import Pagination from '../components/Pagination';
 import SearchMovie from '../components/SearchMovie';
+import GenreColors  from '../components/GenreColors';
 
 import { BsBookmarkStarFill } from 'react-icons/bs';
 import { BiHeartCircle } from 'react-icons/bi';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const MovieLibrary = () => {
 
@@ -20,6 +23,8 @@ const MovieLibrary = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption ] = useState('popularity.desc')
   const [sorting, setSorting] = useState(false)
+  const [genreSearch, setGenreSearch] = useState('')
+  const [yearSearch, setYearSearch] = useState()
   //Pagination
   const [currentPage,setCurrentPage ] = useState(1)
   const [totalPages, setTotalPages] = useState()
@@ -68,6 +73,7 @@ const MovieLibrary = () => {
       const res = await fetch(url , options)
       const data = await res.json()
       setGenres(data.genres)
+      console.log(data.genres)
     } catch (err) {
       console.log(err)
     }
@@ -147,7 +153,6 @@ const MovieLibrary = () => {
   };
 
   // //Filter:
-  // Genres
   // movieSeen
   // release year
   //Actors
@@ -185,7 +190,30 @@ const MovieLibrary = () => {
         </div>
       </section>
       <section className="movie-library-content">
-        <div className="movie-content-left"></div>
+        <div className="movie-content-left">
+          <div className="genre-filter">
+            <p class="filter-title">Filter By Genre:</p>
+            <div className="all-genres">
+              {
+                genres.map((g, key)=> {
+                 return <p className="movie-genre" onClick={() => setGenreSearch(g.id)} key={key}>{g.name}</p>
+              })
+             }
+            </div>
+            
+          </div>
+          <div className="year-filter">
+            <p class="filter-title">Filter By Year:</p>
+          <DatePicker
+          placeholderText="yyyy"
+            selected={yearSearch}
+            onChange={(date) => setYearSearch(date)}
+            showYearPicker
+            dateFormat="yyyy"
+          />
+
+          </div>
+        </div>
         <div className="all-movies">
           {movies.map((movie, key) => {
             const userMovie =

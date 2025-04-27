@@ -146,18 +146,20 @@ const MovieCard = ({
                 </div>
             </div>
                 <img src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}`: placeholder} alt="" className="movie-image" />
-                <div className="vote-group">
-                
-                <p className="vote-number"><GiRoundStar />{vote_average.toFixed(1)}</p>
-            </div>
             </div>
             <div className="movie-footer">
-            
-            
-            <h3 className="movie-title">{title}</h3>
-            <div className="genre-group">
-                <p className="movie-genres">{displayGenres()}</p>                    
-        </div>
+            <div className="group-row">
+               <h3 className="movie-title">{title}</h3>
+                <div className="vote-group">
+                    <p className="vote-number"><GiRoundStar />{vote_average.toFixed(1)}</p>
+                </div>
+            </div>
+            <p className="year-release">
+                {release_date.slice(0,4)}
+            </p>
+             <div className="genre-group">
+                    <p className="movie-genres">{displayGenres()}</p>                    
+                </div>
     </div>
     
  </div>
