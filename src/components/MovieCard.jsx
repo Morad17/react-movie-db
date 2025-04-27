@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TiStarFullOutline } from "react-icons/ti";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
+import { GiRoundStar } from "react-icons/gi";
 
 import placeholder from '../assets/scss/images/poster-placeholder.png'
 
@@ -137,7 +138,7 @@ const MovieCard = ({
 
   return (
     <div className="movie-card">
-        <div className="movie-cotent">
+        <div className="movie-content">
             <div className="movie-header">
                 <div className="header-left">
                     <BsBookmarkStarFill id="bookmarkIcon" className={`save-svg ${movieInfo.watchList ? 'bookmarked': '' }`} onClick={()=> !isDisabled && addToWatchList({id,title})}/>
@@ -145,12 +146,15 @@ const MovieCard = ({
                 </div>
             </div>
                 <img src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}`: placeholder} alt="" className="movie-image" />
+                <div className="vote-group">
+                
+                <p className="vote-number"><GiRoundStar />{vote_average.toFixed(1)}</p>
+            </div>
             </div>
             <div className="movie-footer">
+            
+            
             <h3 className="movie-title">{title}</h3>
-            <div className="vote-group">
-                <p className="vote-number">{vote_average.toFixed(1)}/10</p>
-            </div>
             <div className="genre-group">
                 <p className="movie-genres">{displayGenres()}</p>                    
         </div>
