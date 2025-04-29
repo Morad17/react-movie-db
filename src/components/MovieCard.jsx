@@ -55,11 +55,11 @@ const MovieCard = ({
 
 
     const displayGenres = () => {
-        const genreNames = genre_ids.map(id => {
+        const genreNames = genre_ids?.map(id => {
             const genre = genres.find(gen => gen.id === id);
             return genre ? genre.name : null;
         }).filter(name => name !== null); // Filter out any null values
-        return genreNames.join(', '); // Join the genre names with a comma
+        return genreNames?.join(', '); // Join the genre names with a comma
     };
     const addToWatchList = async ({id,title}) => { 
         if (loggedUser){
@@ -151,11 +151,11 @@ const MovieCard = ({
             <div className="group-row">
                <h3 className="movie-title">{title}</h3>
                 <div className="vote-group">
-                    <p className="vote-number"><GiRoundStar />{vote_average.toFixed(1)}</p>
+                    <p className="vote-number"><GiRoundStar />{vote_average?.toFixed(1)}</p>
                 </div>
             </div>
             <p className="year-release">
-                {release_date.slice(0,4)}
+                {release_date?.slice(0,4)}
             </p>
              <div className="genre-group">
                     <p className="movie-genres">{displayGenres()}</p>                    

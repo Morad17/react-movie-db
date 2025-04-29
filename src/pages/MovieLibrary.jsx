@@ -24,6 +24,9 @@ const MovieLibrary = () => {
   const [sortOption, setSortOption ] = useState('popularity.desc')
   const [sorting, setSorting] = useState(false)
   const [filters, setFilters] = useState(false)
+  const [allFilters, setAllFilters] = useState({
+    genres:'',year:'2020',cast:'',genres:''
+  })
   const [genreSearch, setGenreSearch] = useState('')
   const [yearSearch, setYearSearch] = useState()
   //Pagination
@@ -41,7 +44,7 @@ const MovieLibrary = () => {
     };
     const url = searchQuery
         ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&sort_by=${sortOption}`
+        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.primary_release__year}&sort_by=${sortOption}&with_cast=${allFilters.cast}&with_genres=${allFilters.genres}`
     try{
       const res = await fetch(url , options)
       const data = await res.json()
@@ -74,7 +77,6 @@ const MovieLibrary = () => {
       const res = await fetch(url , options)
       const data = await res.json()
       setGenres(data.genres)
-      console.log(data.genres)
     } catch (err) {
       console.log(err)
     }
@@ -106,10 +108,11 @@ const MovieLibrary = () => {
     setCurrentPage(1); // Reset to the first page
   };
 
-  const sortHandler = (e) => {
-    setSortOption(e.target.value)
+  const filterSearch = () => {
 
   }
+
+  ///Style Components for Select /// 
   const selectOptions = [
     { label: "Popularity Ascending", value: "popularity.asc" },
     { label: "Popularity Descending", value: "popularity.desc" },
@@ -179,7 +182,6 @@ const MovieLibrary = () => {
             <SearchMovie movieSearch={handleMovieSearch} />
           </div>
         </div>
-{/*--------------Sort---------*/}
         <div className="movie-header-right">
           <a onClick={()=> setSorting(!sorting)} className="sort-btn">
             Sort
@@ -192,39 +194,43 @@ const MovieLibrary = () => {
         {
           filters && 
           <div className="filters-function">
-          <div className="genre-filter">
-            <p class="filter-title">By Genre:</p>
-            <div className="all-genres">
-              {
-                genres.map((g, key)=> {
-                 return <p className="movie-genre" onClick={() => setGenreSearch(g.id)} key={key}>{g.name}</p>
-              })
-             }
+            <div className="genre-filter">
+              <p className="filter-title">By Genre:</p>
+              <div className="all-genres">
+                {
+                  genres.map((g, key)=> {
+                  return <p className="movie-genre" onClick={() => setGenreSearch(g.id)} key={key}>{g.name}</p>
+                })
+              }
+              </div>
+              
+            </div>
+            <div className="year-filter">
+              <p className="filter-title">By Year:</p>
+            <DatePicker
+            placeholderText="yyyy"
+              selected={yearSearch}
+              onChange={(date) => setYearSearch(date)}
+              showYearPicker
+              dateFormat="yyyy"
+            />
+
+            </div>
+            <div className="seen-filter">
+              <p className="filter-title">
+                By Seen Movies:
+              </p>
+              <a className="seen-filter-btn" href="">Filter</a>
+            </div>
+            <div className="actor-filter">
+              <div className="filter-title">
+                By Actor / Actress 
+              </div>
+            </div>
+            <div className="filter-btn-div">
+              <a className="filter-btn" onClick={()=> filterSearch()}>Add Filters</a>
             </div>
             
-          </div>
-          <div className="year-filter">
-            <p class="filter-title">By Year:</p>
-          <DatePicker
-          placeholderText="yyyy"
-            selected={yearSearch}
-            onChange={(date) => setYearSearch(date)}
-            showYearPicker
-            dateFormat="yyyy"
-          />
-
-          </div>
-          <div className="seen-filter">
-            <p className="filter-title">
-              By Seen Movies:
-            </p>
-            <a className="seen-filter-btn" href="">Filter</a>
-          </div>
-          <div className="actor-filter">
-            <div className="filter-title">
-              By Actor / Actress 
-            </div>
-          </div>
           </div>
               }
         </div>
@@ -246,6 +252,7 @@ const MovieLibrary = () => {
 
           <Pagination paginate={paginate} totalPages={totalPages} />
         </div>
+{/*--------------Sort---------*/}
         <div className="movie-content-right">
           {
             sorting && 

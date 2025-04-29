@@ -57,7 +57,8 @@ app.post('/create-user',(req,res)=> {
         watchList BOOLEAN DEFAULT FALSE,
         likedList BOOLEAN DEFAULT FALSE,
         review TEXT,
-        rating INT CHECK (rating >= 1 AND rating <= 10)
+        rating INT CHECK (rating >= 1 AND rating <= 10),
+        watched BOOLEAN DEFAULT FALSE,
         poster_path TEXT,
     )`
 
