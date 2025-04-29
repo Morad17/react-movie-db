@@ -23,6 +23,7 @@ const MovieLibrary = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption ] = useState('popularity.desc')
   const [sorting, setSorting] = useState(false)
+  const [filters, setFilters] = useState(false)
   const [genreSearch, setGenreSearch] = useState('')
   const [yearSearch, setYearSearch] = useState()
   //Pagination
@@ -152,11 +153,6 @@ const MovieLibrary = () => {
     })
   };
 
-  // //Filter:
-  // movieSeen
-  // release year
-  //Actors
-
   return (
     <div className="movie-library">
       <section className="movie-library-header">
@@ -173,9 +169,9 @@ const MovieLibrary = () => {
               Click again to remove.
             </p>
           </div>
-          <p className="filter-btn">
+          <a onClick={()=> setFilters(!filters)} className="filter-btn">
             Filter
-          </p>
+          </a>
         </div>
         <div className="movie-header-center">
           <h2>All Movies</h2>
@@ -183,6 +179,7 @@ const MovieLibrary = () => {
             <SearchMovie movieSearch={handleMovieSearch} />
           </div>
         </div>
+{/*--------------Sort---------*/}
         <div className="movie-header-right">
           <a onClick={()=> setSorting(!sorting)} className="sort-btn">
             Sort
@@ -190,9 +187,13 @@ const MovieLibrary = () => {
         </div>
       </section>
       <section className="movie-library-content">
-        <div className="movie-content-left">
+{/*-------------Filters---------*/}
+      <div className="movie-content-left">
+        {
+          filters && 
+          <div className="filters-function">
           <div className="genre-filter">
-            <p class="filter-title">Filter By Genre:</p>
+            <p class="filter-title">By Genre:</p>
             <div className="all-genres">
               {
                 genres.map((g, key)=> {
@@ -203,7 +204,7 @@ const MovieLibrary = () => {
             
           </div>
           <div className="year-filter">
-            <p class="filter-title">Filter By Year:</p>
+            <p class="filter-title">By Year:</p>
           <DatePicker
           placeholderText="yyyy"
             selected={yearSearch}
@@ -213,6 +214,19 @@ const MovieLibrary = () => {
           />
 
           </div>
+          <div className="seen-filter">
+            <p className="filter-title">
+              By Seen Movies:
+            </p>
+            <a className="seen-filter-btn" href="">Filter</a>
+          </div>
+          <div className="actor-filter">
+            <div className="filter-title">
+              By Actor / Actress 
+            </div>
+          </div>
+          </div>
+              }
         </div>
         <div className="all-movies">
           {movies.map((movie, key) => {

@@ -179,10 +179,12 @@ body{
         width: 80%;
         margin: 10px 0;
     }
-    .genre-filter,.year-filter{
+    .genre-filter,.year-filter,.seen-filter,.actor-filter{
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
+        margin: 20px 0;
     }
     .all-genres{
         display: flex;
@@ -202,6 +204,14 @@ body{
         transform: scale(1.01);
         color: goldenrod;
       }
+    .seen-filter-btn{
+        width: 50%;
+        text-decoration: none;
+        padding: 10px 5px;
+        color: white;
+        background-color: goldenrod;
+        border-radius: 5px;text-align: center;
+    }
     .info-div{
         background: radial-gradient(#30938b,#12504A);
         color: white;
