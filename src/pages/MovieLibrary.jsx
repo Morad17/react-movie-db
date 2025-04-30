@@ -110,7 +110,7 @@ const MovieLibrary = () => {
   };
 
   const filterSearch = () => {
-    if () {
+    if (allFilters.year, allFilters.cast,allFilters.genre) {
       setFilterQuery(true)
     }
   }
