@@ -21,11 +21,12 @@ const MovieLibrary = () => {
   const [userMovieData, setUserMovieData ] = useState([])
   // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState('')
+  const [filterQuery, setFilterQuery] = useState('')
   const [sortOption, setSortOption ] = useState('popularity.desc')
   const [sorting, setSorting] = useState(false)
   const [filters, setFilters] = useState(false)
   const [allFilters, setAllFilters] = useState({
-    genres:'',year:'2020',cast:'',genres:''
+    year:'',cast:'',genres:''
   })
   const [genreSearch, setGenreSearch] = useState('')
   const [yearSearch, setYearSearch] = useState()
@@ -44,11 +45,11 @@ const MovieLibrary = () => {
     };
     const url = searchQuery
         ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.primary_release__year}&sort_by=${sortOption}&with_cast=${allFilters.cast}&with_genres=${allFilters.genres}`
+        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_cast=${allFilters.cast}&with_genres=${allFilters.genres}`
     try{
       const res = await fetch(url , options)
       const data = await res.json()
-      console.log(data)
+      console.log(data, url)
       setMovies(data.results)
       setTotalPages(data.total_pages)
      if(searchQuery){
@@ -61,7 +62,7 @@ const MovieLibrary = () => {
   }
   useEffect(() => {
   fetchMovies()
-  },[searchQuery, currentPage, sortOption])
+  },[searchQuery, currentPage, sortOption, filterQuery])
 
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
@@ -109,7 +110,9 @@ const MovieLibrary = () => {
   };
 
   const filterSearch = () => {
-
+    if () {
+      setFilterQuery(true)
+    }
   }
 
   ///Style Components for Select /// 
