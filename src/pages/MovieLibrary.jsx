@@ -26,10 +26,11 @@ const MovieLibrary = () => {
   const [sorting, setSorting] = useState(false)
   const [filters, setFilters] = useState(false)
   const [allFilters, setAllFilters] = useState({
-    year:'',cast:'',genres:''
+    year:'',cast:'',genres:[]
   })
   const [genreSearch, setGenreSearch] = useState('')
   const [yearSearch, setYearSearch] = useState()
+  const [castSearch, setCastSearch] = useState()
   //Pagination
   const [currentPage,setCurrentPage ] = useState(1)
   const [totalPages, setTotalPages] = useState()
@@ -45,7 +46,7 @@ const MovieLibrary = () => {
     };
     const url = searchQuery
         ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_cast=${allFilters.cast}&with_genres=${allFilters.genres}`
+        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_genres=${allFilters.genres}`
     try{
       const res = await fetch(url , options)
       const data = await res.json()
@@ -108,9 +109,17 @@ const MovieLibrary = () => {
     setSearchQuery(query); // Update the search query
     setCurrentPage(1); // Reset to the first page
   };
+  const genreFilterHandler = (id) => {
+    setAllFilters((prev) => {
+      const updatedGenres = prev.genres.includes(id) ?
+      prev.genres.filter((genreId) => genreId !== id):
+      [...prev.genres, id]
+      return {...prev ,genres: updatedGenres}
+    })
+  }
 
   const filterSearch = () => {
-    if (allFilters.year, allFilters.cast,allFilters.genre) {
+    if (allFilters.year, allFilters.cast,allFilters.genres) {
       setFilterQuery(true)
     }
   }
@@ -175,9 +184,6 @@ const MovieLibrary = () => {
               Click again to remove.
             </p>
           </div>
-          <a onClick={()=> setFilters(!filters)} className="filter-btn">
-            Filter
-          </a>
         </div>
         <div className="movie-header-center">
           <h2>All Movies</h2>
@@ -186,14 +192,14 @@ const MovieLibrary = () => {
           </div>
         </div>
         <div className="movie-header-right">
-          <a onClick={()=> setSorting(!sorting)} className="sort-btn">
-            Sort
-          </a>
         </div>
       </section>
       <section className="movie-library-content">
 {/*-------------Filters---------*/}
       <div className="movie-content-left">
+        <p onClick={()=> setFilters(!filters)} className="filter-btn">
+            Filter
+        </p>
         {
           filters && 
           <div className="filters-function">
@@ -202,7 +208,8 @@ const MovieLibrary = () => {
               <div className="all-genres">
                 {
                   genres.map((g, key)=> {
-                  return <p className="movie-genre" onClick={() => setGenreSearch(g.id)} key={key}>{g.name}</p>
+                    const isSelected = allFilters.genres.includes(g.id)
+                  return <p className={`movie-genre ${isSelected ? 'selectedGenre': ''}`} onClick={() => genreFilterHandler(g.id)} key={key}>{g.name}</p>
                 })
               }
               </div>
@@ -223,15 +230,10 @@ const MovieLibrary = () => {
               <p className="filter-title">
                 By Seen Movies:
               </p>
-              <a className="seen-filter-btn" href="">Filter</a>
-            </div>
-            <div className="actor-filter">
-              <div className="filter-title">
-                By Actor / Actress 
-              </div>
+              <p className="seen-filter-btn">Filter</p>
             </div>
             <div className="filter-btn-div">
-              <a className="filter-btn" onClick={()=> filterSearch()}>Add Filters</a>
+              <p className="filter-submit-btn" onClick={()=> filterSearch()}>Filter Movies</p>
             </div>
             
           </div>
@@ -257,6 +259,9 @@ const MovieLibrary = () => {
         </div>
 {/*--------------Sort---------*/}
         <div className="movie-content-right">
+          <p onClick={()=> setSorting(!sorting)} className="sort-btn">
+            Sort
+          </p>
           {
             sorting && 
             <div className="sort-function">
