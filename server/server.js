@@ -54,7 +54,7 @@ app.post('/create-user',(req,res)=> {
         id INT AUTO_INCREMENT PRIMARY KEY,
         movieId INT UNIQUE,
         movieName TEXT,
-        watchList BOOLEAN DEFAULT FALSE,
+        bookmarkList BOOLEAN DEFAULT FALSE,
         likedList BOOLEAN DEFAULT FALSE,
         review TEXT,
         rating INT CHECK (rating >= 1 AND rating <= 10),
@@ -123,7 +123,7 @@ app.post('/getUserTable',(req,res)=>{
 ////Add Movie To Database
 
 //Watch List
-app.post('/addTowatchList',(req,res) => {
+app.post('/addToBookmarkList',(req,res) => {
     const queryTable = "SELECT tableName FROM users WHERE `username` = ?"
     const valTable = [
         req.body.username,
@@ -133,18 +133,18 @@ app.post('/addTowatchList',(req,res) => {
         if (err) return res.json("error",err)
             if (data.length > 0) {
                 const tableName = data[0].tableName
-                const watchQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watchList)VALUE (?, ?, ?,?)
+                const bookmarkQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,bookmarkList)VALUE (?, ?, ?,?)
                 ON DUPLICATE KEY UPDATE
-                watchList = VALUES(watchList)
+                bookmarkList = VALUES(bookmarkList)
                 `
-                const valWatch = [
+                const valBookmark = [
                     req.body.movieId,
                     req.body.movieName,
                     req.body.poster_path,
-                    req.body.watchList
+                    req.body.bookmarkList
                 ]
-                ///Add To Users Table watchList
-                mdb.query(watchQuery,[...valWatch], (err,data) => {
+                ///Add To Users Table bookmarkList
+                mdb.query(bookmarkQuery,[...valBookmark], (err,data) => {
                     if (err) return console.log(err, "error whilst pushing to table")
                     if (data.length > 0){
                         return res.json(data) 
@@ -175,7 +175,7 @@ app.post('/addToLikedList',(req,res) => {
                     req.body.poster_path,
                     req.body.likedList  
                 ]
-                ///Add To Users Table watchList
+                ///Add To Users Table bookmarkList
                 mdb.query(likeQuery,[...valLike], (err,data) => {
                     if (err) return console.log(err, "error whilst pushing to table")
                     if (data.length > 0){

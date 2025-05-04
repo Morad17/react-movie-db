@@ -21,7 +21,7 @@ const MovieLibrary = () => {
   const [userMovieData, setUserMovieData ] = useState([])
   // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterQuery, setFilterQuery] = useState('')
+  const [filterTrigger, setFilterTrigger] = useState(0)
   const [sortOption, setSortOption ] = useState('popularity.desc')
   const [sorting, setSorting] = useState(false)
   const [filters, setFilters] = useState(false)
@@ -29,7 +29,11 @@ const MovieLibrary = () => {
     year:'',cast:'',genres:[]
   })
   const [genreSearch, setGenreSearch] = useState('')
+  const [watchedFilter, setWatchedFilter] = useState(true)
+  //DatePicker
   const [yearSearch, setYearSearch] = useState()
+  const [yearChecked,SetYearChecked] = useState(false)
+
   const [castSearch, setCastSearch] = useState()
   //Pagination
   const [currentPage,setCurrentPage ] = useState(1)
@@ -50,7 +54,6 @@ const MovieLibrary = () => {
     try{
       const res = await fetch(url , options)
       const data = await res.json()
-      console.log(data, url)
       setMovies(data.results)
       setTotalPages(data.total_pages)
      if(searchQuery){
@@ -63,7 +66,7 @@ const MovieLibrary = () => {
   }
   useEffect(() => {
   fetchMovies()
-  },[searchQuery, currentPage, sortOption, filterQuery])
+  },[searchQuery, currentPage, sortOption, filterTrigger,watchedFilter])
 
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
@@ -119,8 +122,8 @@ const MovieLibrary = () => {
   }
 
   const filterSearch = () => {
-    if (allFilters.year, allFilters.cast,allFilters.genres) {
-      setFilterQuery(true)
+    if (allFilters.year || allFilters.cast || allFilters.genres) {
+      setFilterTrigger(prev => prev + 1)
     }
   }
 
@@ -217,20 +220,36 @@ const MovieLibrary = () => {
             </div>
             <div className="year-filter">
               <p className="filter-title">By Year:</p>
-            <DatePicker
-            placeholderText="yyyy"
-              selected={yearSearch}
-              onChange={(date) => setYearSearch(date)}
-              showYearPicker
-              dateFormat="yyyy"
-            />
+              <div className="year-picker">
+                <DatePicker
+                  placeholderText="yyyy"
+                    selected={yearSearch}
+                    onChange={(date) => {
+                      setYearSearch(date)
+                      setAllFilters(prev =>({
+                      ...prev, year:date ? date.getFullYear() : ''
+                      }))
+                      SetYearChecked(true)
+                  }}
+                  showYearPicker
+                  dateFormat="yyyy"
+                />
+                <p className="year-reset-btn" onClick={() => setYearSearch()}>
+                  Reset
+                </p>
+               
+              </div>
 
             </div>
-            <div className="seen-filter">
+            <div className="watched-filter">
               <p className="filter-title">
-                By Seen Movies:
+                By watched Movies:
               </p>
-              <p className="seen-filter-btn">Filter</p>
+              <div className="watched-checkbox">
+                <label htmlFor="">Include Movies Watched</label>
+                <input type="checkbox" checked={watchedFilter} onChange={() => setWatchedFilter(!watchedFilter)}/>
+              </div>
+              
             </div>
             <div className="filter-btn-div">
               <p className="filter-submit-btn" onClick={()=> filterSearch()}>Filter Movies</p>
@@ -251,6 +270,7 @@ const MovieLibrary = () => {
                 key={key}
                 movie={movie}
                 genres={genres}
+                watchedFilter={watchedFilter}
               />
             );
           })}

@@ -3,6 +3,7 @@ $turquoise: #12504A;
 $silver: #c3c3c3;
 $gray:#bebebe;
 $red:#501218;
+$yellow: #d7ca4f;
 
 /*------Home Layout-------*/
 body{
@@ -37,6 +38,12 @@ body{
 }
 .text-centered{
     text-align: center;
+}
+.bookmarked{
+    color:$yellow;
+}
+.liked{
+color: $yellow;
 }
 /*-------------Home Section------------*/
 .home-section{
@@ -185,17 +192,39 @@ body{
         width: 80%;
         margin: 10px 0;
     }
-    .genre-filter,.year-filter,.seen-filter,.actor-filter{
+    .genre-filter,.year-filter,.watched-filter,.actor-filter{
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         margin: 20px 0;
     }
+    .watched-checkbox{
+        width: 70%;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid;
+        padding: 5px;
+        border-radius: 5px;
+        background: $red;
+        color: white;
+        align-items: center;
+        label{
+            font-size: 18px;
+            padding-left: 10px;
+        }
+        input[type="checkbox"]{
+            accent-color: #12504A;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    }
     .all-genres{
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        width: 80%;
     }
     .movie-genre{
         padding: 10px;
@@ -211,15 +240,54 @@ body{
     .movie-genre:hover {
         box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
         transform: scale(1.01);
-        color: goldenrod;
+        color: $yellow;
       }
-    .seen-filter-btn{
+    .watched-filter-btn{
         width: 50%;
         text-decoration: none;
         padding: 10px 5px;
         color: white;
         background-color: $red;
         border-radius: 5px;text-align: center;
+    }
+    //##### Year Picker //
+    .react-datepicker__year-wrapper {
+        justify-content: space-around;
+    }
+    .react-datepicker__year-text {
+        background-color: $turquoise;
+        font-size: 14px;
+        margin: 3px;
+        padding: 5px;
+    }
+    .year-picker{
+        display: flex;
+        align-items: center;
+        width: 70%;
+        border: 1px solid;
+        border-radius: 5px;
+        background: $red;
+        color: white;
+    }
+    .react-datepicker__input-container input{
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        padding: 5px 0;
+        font-weight: bold;
+        background-color: $red;
+        color: transparent;
+        cursor: pointer;
+    }
+    .year-reset-btn{
+        background-color: #12504A;
+        padding: 5px 20px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
     }
     .info-div{
         background: radial-gradient(#30938b,#12504A);
@@ -264,12 +332,9 @@ body{
         margin: 10px  0;
         cursor: pointer;
       }
-}
-.bookmarked{
-        color:$red;
-}
-.liked{
-    color: rgb(189, 18, 18);
+    .watched-card{
+        filter: brightness(0.4);
+    }
 }
 /*-------Movie Card -----*/
     .Toastify{
