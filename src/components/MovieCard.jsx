@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router';
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -151,9 +152,11 @@ const MovieCard = ({
                         <BiHeartCircle id="likeIcon"className={`heart-svg ${movieInfo.likedList ? 'liked': '' }`} onClick={()=> !isDisabled && addToLikedList({id,title})}/>
                     </div>
                 </div>
-                    <img src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}`: placeholder} alt="" className="movie-image" />
-                </div>
-                <div className="movie-footer">
+                    <Link to={`/moviePage/${id}`}>
+                        <img src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}`: placeholder} alt="" className="movie-image" />
+                    </Link>
+            </div>
+            <div className="movie-footer">
                 <div className="group-row">
                 <h3 className="movie-title">{title}</h3>
                     <div className="vote-group">
@@ -164,9 +167,9 @@ const MovieCard = ({
                     {release_date?.slice(0,4)}
                 </p>
                 <div className="genre-group">
-                        <p className="movie-genres">{displayGenres()}</p>                    
-                    </div>
-        </div>
+                    <p className="movie-genres">{displayGenres()}</p>                    
+                </div>
+            </div>
         
     </div>
     )

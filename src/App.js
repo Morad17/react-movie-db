@@ -10,6 +10,7 @@ import AuthProvider from "./hooks/Authprovider";
 import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import MoviePage from "./pages/MoviePage";
 
 function App() {
 
@@ -50,7 +51,11 @@ function App() {
       {
         path: '/userPage',
         element: <UserPage />
-      }
+      },
+      {
+        path: '/moviePage/:id',
+        element: <MoviePage />
+      },
     ]
     }
   ])

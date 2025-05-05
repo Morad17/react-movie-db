@@ -14,9 +14,14 @@ const SearchMovie = ({movieSearch}) => {
 
     return (
         <div className="search-movie">
-            <input className="search-input"placeholder="Search A Movie" type="text" value={searchQuery} onChange={(e)=>  setSearchQuery(e.target.value)} />
-            <button onClick={handleSearch} className="search-btn" type="submit">Search</button>
-            <button onClick={() => {setSearchQuery('');movieSearch('') }}className="reset-search-btn">Reset</button>
+            <input className="search-input"placeholder="Search A Movie" type="text" 
+                value={searchQuery} onChange={(e)=>  setSearchQuery(e.target.value)} />
+            <p onClick={handleSearch} className="search-btn" type="submit">
+                Search
+            </p>
+            <p onClick={() => {setSearchQuery('');movieSearch('') }} className="reset-search-btn">
+                Reset
+            </p>
         </div>
     )}
 
