@@ -604,3 +604,43 @@ color: $yellow;
             cursor: pointer;
         }
     }
+
+/*-------Movie Page -----*/
+
+    .movie-page-section{
+        display: flex;
+        .movie-section-left,.movie-section-right{
+            width:21vw;
+        }
+        .movie-page-card{
+            width:58vw;
+            display: flex;
+            flex-direction: column;
+            margin-top: 30px;
+        }
+        .poster-image {
+            width: 192px;
+        }
+        .top-content{
+            display: flex;
+        }
+        .movie-page-info-section{
+            padding-left:10px;
+        }
+
+        .overview-section{
+            font-size: 20px;
+        }
+        .genre-section{
+            display: flex;
+
+        }
+        .movie-genre{
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            color: white;
+            background-color: $turquoise;
+            cursor: pointer;
+        }
+    }

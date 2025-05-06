@@ -32,26 +32,37 @@ const MoviePage = () => {
     },[])
   return ( 
     <div className="movie-page-section">
+        <div className="movie-section-left">
+            { console.log(movieInfo)}
+        </div>
         {movieInfo ? 
             <div className="movie-page-card">
-                <img src={movieInfo.poster_path ? `https://image.tmdb.org/t/p/w500/${movieInfo.poster_path}`: placeholder}  alt="" className="poster-image" />
-                <div className="movie-page-info-section">
-                <h2>{movieInfo.title} {movieInfo.release_date.slice(0,4)} {movieInfo.origin_country}</h2>
-                <p className="vote-number"><GiRoundStar />{movieInfo.vote_average?.toFixed(1)}</p>
-                <div className="genre-section">
-                    {
-                    movieInfo.genres.map((g,key) => {
-                        return <p className="genre" key={key}>{g.name}</p>
-                    }) 
-                    }
+                <section className="top-content">
+                    <div className="poster-image">
+                        <img src={movieInfo.poster_path ? `https://image.tmdb.org/t/p/w500/${movieInfo.poster_path}`: placeholder}  alt="" className="poster-image" />
+                    </div>
+                    <div className="movie-page-info-section">
+                        <h2>{movieInfo.title} {movieInfo.release_date.slice(0,4)} {movieInfo.origin_country}</h2>
+                        <p className="vote-number"><GiRoundStar />{movieInfo.vote_average?.toFixed(1)}</p>
+                    <div className="genre-section">
+                        {
+                        movieInfo.genres.map((g,key) => {
+                            return <p className="movie-genre" key={key}>{g.name}</p>
+                        }) 
+                        }
                     
-                </div>
-                </div>
-                <div className="overview-section">
-                    <p className="overview">{movieInfo.overview}</p>
-                </div>
+                    </div>
+                    <div className="overview-section">
+                        <p className="overview">{movieInfo.overview}</p>
+                    </div>
+                    </div>
+                </section>
+               <div className="backdrop">
+                <img src={movieInfo.poster_path ? `https://image.tmdb.org/t/p/w500/${movieInfo.backdrop_path}`: placeholder}  alt="" className="backdrop-image" />
+               </div>
+                
                 <div className="cast-section">
-
+                        
                 </div>
                 <div className="trailer-section">
 
@@ -61,6 +72,9 @@ const MoviePage = () => {
                 </div> 
             </div>: 
             <p>Loading...</p>}
+        <div className="movie-section-right">
+
+        </div>
     </div>
         
   )
