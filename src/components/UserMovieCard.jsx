@@ -1,4 +1,4 @@
-import placeholder from '../assets/scss/images/poster-placeholder.png'
+import placeholder from '../assets/images/poster-placeholder.png'
 
 
 

@@ -9,7 +9,7 @@ import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
 import { GiRoundStar } from "react-icons/gi";
 
-import placeholder from '../assets/scss/images/poster-placeholder.png'
+import placeholder from '../assets/images/poster-placeholder.png'
 
 const MovieCard = ({
     movie:{
