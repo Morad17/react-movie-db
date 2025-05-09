@@ -1,133 +1,137 @@
-import React,{useEffect, useState} from 'react'
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from 'axios';
-import Select from 'react-select' 
+import axios from "axios";
+import Select from "react-select";
 
-import MovieCard from '../components/MovieCard';
-import Pagination from '../components/Pagination';
-import SearchMovie from '../components/SearchMovie';
-import GenreColors  from '../components/GenreColors';
+import MovieCard from "../components/MovieCard";
+import Pagination from "../components/Pagination";
+import SearchMovie from "../components/SearchMovie";
+import GenreColors from "../components/GenreColors";
 
-import { BsBookmarkStarFill } from 'react-icons/bs';
-import { BiHeartCircle } from 'react-icons/bi';
-import DatePicker from 'react-datepicker';
+import { BsBookmarkStarFill } from "react-icons/bs";
+import { BiHeartCircle } from "react-icons/bi";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const MovieLibrary = () => {
-
-////Use States////
-  const [movies, setMovies ] = useState([])
-  const [genres, setGenres ] = useState([])
-  const [userMovieData, setUserMovieData ] = useState([])
+  ////Use States////
+  const [movies, setMovies] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [userMovieData, setUserMovieData] = useState([]);
   // Search Sort & Filter //
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterTrigger, setFilterTrigger] = useState(0)
-  const [sortOption, setSortOption ] = useState('popularity.desc')
-  const [sorting, setSorting] = useState(false)
-  const [filters, setFilters] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterTrigger, setFilterTrigger] = useState(0);
+  const [sortOption, setSortOption] = useState("popularity.desc");
+  const [sorting, setSorting] = useState(false);
+  const [filters, setFilters] = useState(false);
   const [allFilters, setAllFilters] = useState({
-    year:'',cast:'',genres:[]
-  })
-  const [genreSearch, setGenreSearch] = useState('')
-  const [watchedFilter, setWatchedFilter] = useState(true)
+    year: "",
+    cast: "",
+    genres: [],
+  });
+  const [genreSearch, setGenreSearch] = useState("");
+  const [watchedFilter, setWatchedFilter] = useState(true);
   //DatePicker
-  const [yearSearch, setYearSearch] = useState()
-  const [yearChecked,SetYearChecked] = useState(false)
+  const [yearSearch, setYearSearch] = useState();
+  const [yearChecked, SetYearChecked] = useState(false);
 
-  const [castSearch, setCastSearch] = useState()
+  const [castSearch, setCastSearch] = useState();
   //Pagination
-  const [currentPage,setCurrentPage ] = useState(1)
-  const [totalPages, setTotalPages] = useState()
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
 
   // Get All Movies//
   const fetchMovies = async () => {
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
-      }
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
+      },
     };
     const url = searchQuery
-        ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-        : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_genres=${allFilters.genres}`
-    try{
-      const res = await fetch(url , options)
-      const data = await res.json()
-      setMovies(data.results)
-      setTotalPages(data.total_pages)
-     if(searchQuery){
-      toast(`Your Search For ${searchQuery} returned ${data.total_pages} Pages from ${data.total_results} results`,{position: "top-center",autoClose: 5000,
-        hideProgressBar: false,})
-     }
+      ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
+      : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_genres=${allFilters.genres}`;
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      setMovies(data.results);
+      setTotalPages(data.total_pages);
+      if (searchQuery) {
+        toast(
+          `Your Search For ${searchQuery} returned ${data.total_pages} Pages from ${data.total_results} results`,
+          { position: "top-center", autoClose: 5000, hideProgressBar: false }
+        );
+      }
     } catch (err) {
-      console.log(err) 
+      console.log(err);
     }
-  }
+  };
   useEffect(() => {
-  fetchMovies()
-  },[searchQuery, currentPage, sortOption, filterTrigger,watchedFilter])
+    fetchMovies();
+  }, [searchQuery, currentPage, sortOption, filterTrigger, watchedFilter]);
 
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`
-      }
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
+      },
     };
-    const url = 'https://api.themoviedb.org/3/genre/movie/list?language=en'
-    try{
-      const res = await fetch(url , options)
-      const data = await res.json()
-      setGenres(data.genres)
+    const url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      setGenres(data.genres);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
   useEffect(() => {
-  fetchGenres()
-  },[])
+    fetchGenres();
+  }, []);
 
   // Get User Liked and Bookmarked data //
   const getUserMovieData = async () => {
-    const user = localStorage.getItem("username")
+    const user = localStorage.getItem("username");
     if (user) {
       try {
-      const res = await axios.post('http://localhost:3070/getUserTable', {"username":user})
-      setUserMovieData(res.data)
+        const res = await axios.post("http://localhost:3070/getUserTable", {
+          username: user,
+        });
+        setUserMovieData(res.data);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
-      }
-  
-  }
+    }
+  };
   useEffect(() => {
-    getUserMovieData()
-  }, [])
+    getUserMovieData();
+  }, []);
 
-  const paginate = (number) => setCurrentPage(number)
+  const paginate = (number) => setCurrentPage(number);
   const handleMovieSearch = (query) => {
     setSearchQuery(query); // Update the search query
     setCurrentPage(1); // Reset to the first page
   };
   const genreFilterHandler = (id) => {
     setAllFilters((prev) => {
-      const updatedGenres = prev.genres.includes(id) ?
-      prev.genres.filter((genreId) => genreId !== id):
-      [...prev.genres, id]
-      return {...prev ,genres: updatedGenres}
-    })
-  }
+      const updatedGenres = prev.genres.includes(id)
+        ? prev.genres.filter((genreId) => genreId !== id)
+        : [...prev.genres, id];
+      return { ...prev, genres: updatedGenres };
+    });
+  };
 
   const filterSearch = () => {
     if (allFilters.year || allFilters.cast || allFilters.genres) {
-      setFilterTrigger(prev => prev + 1)
+      setFilterTrigger((prev) => prev + 1);
     }
-  }
+  };
 
-  ///Style Components for Select /// 
+  ///Style Components for Select ///
   const selectOptions = [
     { label: "Popularity Ascending", value: "popularity.asc" },
     { label: "Popularity Descending", value: "popularity.desc" },
@@ -141,34 +145,34 @@ const MovieLibrary = () => {
   const selectStyles = {
     control: (baseStyles, state) => ({
       ...baseStyles,
-      backgroundColor: '#c3c3c3',
-      margin: '0',
-      cursor: 'pointer',
-      borderColor: state.isFocused ? '#12504A' : baseStyles.borderColor,
-      boxShadow: state.isFocused ? 'none' : 'none',
-    '&:hover': {
-      borderColor: '#12504A', 
-    },
-      outlineColor: state.isFocused && '#12504A',
-      '&:hover':{backgroundColor: '12504A'},
+      backgroundColor: "#c3c3c3",
+      margin: "0",
+      cursor: "pointer",
+      borderColor: state.isFocused ? "#12504A" : baseStyles.borderColor,
+      boxShadow: state.isFocused ? "none" : "none",
+      "&:hover": {
+        borderColor: "#12504A",
+      },
+      outlineColor: state.isFocused && "#12504A",
+      "&:hover": { backgroundColor: "12504A" },
     }),
     option: (baseStyles, state) => ({
       ...baseStyles,
-      backgroundColor: state.isFocused ? '#12504A' : '#c3c3c3',
-      '&:hover': {backgroundColor: '12504A'},
-      cursor: 'pointer',
-      color: 'black'
+      backgroundColor: state.isFocused ? "#12504A" : "#c3c3c3",
+      "&:hover": { backgroundColor: "12504A" },
+      cursor: "pointer",
+      color: "black",
     }),
     menu: (baseStyles) => ({
       ...baseStyles,
-      backgroundColor: '#c3c3c3',
-      color: 'black',
+      backgroundColor: "#c3c3c3",
+      color: "black",
       zIndex: 5,
     }),
     dropdownIndicator: (baseStyles) => ({
       ...baseStyles,
-      color: 'black',
-    })
+      color: "black",
+    }),
   };
 
   return (
@@ -194,69 +198,75 @@ const MovieLibrary = () => {
             <SearchMovie movieSearch={handleMovieSearch} />
           </div>
         </div>
-        <div className="movie-header-right">
-        </div>
+        <div className="movie-header-right"></div>
       </section>
       <section className="movie-library-content">
-{/*-------------Filters---------*/}
-      <div className="movie-content-left">
-        <p onClick={()=> setFilters(!filters)} className="filter-btn">
+        {/*-------------Filters---------*/}
+        <div className="movie-content-left">
+          <p onClick={() => setFilters(!filters)} className="filter-btn">
             Filter
-        </p>
-        {
-          filters && 
-          <div className="filters-function">
-            <div className="genre-filter">
-              <p className="filter-title">By Genre:</p>
-              <div className="all-genres">
-                {
-                  genres.map((g, key)=> {
-                    const isSelected = allFilters.genres.includes(g.id)
-                  return <p className={`movie-genre ${isSelected ? 'selectedGenre': ''}`} onClick={() => genreFilterHandler(g.id)} key={key}>{g.name}</p>
-                })
-              }
+          </p>
+          {filters && (
+            <div className="filters-function">
+              <div className="genre-filter">
+                <p className="filter-title">By Genre:</p>
+                <div className="all-genres">
+                  {genres.map((g, key) => {
+                    const isSelected = allFilters.genres.includes(g.id);
+                    return (
+                      <p
+                        className={`movie-genre ${
+                          isSelected ? "selectedGenre" : ""
+                        }`}
+                        onClick={() => genreFilterHandler(g.id)}
+                        key={key}
+                      >
+                        {g.name}
+                      </p>
+                    );
+                  })}
+                </div>
               </div>
-              
-            </div>
-            <div className="year-filter">
-              <p className="filter-title">By Year:</p>
-              <div className="year-picker">
-                <DatePicker
-                  placeholderText="yyyy"
+              <div className="year-filter">
+                <p className="filter-title">By Year:</p>
+                <div className="year-picker">
+                  <DatePicker
+                    placeholderText="yyyy"
                     selected={yearSearch}
                     onChange={(date) => {
-                      setYearSearch(date)
-                      setAllFilters(prev =>({
-                      ...prev, year:date ? date.getFullYear() : ''
-                      }))
-                      SetYearChecked(true)
-                  }}
-                  showYearPicker
-                  dateFormat="yyyy"
-                />
-                <p className="year-reset-btn" onClick={() => setYearSearch()}>
-                  Reset
+                      setYearSearch(date);
+                      setAllFilters((prev) => ({
+                        ...prev,
+                        year: date ? date.getFullYear() : "",
+                      }));
+                      SetYearChecked(true);
+                    }}
+                    showYearPicker
+                    dateFormat="yyyy"
+                  />
+                  <p className="year-reset-btn" onClick={() => setYearSearch()}>
+                    Reset
+                  </p>
+                </div>
+              </div>
+              <div className="watched-filter">
+                <p className="filter-title">By watched Movies:</p>
+                <div className="watched-checkbox">
+                  <label>Include Movies Watched</label>
+                  <input
+                    type="checkbox"
+                    checked={watchedFilter}
+                    onChange={() => setWatchedFilter(!watchedFilter)}
+                  />
+                </div>
+              </div>
+              <div className="filter-btn-div">
+                <p className="filter-submit-btn" onClick={() => filterSearch()}>
+                  Filter Movies
                 </p>
-               
               </div>
-
             </div>
-            <div className="watched-filter">
-              <p className="filter-title">
-                By watched Movies:
-              </p>
-              <div className="watched-checkbox">
-                <label htmlFor="">Include Movies Watched</label>
-                <input type="checkbox" checked={watchedFilter} onChange={() => setWatchedFilter(!watchedFilter)}/>
-              </div>
-              
-            </div>
-            <div className="filter-btn-div">
-              <p className="filter-submit-btn" onClick={()=> filterSearch()}>Filter Movies</p>
-            </div>
-            
-          </div>
-              }
+          )}
         </div>
         <div className="all-movies">
           {movies.map((movie, key) => {
@@ -277,29 +287,31 @@ const MovieLibrary = () => {
 
           <Pagination paginate={paginate} totalPages={totalPages} />
         </div>
-{/*--------------Sort---------*/}
+        {/*--------------Sort---------*/}
         <div className="movie-content-right">
-          <p onClick={()=> setSorting(!sorting)} className="sort-btn">
+          <p onClick={() => setSorting(!sorting)} className="sort-btn">
             Sort
           </p>
-          {
-            sorting && 
+          {sorting && (
             <div className="sort-function">
-            <p>Sort Results By:</p>
-              <Select 
+              <p>Sort Results By:</p>
+              <Select
                 options={selectOptions}
                 classNamePrefix={"react-select"}
                 styles={selectStyles}
-                value={selectOptions.find((option) => option.value === sortOption)}
-                onChange={(selectedOption) => setSortOption(selectedOption.value)}
+                value={selectOptions.find(
+                  (option) => option.value === sortOption
+                )}
+                onChange={(selectedOption) =>
+                  setSortOption(selectedOption.value)
+                }
               />
-          </div>
-          }
-          
+            </div>
+          )}
         </div>
       </section>
     </div>
   );
-}
+};
 
-export default MovieLibrary 
+export default MovieLibrary;

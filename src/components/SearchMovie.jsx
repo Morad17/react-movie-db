@@ -1,28 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
+const SearchMovie = ({ movieSearch }) => {
+  useEffect(() => {}, []);
 
-const SearchMovie = ({movieSearch}) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchRes, setSearchRes] = useState("");
 
-    useEffect(()=>{},[])
+  const handleSearch = () => {
+    movieSearch(searchQuery); // Send the search query to MovieLibrary
+  };
 
-    const [searchQuery, setSearchQuery] = useState('')
-    const [searchRes, setSearchRes] = useState('')
+  return (
+    <div className="search-movie">
+      <input
+        name="search"
+        className="search-input"
+        placeholder="Search A Movie"
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      <p onClick={handleSearch} className="search-btn" type="submit">
+        Search
+      </p>
+      <p
+        onClick={() => {
+          setSearchQuery("");
+          movieSearch("");
+        }}
+        className="reset-search-btn"
+      >
+        Reset
+      </p>
+    </div>
+  );
+};
 
-    const handleSearch = () => {
-      movieSearch(searchQuery); // Send the search query to MovieLibrary
-    };
-
-    return (
-        <div className="search-movie">
-            <input className="search-input"placeholder="Search A Movie" type="text" 
-                value={searchQuery} onChange={(e)=>  setSearchQuery(e.target.value)} />
-            <p onClick={handleSearch} className="search-btn" type="submit">
-                Search
-            </p>
-            <p onClick={() => {setSearchQuery('');movieSearch('') }} className="reset-search-btn">
-                Reset
-            </p>
-        </div>
-    )}
-
-export default SearchMovie
+export default SearchMovie;
