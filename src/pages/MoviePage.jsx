@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-import placeholder from "../assets/images/poster-placeholder.png";
-import { GiRoundStar } from "react-icons/gi";
 import ReactCountryFlag from "react-country-flag";
+import useMovieActions from "../hooks/useMovieActions";
 
+import { BsBookmarkStarFill } from "react-icons/bs";
+import { GiRoundStar } from "react-icons/gi";
+import { BiHeartCircle } from "react-icons/bi";
+import placeholder from "../assets/images/poster-placeholder.png";
 import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
+import axios from "axios";
 
 const MoviePage = () => {
-  const [movieInfo, setMovieInfo] = useState();
+  ///UseStates///
+  const [selectedMovieInfo, setSelectedMovieInfo] = useState();
+  const [userActions, setUserActions] = useState({
+    bookmarkList: null,
+    likedList: null,
+    watched: null,
+  });
 
+  ///Bookmark and Like ///
+  const { addToBookmarkList, addToLikedList, isDisabled } = useMovieActions();
+
+  const username = localStorage.getItem("username");
   const params = useParams();
-  const getMoveInfo = async () => {
+  const getSelectedMoveInfo = async () => {
     const { id } = params;
     const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=release_dates`;
     const options = {
@@ -26,18 +40,43 @@ const MoviePage = () => {
     try {
       const res = await fetch(url, options);
       const data = await res.json();
-      setMovieInfo(data);
+      setSelectedMovieInfo(data);
     } catch (err) {
       console.log(err);
     }
   };
 
+  ///Find If User Bookmarked or Liked Movie
+  const getUserMovieData = async () => {
+    const { id } = params;
+    if (username) {
+      try {
+        const res = await axios.post("http://localhost:3070/getUserTable", {
+          username: username,
+        });
+        const movieInfo = res.data.find((movie) => movie.movieId == id);
+        movieInfo &&
+          setUserActions({
+            bookmarkList: movieInfo.bookmarkList,
+            likedList: movieInfo.likedList,
+            watched: movieInfo.watched,
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
   useEffect(() => {
-    getMoveInfo();
+    getUserMovieData();
   }, []);
 
+  useEffect(() => {
+    getSelectedMoveInfo();
+  }, []);
+
+  // Finds Age Rating and returns correct certificate //
   const ageRating = () => {
-    const results = movieInfo?.release_dates?.results; // Safely access release_dates.results
+    const results = selectedMovieInfo?.release_dates?.results; // Safely access release_dates.results
     if (!results) return "N/A"; // Return 'N/A' if results are not available
 
     const gbRelease = results.find((release) => release.iso_3166_1 === "GB"); // Find the release for 'GB'
@@ -60,15 +99,21 @@ const MoviePage = () => {
 
   return (
     <div className="movie-page-section">
-      <div className="movie-section-left">{console.log(movieInfo)}</div>
-      {movieInfo ? (
-        <div className="movie-page-card">
+      <div className="movie-section-left">{console.log(selectedMovieInfo)}</div>
+      {selectedMovieInfo ? (
+        <div
+          className="movie-page-card"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${selectedMovieInfo.backdrop_path})`,
+          }}
+        >
+          <div className="backdrop-wrapper"></div>
           <section className="top-content">
-            <div className="poster-image">
+            <div className="poster-image-div">
               <img
                 src={
-                  movieInfo.poster_path
-                    ? `https://image.tmdb.org/t/p/w500/${movieInfo.poster_path}`
+                  selectedMovieInfo?.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${selectedMovieInfo.poster_path}`
                     : placeholder
                 }
                 alt=""
@@ -76,45 +121,72 @@ const MoviePage = () => {
               />
             </div>
             <div className="movie-page-info-section">
-              <h2>
-                {movieInfo.title} {movieInfo.release_date.slice(0, 4)}
+              <h2 className="movie-info-title">
+                {selectedMovieInfo.title} (
+                {selectedMovieInfo.release_date.slice(0, 4)})
                 <ReactCountryFlag
-                  countryCode={`${movieInfo.origin_country[0]}`}
+                  countryCode={`${selectedMovieInfo.origin_country[0]}`}
                   svg
+                  className="react-flag-icon"
                 />
               </h2>
-              <p className="vote-number">
-                <GiRoundStar />
-                {movieInfo.vote_average?.toFixed(1)}
-              </p>
-              <div className="genre-section">
-                {movieInfo.genres.map((g, key) => {
+              <div className="info-icons-row">
+                {selectedMovieInfo.genres.map((g, key) => {
                   return (
                     <p className="movie-genre" key={key}>
                       {g.name}
                     </p>
                   );
                 })}
+                <p className="age-rating">{ageRating()}</p>
+
+                <p className="vote-number">
+                  <GiRoundStar />
+                  {selectedMovieInfo.vote_average?.toFixed(1)}
+                </p>
               </div>
-              <p className="age-rating">
-                {ageRating()} <img src="" alt="" />
-              </p>
+              <div className="action-icons-row">
+                <BsBookmarkStarFill
+                  id="bookmarkIcon"
+                  className={`save-svg ${
+                    userActions.bookmarkList ? "bookmarked" : ""
+                  }`}
+                  onClick={() =>
+                    !isDisabled &&
+                    addToBookmarkList({
+                      id: selectedMovieInfo.id,
+                      title: selectedMovieInfo.title,
+                      username: username,
+                      poster_path: selectedMovieInfo.poster_path,
+                      userActions,
+                      setUserActions,
+                    })
+                  }
+                />
+                <BiHeartCircle
+                  id="likeIcon"
+                  className={`heart-svg ${
+                    userActions.likedList ? "liked" : ""
+                  }`}
+                  onClick={() =>
+                    !isDisabled &&
+                    addToLikedList({
+                      id: selectedMovieInfo.id,
+                      title: selectedMovieInfo.title,
+                      username: username,
+                      poster_path: selectedMovieInfo.poster_path,
+                      userActions: userActions,
+                      setUserActions: setUserActions,
+                    })
+                  }
+                />
+              </div>
               <div className="overview-section">
-                <p className="overview">{movieInfo.overview}</p>
+                <h3 className="section-title">Overview</h3>
+                <p className="overview-text">{selectedMovieInfo.overview}</p>
               </div>
             </div>
           </section>
-          <div className="backdrop">
-            <img
-              src={
-                movieInfo.poster_path
-                  ? `https://image.tmdb.org/t/p/w500/${movieInfo.backdrop_path}`
-                  : placeholder
-              }
-              alt=""
-              className="backdrop-image"
-            />
-          </div>
 
           <div className="cast-section"></div>
           <div className="trailer-section"></div>

@@ -46,6 +46,20 @@ body {
 .liked {
   color: $yellow;
 }
+/*////////////////Icons////////////////*/
+.save-svg {
+  padding-bottom: 15px;
+  font-size: 30px;
+  cursor: pointer;
+}
+.heart-svg {
+  font-size: 35px;
+  cursor: pointer;
+}
+.heart-svg:hover,
+.save-svg:hover {
+  color: $turquoise;
+}
 /*-------------Home Section------------*/
 .home-section {
   display: flex;
@@ -407,19 +421,6 @@ body {
     flex-direction: column;
     color: $silver;
   }
-  .save-svg {
-    padding-bottom: 15px;
-    font-size: 30px;
-    cursor: pointer;
-  }
-  .heart-svg {
-    font-size: 35px;
-    cursor: pointer;
-  }
-  .heart-svg:hover,
-  .save-svg:hover {
-    color: $turquoise;
-  }
   .movie-footer {
     width: 100%;
     background-color: $turquoise;
@@ -651,32 +652,82 @@ body {
     display: flex;
     flex-direction: column;
     margin-top: 30px;
+    background-position: right;
+    background-size: cover;
+    position: relative;
+    border-radius: 5px;
   }
   .poster-image {
     width: 192px;
+    border-radius: 5px;
   }
   .top-content {
     display: flex;
+    z-index: 11111;
+    padding: 20px;
   }
   .movie-page-info-section {
     padding-left: 10px;
   }
 
   .overview-section {
-    font-size: 20px;
+    font-size: 16px;
   }
   .genre-section {
     display: flex;
   }
   .movie-genre {
-    padding: 10px;
+    padding: 7px;
     margin: 5px;
     border-radius: 5px;
     color: white;
     background-color: $turquoise;
     cursor: pointer;
   }
+  .age-rating {
+    margin: 0;
+  }
+  .movie-info-title {
+    margin: 0;
+    font-size: 35px;
+  }
   .certification {
-    width: 64px;
+    width: 40px;
+  }
+  .backdrop-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    z-index: 11;
+    background-color: white;
+    border-radius: 5px;
+  }
+  .backdrop-image {
+    width: 50%;
+  }
+  .info-icons-row {
+    display: flex;
+    align-items: center;
+  }
+  .info-icons-row > * {
+    font-size: 13px;
+  }
+  .react-flag-icon {
+    padding: 0 5px;
+  }
+  .section-title {
+    margin-bottom: 0;
+  }
+  .overview-text {
+    margin-top: 5px;
+  }
+  .action-icons-row {
+    display: flex;
+    align-items: center;
+  }
+  .heart-svg,
+  .save-svg {
+    padding: 0 5px;
   }
 }
