@@ -17,6 +17,7 @@ const MoviePage = () => {
   ///UseStates///
   const [selectedMovieInfo, setSelectedMovieInfo] = useState();
   const [movieTrailer, setMovieTrailer] = useState();
+  const [cast, setCast] = useState();
   const [userActions, setUserActions] = useState({
     bookmarkList: null,
     likedList: null,
@@ -83,8 +84,30 @@ const MoviePage = () => {
     try {
       const res = await fetch(url, options);
       const data = await res.json();
-      const trailer = data.results.find((movie) => movie.type == "Trailer");
-      console.log(trailer);
+      const ytVideos = data.results.filter((video) => video.site === "YouTube");
+      const trailer = ytVideos.find((movie) => movie.type == "Trailer").key;
+      setMovieTrailer(`https://www.youtube.com/embed/${trailer}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //Get Cast
+  const getCast = async () => {
+    const { id } = params;
+    const url = `https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
+      },
+    };
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      setCast(data.cast);
+      console.log(cast);
     } catch (err) {
       console.log(err);
     }
@@ -102,6 +125,9 @@ const MoviePage = () => {
     getTrailer();
   });
 
+  useEffect(() => {
+    getCast();
+  }, []);
   // Finds Age Rating and returns correct certificate //
   const ageRating = () => {
     const results = selectedMovieInfo?.release_dates?.results; // Safely access release_dates.results
@@ -216,17 +242,46 @@ const MoviePage = () => {
                 </div>
               </div>
             </div>
-
-            <div className="cast-section"></div>
-            <div className="trailer-section"></div>
-            <div className="reviews-section"></div>
           </section>
           <section className="movie-page-content">
-            <div className="trailer-section">
-              <h3 className="section-title">Trailer</h3>
-            </div>
+            {movieTrailer && (
+              <div className="trailer-section">
+                <h3 className="section-title">Trailer</h3>
+                <div className="trailer-video-div">
+                  <iframe
+                    className="trailer-video"
+                    src={movieTrailer}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="YouTube video"
+                    width="560"
+                    height="315"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="cast-section">
               <h3 className="section-title">Top Cast</h3>
+              {cast && (
+                <div className="cast-group">
+                  {cast.slice(0, 10).map((cast, key) => {
+                    return (
+                      <div className="cast-card">
+                        <img
+                          className="cast-card-img"
+                          src={`https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`}
+                          alt=""
+                        />
+                        <div className="cast-card-text">
+                          <h3>{cast.name}</h3>
+                          <p>{cast.character}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div className="reviews-ratings-section">
               <h3 className="section-title">Reviews & Ratings</h3>
