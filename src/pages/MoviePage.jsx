@@ -16,6 +16,7 @@ import axios from "axios";
 const MoviePage = () => {
   ///UseStates///
   const [selectedMovieInfo, setSelectedMovieInfo] = useState();
+  const [movieTrailer, setMovieTrailer] = useState();
   const [userActions, setUserActions] = useState({
     bookmarkList: null,
     likedList: null,
@@ -27,24 +28,6 @@ const MoviePage = () => {
 
   const username = localStorage.getItem("username");
   const params = useParams();
-  const getSelectedMoveInfo = async () => {
-    const { id } = params;
-    const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=release_dates`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
-    try {
-      const res = await fetch(url, options);
-      const data = await res.json();
-      setSelectedMovieInfo(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   ///Find If User Bookmarked or Liked Movie
   const getUserMovieData = async () => {
@@ -66,6 +49,47 @@ const MoviePage = () => {
       }
     }
   };
+  // Selected Movie Info
+  const getSelectedMoveInfo = async () => {
+    const { id } = params;
+    const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=release_dates`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
+      },
+    };
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      setSelectedMovieInfo(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //Get Trailer
+  const getTrailer = async () => {
+    const { id } = params;
+    const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
+      },
+    };
+    try {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      const trailer = data.results.find((movie) => movie.type == "Trailer");
+      console.log(trailer);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getUserMovieData();
   }, []);
@@ -73,6 +97,10 @@ const MoviePage = () => {
   useEffect(() => {
     getSelectedMoveInfo();
   }, []);
+
+  useEffect(() => {
+    getTrailer();
+  });
 
   // Finds Age Rating and returns correct certificate //
   const ageRating = () => {
