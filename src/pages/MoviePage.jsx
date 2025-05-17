@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import axios from "axios";
 
 import ReactCountryFlag from "react-country-flag";
 import useMovieActions from "../hooks/useMovieActions";
@@ -11,7 +12,6 @@ import placeholder from "../assets/images/poster-placeholder.png";
 import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
-import axios from "axios";
 import VoteIcon from "../components/VoteIcon";
 
 const MoviePage = () => {
@@ -152,6 +152,17 @@ const MoviePage = () => {
     }
   };
 
+  const budget = () => {
+    if (selectedMovieInfo.budget === 0) {
+      return "N/A";
+    } else return selectedMovieInfo.budget;
+  };
+  const revenue = () => {
+    if (selectedMovieInfo.revenue === 0) {
+      return "N/A";
+    } else return selectedMovieInfo.revenue;
+  };
+
   return (
     <div className="movie-page-section">
       <div className="movie-section-left">{console.log(selectedMovieInfo)}</div>
@@ -241,49 +252,70 @@ const MoviePage = () => {
             </div>
           </section>
           <section className="movie-page-content">
-            {movieTrailer && (
-              <div className="trailer-section">
-                <h3 className="section-title">Trailer</h3>
-                <div className="trailer-video-div">
-                  <iframe
-                    className="trailer-video"
-                    src={movieTrailer}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="YouTube video"
-                    width="560"
-                    height="315"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="cast-section">
-              <h3 className="section-title">Top Cast</h3>
-              {cast && (
-                <div className="cast-group">
-                  {cast.slice(0, 10).map((cast, key) => {
-                    return (
-                      <div className="cast-card" key={key}>
-                        <img
-                          className="cast-card-img"
-                          src={`https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`}
-                          alt=""
-                        />
-                        <div className="cast-card-text">
-                          <h4 className="cast-name-text">{cast.name}</h4>
-                          <p className="cast-character-text">
-                            {cast.character}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+            <div className="left-content">
+              {movieTrailer && (
+                <div className="trailer-section">
+                  <h3 className="section-title">Trailer</h3>
+                  <div className="trailer-video-div">
+                    <iframe
+                      className="trailer-video"
+                      src={movieTrailer}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="YouTube video"
+                      width="560"
+                      height="315"
+                    />
+                  </div>
                 </div>
               )}
+              <div className="cast-section">
+                <h3 className="section-title">Top Cast</h3>
+                {cast && (
+                  <div className="cast-group">
+                    {cast.slice(0, 10).map((cast, key) => {
+                      return (
+                        <div className="cast-card" key={key}>
+                          <img
+                            className="cast-card-img"
+                            src={
+                              cast.profilepath
+                                ? `https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`
+                                : placeholder
+                            }
+                            alt=""
+                          />
+                          <div className="cast-card-text">
+                            <h4 className="cast-name-text">{cast.name}</h4>
+                            <p className="cast-character-text">
+                              {cast.character}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="reviews-ratings-section">
+                <h3 className="section-title">Reviews & Ratings</h3>
+              </div>
             </div>
-            <div className="reviews-ratings-section">
-              <h3 className="section-title">Reviews & Ratings</h3>
+            <div className="right-content">
+              <h3 className="section-title">Status</h3>
+              <p>{selectedMovieInfo.status}</p>
+              <h3 className="section-title">Release Date</h3>
+              <p>{selectedMovieInfo.release_date}</p>
+              <h3 className="section-title">Budget</h3>
+              <p>{budget()}</p>
+              <h3 className="section-title">Revenue</h3>
+              <p>{revenue()}</p>
+              <h3 className="section-title">Runtime</h3>
+              <p>{selectedMovieInfo.runtime}</p>
+              <h3 className="section-title">Spoken Language</h3>
+              {selectedMovieInfo.spoken_languages?.map((movie, key) => {
+                return <p key={key}>{movie.english_name}</p>;
+              })}
             </div>
           </section>
         </div>

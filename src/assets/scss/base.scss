@@ -725,6 +725,17 @@ body {
   .react-flag-icon {
     padding: 0 5px;
   }
+  //Main Content
+  .movie-page-content {
+    display: flex;
+    justify-content: space-between;
+  }
+  .left-content {
+    width: 70%;
+  }
+  .right-content {
+    width: 29%;
+  }
   .section-title {
     margin-bottom: 5px;
   }
@@ -752,15 +763,13 @@ body {
   }
   .trailer-video-div {
     position: relative;
-    width: 70%;
-    padding-top: 39.5%;
+    padding-top: 56.25%;
   }
   .cast-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     row-gap: 10px;
-    width: 70%;
   }
   .cast-card {
     display: flex;
