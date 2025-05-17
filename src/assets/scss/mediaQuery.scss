@@ -1,0 +1,9 @@
+//--------Large Screens 2k & 4k---------//
+
+@media screen and (min-width: 2501px) {
+  //Movie Page//
+
+  .movie-page-section .cast-card {
+    max-width: none;
+  }
+}

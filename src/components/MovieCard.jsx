@@ -10,6 +10,7 @@ import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
 import { GiRoundStar } from "react-icons/gi";
 import placeholder from "../assets/images/poster-placeholder.png";
+import VoteIcon from "./VoteIcon";
 
 const MovieCard = ({
   movie: {
@@ -125,10 +126,7 @@ const MovieCard = ({
         <div className="group-row">
           <h3 className="movie-title">{title}</h3>
           <div className="vote-group">
-            <p className="vote-number">
-              <GiRoundStar />
-              {vote_average?.toFixed(1)}
-            </p>
+            <VoteIcon vote={vote_average} />
           </div>
         </div>
         <p className="year-release">{release_date?.slice(0, 4)}</p>

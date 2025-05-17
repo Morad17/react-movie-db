@@ -457,6 +457,7 @@ body {
   }
   .vote-number {
     margin: 5px 0;
+    position: relative;
   }
   //////Style Color Fade In Card ////
   $card-fade-amount: 10%;
@@ -725,7 +726,7 @@ body {
     padding: 0 5px;
   }
   .section-title {
-    margin-bottom: 0;
+    margin-bottom: 5px;
   }
   .overview-text {
     margin-top: 5px;
@@ -757,15 +758,33 @@ body {
   .cast-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    justify-content: space-between;
+    row-gap: 10px;
     width: 70%;
   }
   .cast-card {
     display: flex;
+    flex-direction: column;
     border-radius: 5px;
     background-color: #929292;
+    max-width: 138px;
+    width: 19%;
   }
   .cast-card-img {
-    width: 50%;
+    width: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .cast-card-text {
+    padding: 0 10px;
+  }
+  .cast-character-text {
+    font-size: 14px;
+  }
+  .cast-name-text {
+    margin: 10px 0 5px 0;
   }
 }
+
+///  Import Scss Files ////
+@import "./mediaQuery.scss";

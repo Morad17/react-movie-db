@@ -12,6 +12,7 @@ import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
 import axios from "axios";
+import VoteIcon from "../components/VoteIcon";
 
 const MoviePage = () => {
   ///UseStates///
@@ -194,13 +195,9 @@ const MoviePage = () => {
                     );
                   })}
                   <p className="age-rating">{ageRating()}</p>
-
-                  <p className="vote-number">
-                    <GiRoundStar />
-                    {selectedMovieInfo.vote_average?.toFixed(1)}
-                  </p>
                 </div>
                 <div className="action-icons-row">
+                  <VoteIcon vote={selectedMovieInfo.vote_average} />
                   <BsBookmarkStarFill
                     id="bookmarkIcon"
                     className={`save-svg ${
@@ -267,15 +264,17 @@ const MoviePage = () => {
                 <div className="cast-group">
                   {cast.slice(0, 10).map((cast, key) => {
                     return (
-                      <div className="cast-card">
+                      <div className="cast-card" key={key}>
                         <img
                           className="cast-card-img"
                           src={`https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`}
                           alt=""
                         />
                         <div className="cast-card-text">
-                          <h3>{cast.name}</h3>
-                          <p>{cast.character}</p>
+                          <h4 className="cast-name-text">{cast.name}</h4>
+                          <p className="cast-character-text">
+                            {cast.character}
+                          </p>
                         </div>
                       </div>
                     );
