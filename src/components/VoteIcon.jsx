@@ -8,8 +8,8 @@ const VoteIcon = ({ vote }) => {
         style={{
           position: "relative",
           display: "inline-block",
-          width: "3.5em",
-          height: "3.5em",
+          width: "3em",
+          height: "3em",
           verticalAlign: "middle",
         }}
       >
@@ -17,7 +17,7 @@ const VoteIcon = ({ vote }) => {
         <GiRoundStar
           style={{
             color: "gray",
-            fontSize: "3.5em",
+            fontSize: "3em",
             position: "absolute",
             top: 0,
             left: 0,
@@ -36,7 +36,7 @@ const VoteIcon = ({ vote }) => {
             pointerEvents: "none",
           }}
         >
-          <GiRoundStar style={{ color: "gold", fontSize: "3.5em" }} />
+          <GiRoundStar style={{ color: "gold", fontSize: "3em" }} />
         </span>
       </span>
       <p
@@ -48,7 +48,7 @@ const VoteIcon = ({ vote }) => {
           margin: 0,
           color: "black",
           fontWeight: "bold",
-          fontSize: "19px",
+          fontSize: "16px",
           pointerEvents: "none",
         }}
       >
