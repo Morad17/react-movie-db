@@ -135,7 +135,7 @@ body {
   .movie-library-header {
     display: flex;
     justify-content: space-evenly;
-    margin-top: 10px;
+    margin: 10px 0;
   }
   .movie-header-left {
     display: flex;
@@ -178,6 +178,13 @@ body {
     select:focus option:hover {
       background-color: $turquoise;
     }
+  }
+  .info-div-text {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  .info-div-title {
+    margin: 5px 0;
   }
   .react-select__input {
     color: transparent !important;
@@ -397,7 +404,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 13.5vw;
+  width: 10.5vw;
   border: 2px solid $silver;
   border-radius: 10px;
   position: relative;
@@ -655,11 +662,11 @@ body {
     display: flex;
     flex-direction: column;
     margin-top: 30px;
+    margin-bottom: 10px;
     background-position: right;
     background-size: cover;
     position: relative;
     border-radius: 5px;
-
     background-image: linear-gradient(to right, $turquoise 20%, transparent 25%),
       var(--movie-bg-image);
   }
@@ -750,6 +757,9 @@ body {
   .save-svg {
     padding: 0 5px;
   }
+  .trailer-section .section-title {
+    margin-top: 0;
+  }
   .trailer-video {
     position: absolute;
     top: 0;
@@ -775,7 +785,8 @@ body {
     display: flex;
     flex-direction: column;
     border-radius: 5px;
-    background-color: #929292;
+    background-color: $turquoise;
+    color: white;
     max-width: 138px;
     width: 19%;
   }
@@ -792,6 +803,17 @@ body {
   }
   .cast-name-text {
     margin: 10px 0 5px 0;
+  }
+  .content-hr {
+    border: 1px solid gray;
+  }
+  .section-title-right,
+  .section-text-right {
+    margin-bottom: 5px;
+    padding-left: 10px;
+  }
+  .section-text-right {
+    margin-top: 10px;
   }
 }
 

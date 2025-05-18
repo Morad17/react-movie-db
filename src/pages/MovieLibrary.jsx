@@ -180,13 +180,13 @@ const MovieLibrary = () => {
       <section className="movie-library-header">
         <div className="movie-header-left">
           <div className="info-div">
-            <h3>Get Started</h3>
-            <p>Click on the movie for more info </p>
-            <p>
+            <h3 className="info-div-title">Get Started</h3>
+            <p className="info-div-text">Click on the movie for more info </p>
+            <p className="info-div-text">
               <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to
-              watch list. Click again to remove from list
+              bookmark list. Click again to remove from list
             </p>
-            <p>
+            <p className="info-div-text">
               <BiHeartCircle /> Click the Like icon to add movie to liked list.
               Click again to remove.
             </p>

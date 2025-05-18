@@ -155,12 +155,12 @@ const MoviePage = () => {
   const budget = () => {
     if (selectedMovieInfo.budget === 0) {
       return "N/A";
-    } else return selectedMovieInfo.budget;
+    } else return selectedMovieInfo.budget.toLocaleString();
   };
   const revenue = () => {
     if (selectedMovieInfo.revenue === 0) {
       return "N/A";
-    } else return selectedMovieInfo.revenue;
+    } else return selectedMovieInfo.revenue.toLocaleString();
   };
 
   return (
@@ -279,7 +279,7 @@ const MoviePage = () => {
                           <img
                             className="cast-card-img"
                             src={
-                              cast.profilepath
+                              cast.profile_path
                                 ? `https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`
                                 : placeholder
                             }
@@ -302,20 +302,32 @@ const MoviePage = () => {
               </div>
             </div>
             <div className="right-content">
-              <h3 className="section-title">Status</h3>
-              <p>{selectedMovieInfo.status}</p>
-              <h3 className="section-title">Release Date</h3>
-              <p>{selectedMovieInfo.release_date}</p>
-              <h3 className="section-title">Budget</h3>
-              <p>{budget()}</p>
-              <h3 className="section-title">Revenue</h3>
-              <p>{revenue()}</p>
-              <h3 className="section-title">Runtime</h3>
-              <p>{selectedMovieInfo.runtime}</p>
-              <h3 className="section-title">Spoken Language</h3>
-              {selectedMovieInfo.spoken_languages?.map((movie, key) => {
-                return <p key={key}>{movie.english_name}</p>;
-              })}
+              <div className="movie-facts">
+                <hr className="content-hr" />
+                <h3 className="section-title-right">Status</h3>
+                <p className="section-text-right">{selectedMovieInfo.status}</p>
+                <h3 className="section-title-right">Release Date</h3>
+                <p className="section-text-right">
+                  {selectedMovieInfo.release_date}
+                </p>
+                <h3 className="section-title-right">Budget</h3>
+                <p className="section-text-right">${budget()}</p>
+                <h3 className="section-title-right">Revenue</h3>
+                <p className="section-text-right">${revenue()}</p>
+                <h3 className="section-title-right">Runtime</h3>
+                <p className="section-text-right">
+                  {selectedMovieInfo.runtime} Minutes
+                </p>
+                <h3 className="section-title-right">Spoken Language</h3>
+                {selectedMovieInfo.spoken_languages?.map((movie, key) => {
+                  return (
+                    <p className="section-text-right" key={key}>
+                      {movie.english_name}
+                    </p>
+                  );
+                })}
+                <hr className="content-hr" />
+              </div>
             </div>
           </section>
         </div>
