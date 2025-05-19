@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import ReactCountryFlag from "react-country-flag";
 import useMovieActions from "../hooks/useMovieActions";
@@ -8,7 +9,9 @@ import useMovieActions from "../hooks/useMovieActions";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { GiRoundStar } from "react-icons/gi";
 import { BiHeartCircle } from "react-icons/bi";
+
 import placeholder from "../assets/images/poster-placeholder.png";
+import ProfileImage from "../assets/images/profile-image-placeholder.png";
 import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
@@ -23,15 +26,21 @@ const MoviePage = () => {
     bookmarkList: null,
     likedList: null,
     watched: false,
-    rating: false,
-    review: null,
     rated: false,
     reviewed: null,
+    rating: false,
+    review: null,
   });
 
   ///Bookmark and Like ///
-  const { addToBookmarkList, addToLikedList, addToWatched, isDisabled } =
-    useMovieActions();
+  const {
+    addToBookmarkList,
+    addToLikedList,
+    addToWatched,
+    createRating,
+    createReview,
+    isDisabled,
+  } = useMovieActions();
 
   const username = localStorage.getItem("username");
   const params = useParams();
@@ -50,6 +59,12 @@ const MoviePage = () => {
             bookmarkList: movieInfo.bookmarkList,
             likedList: movieInfo.likedList,
             watched: movieInfo.watched,
+            review: movieInfo.review,
+            rating: movieInfo.rating,
+            rated:
+              movieInfo.rating && movieInfo.rating.length > 1 ? true : false,
+            reviewed:
+              movieInfo.review && movieInfo.review.length > 1 ? true : false,
           });
       } catch (err) {
         console.log(err);
@@ -171,11 +186,44 @@ const MoviePage = () => {
 
   const handleRR = (e) => {
     e.preventDefault();
-    if (userActions.rating < 101 && userActions.rating >= 0) {
-      if (userActions.review.length > 3) {
-      }
+    console.log(userActions);
+    if (userActions.rating && userActions.review) {
+      createRating({
+        id: selectedMovieInfo.id,
+        username,
+        userProfileImage:
+          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
+        title: selectedMovieInfo.title,
+        rating: userActions.rating,
+        poster_path: selectedMovieInfo.poster_path,
+        userActions,
+        setUserActions,
+      });
+      createReview({
+        id: selectedMovieInfo.id,
+        username,
+        userProfileImage:
+          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
+        title: selectedMovieInfo.title,
+        review: userActions.review,
+        poster_path: selectedMovieInfo.poster_path,
+        userActions: userActions,
+        setUserActions: setUserActions,
+      });
+    } else if (userActions.rating && !userActions.review) {
+      createRating({
+        id: selectedMovieInfo.id,
+        username,
+        userProfileImage:
+          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
+        title: selectedMovieInfo.title,
+        poster_path: selectedMovieInfo.poster_path,
+        rating: userActions.rating,
+        userActions,
+        setUserActions,
+      });
     } else {
-      toast("Your Rating is outside the bounds of 0-100");
+      toast("Please fully fill in the form");
     }
   };
 
@@ -187,7 +235,7 @@ const MoviePage = () => {
           <section
             className="movie-page-card"
             style={{
-              "--movie-bg-image": `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${selectedMovieInfo.backdrop_path})`,
+              "--movie-bg-image": `url(http://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${selectedMovieInfo.backdrop_path})`,
             }}
           >
             <div className="backdrop-wrapper"></div>
@@ -196,7 +244,7 @@ const MoviePage = () => {
                 <img
                   src={
                     selectedMovieInfo?.poster_path
-                      ? `https://image.tmdb.org/t/p/w500/${selectedMovieInfo.poster_path}`
+                      ? `http://image.tmdb.org/t/p/w500/${selectedMovieInfo.poster_path}`
                       : placeholder
                   }
                   alt=""
@@ -235,7 +283,7 @@ const MoviePage = () => {
                       addToBookmarkList({
                         id: selectedMovieInfo.id,
                         title: selectedMovieInfo.title,
-                        username: username,
+                        username,
                         poster_path: selectedMovieInfo.poster_path,
                         userActions,
                         setUserActions,
@@ -252,10 +300,10 @@ const MoviePage = () => {
                       addToLikedList({
                         id: selectedMovieInfo.id,
                         title: selectedMovieInfo.title,
-                        username: username,
+                        username,
                         poster_path: selectedMovieInfo.poster_path,
-                        userActions: userActions,
-                        setUserActions: setUserActions,
+                        userActions,
+                        setUserActions,
                       })
                     }
                   />
@@ -270,10 +318,10 @@ const MoviePage = () => {
                         addToWatched({
                           id: selectedMovieInfo.id,
                           title: selectedMovieInfo.title,
-                          username: username,
+                          username,
                           poster_path: selectedMovieInfo.poster_path,
-                          userActions: userActions,
-                          setUserActions: setUserActions,
+                          userActions,
+                          setUserActions,
                         })
                       }
                     />
@@ -320,7 +368,7 @@ const MoviePage = () => {
                             className="cast-card-img"
                             src={
                               cast.profile_path
-                                ? `https://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`
+                                ? `http://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`
                                 : placeholder
                             }
                             alt=""
@@ -364,7 +412,7 @@ const MoviePage = () => {
                       <textarea
                         name="review"
                         minLength="4"
-                        maxlength="500"
+                        maxLength="500"
                         value={userActions.review || ""}
                         onChange={(e) =>
                           setUserActions((prev) => ({
@@ -387,7 +435,9 @@ const MoviePage = () => {
                 <p className="section-text-right">{selectedMovieInfo.status}</p>
                 <h3 className="section-title-right">Release Date</h3>
                 <p className="section-text-right">
-                  {selectedMovieInfo.release_date}
+                  {new Date(selectedMovieInfo.release_date).toLocaleDateString(
+                    "en-GB"
+                  )}
                 </p>
                 <h3 className="section-title-right">Budget</h3>
                 <p className="section-text-right">${budget()}</p>

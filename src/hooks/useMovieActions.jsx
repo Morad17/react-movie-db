@@ -190,8 +190,10 @@ const useMovieActions = () => {
     rating,
     userActions,
     setUserActions,
+    poster_path,
   }) => {
-    if (username) {
+    console.log(userActions);
+    if (username && userActions.rated === false) {
       if (userActions.rating < 101 && userActions.rating >= 0) {
         try {
           const res = await axios.post("http://localhost:3070/createRating", {
@@ -200,38 +202,47 @@ const useMovieActions = () => {
             movieName: title,
             userProfileImage,
             rating,
+            poster_path,
           });
           toast(`Successfully rated ${title}`);
           setUserActions((prev) => ({ ...prev, rated: true }));
-          setTimeout(() => {
-            setIsDisabled(false);
-          }, 2000);
+          return res.data;
+        } catch (err) {
+          console.log(err);
+          toast("Rating unsuccessfull");
+        }
+      }
+    } else {
+      toast("You must be logged in to Rate Movies");
+    }
+  };
+  const createReview = async ({
+    id,
+    username,
+    userProfileImage,
+    title,
+    review,
+    userActions,
+    setUserActions,
+    poster_path,
+  }) => {
+    if (username && userActions.reviewed === false) {
+      if (userActions.review.length > 3) {
+        try {
+          const res = await axios.post("http://localhost:3070/createReview", {
+            username,
+            movieId: id,
+            movieName: title,
+            userProfileImage,
+            poster_path,
+            review,
+          });
+          toast(`Successfully reviewed ${title}`);
+          setUserActions((prev) => ({ ...prev, reviewed: true }));
           return res.data;
         } catch (err) {
           console.log(err);
           toast("Your watched list was not updated");
-        }
-      } else if (
-        userActions.watched === false ||
-        userActions.watched === null ||
-        userActions.watched === 0
-      ) {
-        try {
-          const res = await axios.post("http://localhost:3070/addToWatched", {
-            username,
-            movieId: id,
-            movieName: title,
-            watched: true,
-          });
-          toast(`Successfully Changed to Watched`);
-          setUserActions((prev) => ({ ...prev, watched: true }));
-          setTimeout(() => {
-            setIsDisabled(false);
-          }, 2000);
-          return res.data;
-        } catch (err) {
-          console.log(err);
-          toast("Your Watched List was not updated");
         }
       }
     } else {
@@ -239,7 +250,14 @@ const useMovieActions = () => {
     }
   };
 
-  return { addToBookmarkList, addToLikedList, addToWatched, isDisabled };
+  return {
+    addToBookmarkList,
+    addToLikedList,
+    addToWatched,
+    createRating,
+    createReview,
+    isDisabled,
+  };
 };
 
 export default useMovieActions;
