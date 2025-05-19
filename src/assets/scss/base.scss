@@ -41,20 +41,31 @@ body {
   text-align: center;
 }
 .bookmarked {
-  color: $yellow;
+  color: $yellow !important;
 }
 .liked {
-  color: $yellow;
+  color: $yellow !important;
+}
+input[type="checkbox"] {
+  accent-color: #12504a;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+input[type="checkbox"]:hover {
+  accent-color: $yellow;
 }
 /*////////////////Icons////////////////*/
 .save-svg {
   padding-bottom: 15px;
   font-size: 30px;
   cursor: pointer;
+  color: gray;
 }
 .heart-svg {
   font-size: 35px;
   cursor: pointer;
+  color: gray;
 }
 .heart-svg:hover,
 .save-svg:hover {
@@ -260,12 +271,6 @@ body {
     label {
       font-size: 18px;
       padding-left: 10px;
-    }
-    input[type="checkbox"] {
-      accent-color: #12504a;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
     }
   }
   .all-genres {
@@ -750,6 +755,7 @@ body {
     margin-top: 5px;
     font-weight: bold;
   }
+  //Actions
   .action-icons-row {
     display: flex;
     align-items: center;
@@ -757,6 +763,20 @@ body {
   .heart-svg,
   .save-svg {
     padding: 0 5px;
+  }
+  .watched-action {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    background-color: gray;
+    color: white;
+  }
+  .watched-checkbox {
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0 0 0 5px;
   }
   .trailer-section .section-title {
     margin-top: 0;

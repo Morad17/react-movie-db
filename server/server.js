@@ -176,6 +176,36 @@ app.post("/addToLikedList", (req, res) => {
     }
   });
 });
+
+//Watched List
+app.post("/addToWatched", (req, res) => {
+  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
+  const valTable = [req.body.username];
+  mdb.query(queryTable, [...valTable], (err, data) => {
+    ///Find Users Table base on users name (in user table)
+    if (err) return res.json("error", err);
+    if (data.length > 0) {
+      const tableName = data[0].tableName;
+      const watchedQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watched)VALUE (?, ?, ?,?)
+                ON DUPLICATE KEY UPDATE
+                watched = VALUES(watched)
+                `;
+      const valWatched = [
+        req.body.movieId,
+        req.body.movieName,
+        req.body.poster_path,
+        req.body.watched,
+      ];
+      ///Add To Users Table Like List
+      mdb.query(watchedQuery, [...valWatched], (err, data) => {
+        if (err) return console.log(err, "error whilst pushing to table");
+        if (data.length > 0) {
+          return res.json(data);
+        } else return res.json(err);
+      });
+    }
+  });
+});
 //Create Review
 app.post("/createReview", (req, res) => {
   const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
@@ -210,6 +240,46 @@ app.post("/createReview", (req, res) => {
     req.body.review,
   ];
   mdb.query(revTableQuery, [...valRevTable], (err, data) => {
+    if (err) return console.log(err, "error whilst pushing to table");
+    if (data.length > 0) {
+      return res.json(data);
+    } else return res.json(err);
+  });
+});
+
+//Create Rating
+app.post("/createRating", (req, res) => {
+  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
+  const valTable = [req.body.username];
+  mdb.query(queryTable, [...valTable], (err, data) => {
+    ///Find Users Table base on users name (in user table)
+    if (err) return res.json("error", err);
+    if (data.length > 0) {
+      const tableName = data[0].tableName;
+      const ratingQuery = `INSERT into ${tableName} (movieId,rating) VALUE (?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                rating = VALUES(rating)
+                `;
+      const valRating = [req.body.movieId, req.body.rating];
+      ///Add To Users Table Review
+      mdb.query(ratingQuery, [...valRating], (err, data) => {
+        if (err) return console.log(err, "error whilst pushing to table");
+        if (data.length > 0) {
+          return res.json(data);
+        } else return res.json(err);
+      });
+    }
+  });
+  const ratTableQuery =
+    "INSERT into ratingMovieList (userId, username, userProfileImage, movieId,movieName, rating)";
+  const valRatTable = [
+    req.body.username,
+    req.body.userProfileImage,
+    req.body.movieId,
+    req.body.movieName,
+    req.body.rating,
+  ];
+  mdb.query(ratTableQuery, [...valRatTable], (err, data) => {
     if (err) return console.log(err, "error whilst pushing to table");
     if (data.length > 0) {
       return res.json(data);

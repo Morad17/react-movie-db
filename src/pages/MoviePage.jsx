@@ -22,11 +22,16 @@ const MoviePage = () => {
   const [userActions, setUserActions] = useState({
     bookmarkList: null,
     likedList: null,
-    watched: null,
+    watched: false,
+    rating: false,
+    review: null,
+    rated: false,
+    reviewed: null,
   });
 
   ///Bookmark and Like ///
-  const { addToBookmarkList, addToLikedList, isDisabled } = useMovieActions();
+  const { addToBookmarkList, addToLikedList, addToWatched, isDisabled } =
+    useMovieActions();
 
   const username = localStorage.getItem("username");
   const params = useParams();
@@ -108,7 +113,6 @@ const MoviePage = () => {
       const res = await fetch(url, options);
       const data = await res.json();
       setCast(data.cast);
-      console.log(cast);
     } catch (err) {
       console.log(err);
     }
@@ -163,9 +167,21 @@ const MoviePage = () => {
     } else return selectedMovieInfo.revenue.toLocaleString();
   };
 
+  //Handle Ratig and Review Submissiion//
+
+  const handleRR = (e) => {
+    e.preventDefault();
+    if (userActions.rating < 101 && userActions.rating >= 0) {
+      if (userActions.review.length > 3) {
+      }
+    } else {
+      toast("Your Rating is outside the bounds of 0-100");
+    }
+  };
+
   return (
     <div className="movie-page-section">
-      <div className="movie-section-left">{console.log(selectedMovieInfo)}</div>
+      <div className="movie-section-left"></div>
       {selectedMovieInfo ? (
         <div className="movie-section-center">
           <section
@@ -243,6 +259,30 @@ const MoviePage = () => {
                       })
                     }
                   />
+                  <div className="watched-action">
+                    <label className="watched-action-label">Watched</label>
+                    <input
+                      type="checkbox"
+                      className="watched-checkbox"
+                      checked={userActions.watched}
+                      onChange={() =>
+                        !isDisabled &&
+                        addToWatched({
+                          id: selectedMovieInfo.id,
+                          title: selectedMovieInfo.title,
+                          username: username,
+                          poster_path: selectedMovieInfo.poster_path,
+                          userActions: userActions,
+                          setUserActions: setUserActions,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="rate-and-review">
+                    <a href="" className="rr-btn">
+                      Rate & Review
+                    </a>
+                  </div>
                 </div>
                 <div className="overview-section">
                   <h3 className="section-title">Overview</h3>
@@ -298,7 +338,46 @@ const MoviePage = () => {
                 )}
               </div>
               <div className="reviews-ratings-section">
-                <h3 className="section-title">Reviews & Ratings</h3>
+                <h3 className="section-title">Ratings & Reviews</h3>
+                <section className="all-rating-reviews"></section>
+                <section className="create-rating-reviews">
+                  <form onSubmit={handleRR}>
+                    <div className="rating-group">
+                      <label>Rating /100</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        value={userActions.rating || ""}
+                        onChange={(e) =>
+                          setUserActions((prev) => ({
+                            ...prev,
+                            rating: e.target.value,
+                          }))
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="review-group">
+                      <label>(Optional) Leave A Review</label>
+                      <textarea
+                        name="review"
+                        minLength="4"
+                        maxlength="500"
+                        value={userActions.review || ""}
+                        onChange={(e) =>
+                          setUserActions((prev) => ({
+                            ...prev,
+                            review: e.target.value,
+                          }))
+                        }
+                      ></textarea>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                  </form>
+                </section>
               </div>
             </div>
             <div className="right-content">
