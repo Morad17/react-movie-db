@@ -235,7 +235,7 @@ const MoviePage = () => {
           <section
             className="movie-page-card"
             style={{
-              "--movie-bg-image": `url(http://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${selectedMovieInfo.backdrop_path})`,
+              "--movie-bg-image": `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${selectedMovieInfo.backdrop_path})`,
             }}
           >
             <div className="backdrop-wrapper"></div>
@@ -244,7 +244,7 @@ const MoviePage = () => {
                 <img
                   src={
                     selectedMovieInfo?.poster_path
-                      ? `http://image.tmdb.org/t/p/w500/${selectedMovieInfo.poster_path}`
+                      ? `https://image.tmdb.org/t/p/w500${selectedMovieInfo.poster_path}`
                       : placeholder
                   }
                   alt=""
@@ -368,7 +368,7 @@ const MoviePage = () => {
                             className="cast-card-img"
                             src={
                               cast.profile_path
-                                ? `http://media.themoviedb.org/t/p/w138_and_h175_face/${cast.profile_path}`
+                                ? `http://media.themoviedb.org/t/p/w138_and_h175_face${cast.profile_path}`
                                 : placeholder
                             }
                             alt=""
