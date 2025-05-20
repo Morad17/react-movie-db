@@ -106,8 +106,10 @@ const MoviePage = () => {
       const res = await fetch(url, options);
       const data = await res.json();
       const ytVideos = data.results.filter((video) => video.site === "YouTube");
-      const trailer = ytVideos.find((movie) => movie.type == "Trailer").key;
-      setMovieTrailer(`https://www.youtube.com/embed/${trailer}`);
+      const trailerObj = ytVideos?.find((movie) => movie.type === "Trailer");
+      if (trailerObj && trailerObj.key) {
+        setMovieTrailer(`https://www.youtube.com/embed/${trailerObj.key}`);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -133,6 +135,20 @@ const MoviePage = () => {
     }
   };
 
+  const getAllRR = async () => {
+    const { id } = params;
+    if (username) {
+      try {
+        const res = await axios.get(
+          `http://localhost:3070/getAllRR?movieId=${id}`
+        );
+        console.log(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   useEffect(() => {
     getUserMovieData();
   }, []);
@@ -143,6 +159,9 @@ const MoviePage = () => {
 
   useEffect(() => {
     getTrailer();
+  });
+  useEffect(() => {
+    getAllRR();
   });
 
   useEffect(() => {
@@ -235,7 +254,7 @@ const MoviePage = () => {
           <section
             className="movie-page-card"
             style={{
-              "--movie-bg-image": `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${selectedMovieInfo.backdrop_path})`,
+              "--movie-bg-image": `url(http://image.tmdb.org/t/p/w1920_and_h800_multi_faces${selectedMovieInfo.backdrop_path})`,
             }}
           >
             <div className="backdrop-wrapper"></div>
@@ -244,7 +263,7 @@ const MoviePage = () => {
                 <img
                   src={
                     selectedMovieInfo?.poster_path
-                      ? `https://image.tmdb.org/t/p/w500${selectedMovieInfo.poster_path}`
+                      ? `http://image.tmdb.org/t/p/w500${selectedMovieInfo.poster_path}`
                       : placeholder
                   }
                   alt=""

@@ -182,6 +182,7 @@ const useMovieActions = () => {
       toast("You must be logged in to edit watched list");
     }
   };
+  // Make Rating and Reviews
   const createRating = async ({
     id,
     username,
@@ -204,16 +205,24 @@ const useMovieActions = () => {
             rating,
             poster_path,
           });
-          toast(`Successfully rated ${title}`);
-          setUserActions((prev) => ({ ...prev, rated: true }));
+          if (res.data && res.data.success) {
+            toast(`Successfully rated ${title}`);
+            setUserActions((prev) => ({ ...prev, rated: true }));
+          } else {
+            toast("Rating unsuccessful");
+          }
           return res.data;
         } catch (err) {
           console.log(err);
           toast("Rating unsuccessfull");
         }
+      } else {
+        toast("Error Rating must be between 0-100");
       }
-    } else {
+    } else if (!username) {
       toast("You must be logged in to Rate Movies");
+    } else if (userActions.rated === true) {
+      toast("You have already rated this movie");
     }
   };
   const createReview = async ({
