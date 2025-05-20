@@ -101,7 +101,7 @@ app.post("/getUserTable", (req, res) => {
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
     ///Find Users Table base on users name (in user table)
-    if (err) return res.json("error", err);
+    if (err) return res.status("error").json(err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
       const qTable = `SELECT * FROM ${tableName}`;
@@ -124,13 +124,13 @@ app.get("/getAllRR", (req, res) => {
   JOIN reviewedMovieList ON ratingMovieList.movieId = reviewedMovieList.movieId
   WHERE reviewedMovieList.review IS NOT NULL
     AND reviewedMovieList.review != ''
-    AND ratingMovieList.movieId = ${movieId}
+    AND ratingMovieList.movieId = ?
 `;
-  mdb.query(queryTable, (err, data) => {
+  mdb.query(queryTable, [movieId], (err, data) => {
     if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
-    } else return res.json(movieId);
+    } else return res.json("failed");
   });
 });
 
