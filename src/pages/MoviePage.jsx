@@ -43,6 +43,7 @@ const MoviePage = () => {
 
   const username = localStorage.getItem("username");
   const params = useParams();
+  const profileImage = localStorage.getItem("profileImage");
 
   ///Find If User Bookmarked or Liked Movie
   const getUserMovieData = async () => {
@@ -217,8 +218,7 @@ const MoviePage = () => {
       createRatingReview({
         id,
         username,
-        userProfileImage:
-          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
+        profileImage,
         title,
         rating,
         review,

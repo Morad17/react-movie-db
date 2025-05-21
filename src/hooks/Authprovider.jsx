@@ -22,7 +22,10 @@ const AuthProvider = ({ children }) => {
         setUser(user.username);
         setToken(username);
         localStorage.setItem("username", username);
-        localStorage.setItem("profileImage", profileImage);
+        localStorage.setItem(
+          "profileImage",
+          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png"
+        );
         console.log(user);
         return navigate("/userPage");
       } else {
