@@ -37,14 +37,15 @@ app.get("/get-existing-users", (req, res) => {
   });
 });
 /// Create user
-app.post("/create-user", (req, res) => {
+app.post("/createUser", (req, res) => {
   const uniqueId =
     req.body.username.replace(/[^a-zA-Z0-9_]/g, "") + "_" + Date.now();
   const createUserQuery =
-    "INSERT into users (`username`,`name`,`email`, `password`,`tableName`)VALUES (?)";
+    "INSERT into users (`username`,`name`,`profileImage`,`email`, `password`,`tableName`)VALUES (?)";
   const createUserVal = [
     req.body.username,
     req.body.name,
+    req.body.profileImage,
     req.body.email,
     req.body.password,
     uniqueId,
@@ -57,7 +58,7 @@ app.post("/create-user", (req, res) => {
         bookmarkList BOOLEAN DEFAULT FALSE,
         likedList BOOLEAN DEFAULT FALSE,
         review TEXT,
-        rating INT CHECK (rating >= 1 AND rating <= 10),
+        rating FLOAT CHECK (rating BETWEEN 1 AND 10),
         watched BOOLEAN DEFAULT FALSE,
         poster_path TEXT,
     )`;
@@ -116,21 +117,18 @@ app.post("/getUserTable", (req, res) => {
 });
 
 // Get All Ratings & Reviews
-app.get("/getAllRR", (req, res) => {
+app.get("/getAllRatingReviews", (req, res) => {
   const movieId = req.query.movieId;
   const queryTable = `
   SELECT *
-  FROM ratingMovieList
-  JOIN reviewedMovieList ON ratingMovieList.movieId = reviewedMovieList.movieId
-  WHERE reviewedMovieList.review IS NOT NULL
-    AND reviewedMovieList.review != ''
-    AND ratingMovieList.movieId = ?
+  FROM ratingReview
+  WHERE ratingReview.movieId = ?
 `;
   mdb.query(queryTable, [movieId], (err, data) => {
     if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
-    } else return res.json("failed");
+    } else return res.json("no records found");
   });
 });
 
@@ -226,7 +224,7 @@ app.post("/addToWatched", (req, res) => {
   });
 });
 //Create Review
-app.post("/createReview", (req, res) => {
+app.post("/createRatingReview", (req, res) => {
   const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
@@ -234,83 +232,44 @@ app.post("/createReview", (req, res) => {
     if (err) return res.json("error", err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
-      const reviewQuery = `INSERT into ${tableName} (movieId,movieName, poster_path,review) VALUE (?,?,?, ?)
+      const queryTable = `INSERT into ${tableName} (movieId,movieName, poster_path,rating,review,date) VALUE (?,?,?,?, ?,?)
                 ON DUPLICATE KEY UPDATE
                 review = VALUES(review)
+                rating = VALUES(rating)
                 `;
-      const valReview = [
+      const valTable = [
         req.body.movieId,
         req.body.movieName,
         req.body.poster_path,
+        req.body.rating,
         req.body.review,
+        req.body.date,
       ];
       ///Add To Users Table Review
-      mdb.query(reviewQuery, [...valReview], (err, data) => {
+      mdb.query(queryTable, [...valTable], (err, data) => {
         if (err) return console.log(err, "error whilst pushing to table");
         if (data.length > 0) {
-          return res.send("Successfully added review to user Table");
+          return res.send("Successfully added rating & review to user Table");
         } else return err;
       });
     }
   });
   const revTableQuery =
-    "INSERT IGNORE INTO reviewedMovieList (username, userProfileImage, movieId,movieName, review) VALUES (?, ?, ?, ?, ?)";
+    "INSERT IGNORE INTO ratingReview (username, profileImage, movieId,movieName,rating, review,date) VALUES (?,?, ?, ?, ?, ?,?)";
   const valRevTable = [
     req.body.username,
-    req.body.userProfileImage,
+    req.body.profileImage,
     req.body.movieId,
     req.body.movieName,
+    req.body.rating,
     req.body.review,
+    req.body.date,
   ];
   mdb.query(revTableQuery, [...valRevTable], (err, data) => {
     if (err) return console.log(err, "error whilst pushing to table");
     if (data.length > 0) {
-      return res.send("Succesfully Reviewed Movie");
+      return res.send("Succesfully Rated and Reviewed Movie");
     } else return err;
-  });
-});
-
-//Create Rating
-app.post("/createRating", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, valTable, (err, data) => {
-    if (err)
-      return res.status(500).json({ success: false, message: "DB error" });
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const ratingQuery = `INSERT INTO ${tableName} (movieId, movieName, poster_path, rating) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE rating = VALUES(rating)`;
-      const valRating = [
-        req.body.movieId,
-        req.body.movieName,
-        req.body.poster_path,
-        req.body.rating,
-      ];
-      mdb.query(ratingQuery, valRating, (err, data) => {
-        if (err)
-          return res
-            .status(500)
-            .json({ success: false, message: "User table insert error" });
-        // Now insert into ratingMovieList
-        const ratTableQuery =
-          "INSERT IGNORE INTO ratingMovieList (username, userProfileImage, movieId, movieName, rating) VALUES (?, ?, ?, ?, ?)";
-        const valRatTable = [
-          req.body.username,
-          req.body.userProfileImage,
-          req.body.movieId,
-          req.body.movieName,
-          req.body.rating,
-        ];
-        mdb.query(ratTableQuery, valRatTable, (err, data) => {
-          if (err)
-            return res.status(500).json({
-              success: false,
-              message: "ratingMovieList insert error",
-            });
-          return res.json({ success: true });
-        });
-      });
-    }
   });
 });
 

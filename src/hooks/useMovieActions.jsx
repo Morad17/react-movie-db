@@ -183,79 +183,41 @@ const useMovieActions = () => {
     }
   };
   // Make Rating and Reviews
-  const createRating = async ({
+  const createRatingReview = async ({
     id,
     username,
-    userProfileImage,
+    profileImage,
     title,
     rating,
-    userActions,
-    setUserActions,
-    poster_path,
-  }) => {
-    console.log(userActions);
-    if (username && userActions.rated === false) {
-      if (userActions.rating < 101 && userActions.rating >= 0) {
-        try {
-          const res = await axios.post("http://localhost:3070/createRating", {
-            username,
-            movieId: id,
-            movieName: title,
-            userProfileImage,
-            rating,
-            poster_path,
-          });
-          if (res.data && res.data.success) {
-            toast(`Successfully rated ${title}`);
-            setUserActions((prev) => ({ ...prev, rated: true }));
-          } else {
-            toast("Rating unsuccessful");
-          }
-          return res.data;
-        } catch (err) {
-          console.log(err);
-          toast("Rating unsuccessfull");
-        }
-      } else {
-        toast("Error Rating must be between 0-100");
-      }
-    } else if (!username) {
-      toast("You must be logged in to Rate Movies");
-    } else if (userActions.rated === true) {
-      toast("You have already rated this movie");
-    }
-  };
-  const createReview = async ({
-    id,
-    username,
-    userProfileImage,
-    title,
     review,
-    userActions,
-    setUserActions,
     poster_path,
   }) => {
-    if (username && userActions.reviewed === false) {
-      if (userActions.review.length > 3) {
-        try {
-          const res = await axios.post("http://localhost:3070/createReview", {
+    if (username) {
+      try {
+        const res = await axios.post(
+          "http://localhost:3070/createRatingReview",
+          {
             username,
             movieId: id,
             movieName: title,
-            userProfileImage,
-            poster_path,
+            profileImage,
+            rating,
             review,
-          });
-          toast(`Successfully reviewed ${title}`);
-          setUserActions((prev) => ({ ...prev, reviewed: true }));
-          return res.data;
-        } catch (err) {
-          console.log(err);
-          toast("Your watched list was not updated");
+            poster_path,
+          }
+        );
+        if (res.data && res.data.success) {
+          toast(`Successfully rated ${title}`);
+        } else {
+          toast("Rating unsuccessful");
         }
+        return res.data;
+      } catch (err) {
+        console.log(err);
+        toast("Rating unsuccessfull");
       }
     } else {
-      toast("You must be logged in to Rate Movies");
+      toast("You must be logged in to leave a rating/review");
     }
   };
 
@@ -263,8 +225,7 @@ const useMovieActions = () => {
     addToBookmarkList,
     addToLikedList,
     addToWatched,
-    createRating,
-    createReview,
+    createRatingReview,
     isDisabled,
   };
 };

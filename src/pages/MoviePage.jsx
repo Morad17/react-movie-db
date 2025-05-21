@@ -37,8 +37,7 @@ const MoviePage = () => {
     addToBookmarkList,
     addToLikedList,
     addToWatched,
-    createRating,
-    createReview,
+    createRatingReview,
     isDisabled,
   } = useMovieActions();
 
@@ -62,10 +61,15 @@ const MoviePage = () => {
             review: movieInfo.review,
             rating: movieInfo.rating,
             rated:
-              movieInfo.rating && movieInfo.rating.length > 1 ? true : false,
+              typeof movieInfo.rating === "number" && movieInfo.rating > 1
+                ? true
+                : false,
             reviewed:
-              movieInfo.review && movieInfo.review.length > 1 ? true : false,
+              typeof movieInfo.review === "number" && movieInfo.review > 1
+                ? true
+                : false,
           });
+        console.log(typeof userActions.rating);
       } catch (err) {
         console.log(err);
       }
@@ -140,7 +144,7 @@ const MoviePage = () => {
     if (username) {
       try {
         const res = await axios.get(
-          `http://localhost:3070/getAllRR?movieId=${id}`
+          `http://localhost:3070/getAllRatingReviews?movieId=${id}`
         );
         console.log(res.data);
       } catch (err) {
@@ -159,10 +163,10 @@ const MoviePage = () => {
 
   useEffect(() => {
     getTrailer();
-  });
+  }, []);
   useEffect(() => {
     getAllRR();
-  });
+  }, []);
 
   useEffect(() => {
     getCast();
@@ -204,45 +208,24 @@ const MoviePage = () => {
   //Handle Ratig and Review Submissiion//
 
   const handleRR = (e) => {
+    const { id } = params;
     e.preventDefault();
     console.log(userActions);
-    if (userActions.rating && userActions.review) {
-      createRating({
-        id: selectedMovieInfo.id,
+    const { title, poster_path } = selectedMovieInfo;
+    const { rating, review } = userActions;
+    if (userActions.rating.length > 3) {
+      createRatingReview({
+        id,
         username,
         userProfileImage:
           "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
-        title: selectedMovieInfo.title,
-        rating: userActions.rating,
-        poster_path: selectedMovieInfo.poster_path,
-        userActions,
-        setUserActions,
-      });
-      createReview({
-        id: selectedMovieInfo.id,
-        username,
-        userProfileImage:
-          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
-        title: selectedMovieInfo.title,
-        review: userActions.review,
-        poster_path: selectedMovieInfo.poster_path,
-        userActions: userActions,
-        setUserActions: setUserActions,
-      });
-    } else if (userActions.rating && !userActions.review) {
-      createRating({
-        id: selectedMovieInfo.id,
-        username,
-        userProfileImage:
-          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png",
-        title: selectedMovieInfo.title,
-        poster_path: selectedMovieInfo.poster_path,
-        rating: userActions.rating,
-        userActions,
-        setUserActions,
+        title,
+        rating,
+        review,
+        poster_path,
       });
     } else {
-      toast("Please fully fill in the form");
+      toast("Please  fill in the rating fully");
     }
   };
 
@@ -406,7 +389,16 @@ const MoviePage = () => {
               </div>
               <div className="reviews-ratings-section">
                 <h3 className="section-title">Ratings & Reviews</h3>
-                <section className="all-rating-reviews"></section>
+                <section className="all-rating-reviews">
+                  <div className="my-rr">
+                    {userActions.rated ? (
+                      <div className="">{userActions.rating}</div>
+                    ) : (
+                      <h3>You Havent Rated This Movie Yet</h3>
+                    )}
+                  </div>
+                  <div className="user-rating"></div>
+                </section>
                 <section className="create-rating-reviews">
                   <form onSubmit={handleRR}>
                     <div className="rating-group">

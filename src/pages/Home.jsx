@@ -49,6 +49,7 @@ const Home = () => {
   const [register, setRegister] = useState({
     username: "",
     name: "",
+    profileImage: "",
     email: "",
     password: "",
     confirm: "",
@@ -70,7 +71,7 @@ const Home = () => {
     }
     try {
       const { confirm, ...userData } = register;
-      await axios.post("http://localhost:3070/create-user", userData);
+      await axios.post("http://localhost:3070/createUser", userData);
       statusCodeHandler(201);
     } catch (err) {
       console.log(err);
@@ -249,6 +250,16 @@ const Home = () => {
                   <input
                     required
                     type="text"
+                    name="name"
+                    value={register.name}
+                    onChange={inputHandler}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Profile Image</label>
+                  <input
+                    required
+                    type="file"
                     name="name"
                     value={register.name}
                     onChange={inputHandler}
