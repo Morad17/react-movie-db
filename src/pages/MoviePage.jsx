@@ -14,6 +14,7 @@ import "swiper/css/pagination";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { GiRoundStar } from "react-icons/gi";
 import { BiHeartCircle } from "react-icons/bi";
+import { PiNotePencilLight } from "react-icons/pi";
 import VoteIcon from "../components/VoteIcon";
 //Files
 import placeholder from "../assets/images/poster-placeholder.png";
@@ -353,7 +354,7 @@ const MoviePage = () => {
                     <input
                       type="checkbox"
                       className="watched-checkbox"
-                      checked={userActions.watched}
+                      checked={!!userActions.watched}
                       onChange={() =>
                         !isDisabled &&
                         addToWatched({
@@ -367,11 +368,39 @@ const MoviePage = () => {
                       }
                     />
                   </div>
-                  <div className="rate-and-review">
-                    <a href="" className="rr-btn">
-                      Rate & Review
-                    </a>
-                  </div>
+                  {userActions.rated ? (
+                    <div className="rate-and-review-action">
+                      <label className="rate-and-review-label">Rated</label>
+                      <input
+                        type="checkbox"
+                        className="rate-and-review-checkbox"
+                        checked={true}
+                        readOnly
+                      />
+                    </div>
+                  ) : (
+                    <div className="rate-and-review-action">
+                      <div className="rate-svg">
+                        <PiNotePencilLight />
+                      </div>
+
+                      <a
+                        href="#create-rating-review"
+                        className="rr-btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const el = document.getElementById(
+                            "create-rating-review"
+                          );
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                      >
+                        Rate & Review
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="overview-section">
                   <h3 className="section-title">Overview</h3>
@@ -433,7 +462,51 @@ const MoviePage = () => {
                     {userActions.rated ? (
                       <div className="">{userActions.rating}</div>
                     ) : (
-                      <h3>You Havent Rated This Movie Yet</h3>
+                      <div className="">
+                        <h3>You Havent Rated This Movie Yet</h3>
+                        <div
+                          id="create-rating-review"
+                          className="create-rating-review"
+                        >
+                          <h3>Create Rating & Review:</h3>
+                          <form onSubmit={handleRR}>
+                            <div className="rating-group">
+                              <label>Rating /100</label>
+                              <input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="100"
+                                value={userActions.rating || ""}
+                                onChange={(e) =>
+                                  setUserActions((prev) => ({
+                                    ...prev,
+                                    rating: e.target.value,
+                                  }))
+                                }
+                                required
+                              />
+                            </div>
+                            <div className="review-group">
+                              <label>(Optional) Leave A Review</label>
+                              <textarea
+                                name="review"
+                                minLength="4"
+                                maxLength="500"
+                                value={userActions.review || ""}
+                                onChange={(e) =>
+                                  setUserActions((prev) => ({
+                                    ...prev,
+                                    review: e.target.value,
+                                  }))
+                                }
+                              ></textarea>
+                            </div>
+
+                            <button type="submit">Submit</button>
+                          </form>
+                        </div>
+                      </div>
                     )}
                   </div>
                   <div className="user-rating-reviews">
@@ -445,44 +518,6 @@ const MoviePage = () => {
                       )}
                     </div>
                   </div>
-                </section>
-                <section className="create-rating-reviews">
-                  <form onSubmit={handleRR}>
-                    <div className="rating-group">
-                      <label>Rating /100</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="100"
-                        value={userActions.rating || ""}
-                        onChange={(e) =>
-                          setUserActions((prev) => ({
-                            ...prev,
-                            rating: e.target.value,
-                          }))
-                        }
-                        required
-                      />
-                    </div>
-                    <div className="review-group">
-                      <label>(Optional) Leave A Review</label>
-                      <textarea
-                        name="review"
-                        minLength="4"
-                        maxLength="500"
-                        value={userActions.review || ""}
-                        onChange={(e) =>
-                          setUserActions((prev) => ({
-                            ...prev,
-                            review: e.target.value,
-                          }))
-                        }
-                      ></textarea>
-                    </div>
-
-                    <button type="submit">Submit</button>
-                  </form>
                 </section>
               </div>
             </div>

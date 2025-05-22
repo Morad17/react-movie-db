@@ -268,10 +268,10 @@ input[type="checkbox"]:hover {
     background: $red;
     color: white;
     align-items: center;
-    label {
-      font-size: 18px;
-      padding-left: 10px;
-    }
+  }
+  .watched-action-label {
+    font-size: 18px;
+    padding-left: 10px;
   }
   .all-genres {
     display: flex;
@@ -773,6 +773,16 @@ input[type="checkbox"]:hover {
     background-color: gray;
     color: white;
   }
+  .rate-and-review-action {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    background-color: gray;
+    color: white;
+    text-decoration: none;
+  }
   .watched-checkbox {
     width: 1.5em;
     height: 1.5em;
@@ -835,6 +845,39 @@ input[type="checkbox"]:hover {
   }
   .section-text-right {
     margin-top: 10px;
+  }
+  .rate-and-review-checkbox {
+    width: 1.5em;
+    height: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 5px;
+    background: $red;
+    color: white;
+    align-items: center;
+  }
+  .rate-and-review-action:hover {
+    background-color: #12504a;
+  }
+  .rate-and-review-label {
+    font-size: 18px;
+    padding-left: 10px;
+  }
+  .rr-btn {
+    font-size: 18px;
+    padding: 0 5px;
+    color: white;
+    text-decoration: none;
+  }
+  .rate-svg {
+    display: flex;
+    align-items: center;
+  }
+  .rate-svg svg {
+    font-size: 1.3em;
+    cursor: pointer;
   }
 }
 

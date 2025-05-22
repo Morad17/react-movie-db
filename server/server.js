@@ -102,7 +102,7 @@ app.post("/getUserTable", (req, res) => {
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
     ///Find Users Table base on users name (in user table)
-    if (err) return res.status("error").json(err);
+    if (err) return res.json(err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
       const qTable = `SELECT * FROM ${tableName}`;
@@ -140,7 +140,7 @@ app.post("/addToBookmarkList", (req, res) => {
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
     ///Find Users Table base on users name (in user table)
-    if (err) return res.json("error", err);
+    if (err) return res.json(err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
       const bookmarkQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,bookmarkList)VALUE (?, ?, ?,?)
@@ -170,7 +170,7 @@ app.post("/addToLikedList", (req, res) => {
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
     ///Find Users Table base on users name (in user table)
-    if (err) return res.json("error", err);
+    if (err) return res.json(err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
       const likeQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,likedList)VALUE (?, ?, ?,?)
@@ -200,7 +200,7 @@ app.post("/addToWatched", (req, res) => {
   const valTable = [req.body.username];
   mdb.query(queryTable, [...valTable], (err, data) => {
     ///Find Users Table base on users name (in user table)
-    if (err) return res.json("error", err);
+    if (err) return res.json(err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
       const watchedQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watched)VALUE (?, ?, ?,?)
