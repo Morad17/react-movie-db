@@ -2,20 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-import ReactCountryFlag from "react-country-flag";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper/modules";
 import useMovieActions from "../hooks/useMovieActions";
-
+import ReactCountryFlag from "react-country-flag";
+//Css
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+//Icons
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { GiRoundStar } from "react-icons/gi";
 import { BiHeartCircle } from "react-icons/bi";
-
+import VoteIcon from "../components/VoteIcon";
+//Files
 import placeholder from "../assets/images/poster-placeholder.png";
 import ProfileImage from "../assets/images/profile-image-placeholder.png";
 import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
-import VoteIcon from "../components/VoteIcon";
 
 const MoviePage = () => {
   ///UseStates///
@@ -31,7 +36,8 @@ const MoviePage = () => {
     rating: false,
     review: null,
   });
-
+  const [allReviews, setAllReviews] = useState();
+  const [averageRating, setAverageRating] = useState();
   ///Bookmark and Like ///
   const {
     addToBookmarkList,
@@ -59,18 +65,8 @@ const MoviePage = () => {
             bookmarkList: movieInfo.bookmarkList,
             likedList: movieInfo.likedList,
             watched: movieInfo.watched,
-            review: movieInfo.review,
-            rating: movieInfo.rating,
-            rated:
-              typeof movieInfo.rating === "number" && movieInfo.rating > 1
-                ? true
-                : false,
-            reviewed:
-              typeof movieInfo.review === "number" && movieInfo.review > 1
-                ? true
-                : false,
           });
-        console.log(typeof userActions.rating);
+        console.log(userActions);
       } catch (err) {
         console.log(err);
       }
@@ -147,13 +143,55 @@ const MoviePage = () => {
         const res = await axios.get(
           `http://localhost:3070/getAllRatingReviews?movieId=${id}`
         );
-        console.log(res.data);
+        // Set users Review
+        if (Array.isArray(res.data)) {
+          const myReview = res.data.find(
+            (review) =>
+              String(review.movieId) === String(id) &&
+              review.username === username
+          );
+          setUserActions((prev) => ({
+            ...prev,
+            rating: myReview.rating,
+            review: myReview.review,
+            rated:
+              typeof myReview.rating === "number" && myReview.rating >= 0
+                ? true
+                : false,
+            reviewed:
+              typeof myReview.review === "string" && myReview.review.length > 0
+                ? true
+                : false,
+          }));
+          //Set All Movie Reviews
+          const allMovieReviews = res.data.filter(
+            (review) =>
+              String(review.movieId) === String(id) && review.review.length > 0
+          );
+          setAllReviews(allMovieReviews);
+          // Get all ratings & make average score
+          const allRatings = res.data
+            .filter(
+              (review) =>
+                String(review.movieId) === String(id) &&
+                typeof review.rating === "number"
+            )
+            .map((review) => review.rating);
+          const avgRating =
+            allRatings.length > 0
+              ? allRatings.reduce((sum, rating) => sum + rating, 0) /
+                allRatings.length
+              : false;
+
+          setAverageRating(avgRating);
+        }
       } catch (err) {
         console.log(err);
       }
+    } else {
+      return toast(`You must be logged in to Review and Rate`);
     }
   };
-
   useEffect(() => {
     getUserMovieData();
   }, []);
@@ -214,7 +252,7 @@ const MoviePage = () => {
     console.log(userActions);
     const { title, poster_path } = selectedMovieInfo;
     const { rating, review } = userActions;
-    if (userActions.rating.length > 3) {
+    if (userActions.rating > 3) {
       createRatingReview({
         id,
         username,
@@ -223,6 +261,7 @@ const MoviePage = () => {
         rating,
         review,
         poster_path,
+        date: new Date(),
       });
     } else {
       toast("Please  fill in the rating fully");
@@ -390,14 +429,22 @@ const MoviePage = () => {
               <div className="reviews-ratings-section">
                 <h3 className="section-title">Ratings & Reviews</h3>
                 <section className="all-rating-reviews">
-                  <div className="my-rr">
+                  <div className="my-rating-review">
                     {userActions.rated ? (
                       <div className="">{userActions.rating}</div>
                     ) : (
                       <h3>You Havent Rated This Movie Yet</h3>
                     )}
                   </div>
-                  <div className="user-rating"></div>
+                  <div className="user-rating-reviews">
+                    <div className="rating">
+                      {averageRating ? (
+                        <h3>Average Score:{averageRating}</h3>
+                      ) : (
+                        <h3>This Movie hasn't been Rated yet</h3>
+                      )}
+                    </div>
+                  </div>
                 </section>
                 <section className="create-rating-reviews">
                   <form onSubmit={handleRR}>

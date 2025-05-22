@@ -232,9 +232,9 @@ app.post("/createRatingReview", (req, res) => {
     if (err) return res.json("error", err);
     if (data.length > 0) {
       const tableName = data[0].tableName;
-      const queryTable = `INSERT into ${tableName} (movieId,movieName, poster_path,rating,review,date) VALUE (?,?,?,?, ?,?)
+      const queryTable = `INSERT into ${tableName} (movieId,movieName, poster_path,rating,review) VALUE (?,?,?,?, ?)
                 ON DUPLICATE KEY UPDATE
-                review = VALUES(review)
+                review = VALUES(review),
                 rating = VALUES(rating)
                 `;
       const valTable = [
@@ -243,11 +243,10 @@ app.post("/createRatingReview", (req, res) => {
         req.body.poster_path,
         req.body.rating,
         req.body.review,
-        req.body.date,
       ];
       ///Add To Users Table Review
       mdb.query(queryTable, [...valTable], (err, data) => {
-        if (err) return console.log(err, "error whilst pushing to table");
+        if (err) return console.log(err, "error whilst pushing to user table");
         if (data.length > 0) {
           return res.send("Successfully added rating & review to user Table");
         } else return err;
@@ -266,7 +265,8 @@ app.post("/createRatingReview", (req, res) => {
     req.body.date,
   ];
   mdb.query(revTableQuery, [...valRevTable], (err, data) => {
-    if (err) return console.log(err, "error whilst pushing to table");
+    if (err)
+      return console.log(err, "error whilst pushing to ratingReview table");
     if (data.length > 0) {
       return res.send("Succesfully Rated and Reviewed Movie");
     } else return err;

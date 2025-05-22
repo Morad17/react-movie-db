@@ -191,6 +191,7 @@ const useMovieActions = () => {
     rating,
     review,
     poster_path,
+    date,
   }) => {
     if (username) {
       try {
@@ -204,6 +205,7 @@ const useMovieActions = () => {
             rating,
             review,
             poster_path,
+            date,
           }
         );
         if (res.data && res.data.success) {
