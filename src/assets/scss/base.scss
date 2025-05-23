@@ -16,9 +16,13 @@ body {
   padding: 0 21vw;
 }
 .main-nav {
+  background-color: $turquoise;
+  padding: 10px 0;
+}
+.logged-in-nav,
+.logged-out-nav {
   display: flex;
   justify-content: space-between;
-  background-color: $turquoise;
   align-items: center;
 }
 .nav-logo {
@@ -70,6 +74,12 @@ input[type="checkbox"]:hover {
 .heart-svg:hover,
 .save-svg:hover {
   color: $turquoise;
+}
+.logo-svg {
+  width: 50px;
+  path {
+    fill: white;
+  }
 }
 /*-------------Home Section------------*/
 .home-section {

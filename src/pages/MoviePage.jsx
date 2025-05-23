@@ -60,7 +60,7 @@ const MoviePage = () => {
         const res = await axios.post("http://localhost:3070/getUserTable", {
           username: username,
         });
-        const movieInfo = res.data.find((movie) => movie.movieId == id);
+        const movieInfo = res.data.find((movie) => movie.movieId === id);
         movieInfo &&
           setUserActions({
             bookmarkList: movieInfo.bookmarkList,
