@@ -73,7 +73,7 @@ const MovieCard = ({
 
   return (
     <div className={`movie-card $userActionso.watched ? "watched-card" : ""}`}>
-      <div className="movie-content">
+      <div className="movie-content-card">
         <div className="movie-header">
           <div className="header-left">
             <BsBookmarkStarFill
@@ -121,13 +121,17 @@ const MovieCard = ({
             className="movie-image"
           />
         </Link>
+        <div className="movie-rating">
+          {/* <p className="vote-count">{vote_average.toFixed(1)}</p> */}
+          <VoteIcon vote={vote_average} />
+        </div>
       </div>
       <div className="movie-footer">
         <div className="group-row">
           <h3 className="movie-title">{title}</h3>
-          <div className="vote-group">
+          {/* <div className="vote-group">
             <VoteIcon vote={vote_average} />
-          </div>
+          </div> */}
         </div>
         <p className="year-release">{release_date?.slice(0, 4)}</p>
         <div className="genre-group">

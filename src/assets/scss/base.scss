@@ -41,6 +41,7 @@ body {
     text-decoration: none;
     color: white;
     margin: 0 1.5rem;
+    padding: 5px;
 
     // Remove border-bottom here
     border-bottom: none;
@@ -237,6 +238,9 @@ input[type="checkbox"]:hover {
       background-color: $turquoise;
     }
   }
+  .info-div svg {
+    font-size: 1.3em;
+  }
   .info-div-text {
     font-size: 14px;
     margin: 10px 0;
@@ -368,8 +372,12 @@ input[type="checkbox"]:hover {
       color: #fff;
     }
   }
+  .react-datepicker__navigation-icon:before {
+    border-color: $turquoise;
+  }
   .year-picker {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 80%;
     height: 40px;
@@ -396,102 +404,75 @@ input[type="checkbox"]:hover {
 .react-datepicker__input-container input:not(:placeholder-shown) {
   color: white; // Show text when focused or has value
 }
-.year-reset-btn {
-  background: #501218;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  border-radius: 5px;
-  height: 100%;
-  align-items: center;
-  align-content: center;
-  width: 20%;
-  text-align: center;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border: 1px solid white;
-}
 // /// DIY Year Picker ///
-// .year-picker-component {
-//   z-index: 1111;
-//   display: flex;
-//   flex-flow: column;
-//   gap: 0.5rem;
-//   max-height: 240px;
-//   padding: 0.5rem;
-//   background-color: #929292;
-//   border-radius: 5px;
-// }
-// .year-picker-decade-nav {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 1rem;
-//   margin-bottom: 0.5rem;
+.diy {
+  // .year-picker-component {
+  //   z-index: 1111;
+  //   display: flex;
+  //   flex-flow: column;
+  //   gap: 0.5rem;
+  //   max-height: 240px;
+  //   padding: 0.5rem;
+  //   background-color: #929292;
+  //   border-radius: 5px;
+  // }
+  // .year-picker-decade-nav {
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   gap: 1rem;
+  //   margin-bottom: 0.5rem;
 
-//   button {
-//     background: none;
-//     border: none;
-//     color: #501218;
-//     font-size: 1.5rem;
-//     cursor: pointer;
-//     padding: 0 0.5rem;
+  //   button {
+  //     background: none;
+  //     border: none;
+  //     color: #501218;
+  //     font-size: 1.5rem;
+  //     cursor: pointer;
+  //     padding: 0 0.5rem;
 
-//     &:disabled {
-//       color: #ccc;
-//       cursor: not-allowed;
-//     }
-//   }
+  //     &:disabled {
+  //       color: #ccc;
+  //       cursor: not-allowed;
+  //     }
+  //   }
 
-//   span {
-//     font-weight: bold;
-//     font-size: 0.8rem;
-//     color: #12504a;
-//   }
-// }
+  //   span {
+  //     font-weight: bold;
+  //     font-size: 0.8rem;
+  //     color: #12504a;
+  //   }
+  // }
 
-// .year-picker-grid {
-//   display: flex;
-//   flex-wrap: wrap;
-//   gap: 0.5rem;
-//   margin-bottom: 0.5rem;
-// }
+  // .year-picker-grid {
+  //   display: flex;
+  //   flex-wrap: wrap;
+  //   gap: 0.5rem;
+  //   margin-bottom: 0.5rem;
+  // }
 
-// .year-btn {
-//   flex: 1 0 30%;
-//   box-sizing: border-box;
-//   text-align: center;
-//   background: #12504a;
-//   color: #fff;
-//   border: none;
-//   border-radius: 5px;
-//   padding: 0.5em 0;
-//   font-size: 0.8rem;
-//   cursor: pointer;
-//   transition: background 0.2s;
-//   outline: none;
+  // .year-btn {
+  //   flex: 1 0 30%;
+  //   box-sizing: border-box;
+  //   text-align: center;
+  //   background: #12504a;
+  //   color: #fff;
+  //   border: none;
+  //   border-radius: 5px;
+  //   padding: 0.5em 0;
+  //   font-size: 0.8rem;
+  //   cursor: pointer;
+  //   transition: background 0.2s;
+  //   outline: none;
 
-//   &:hover,
-//   &.selected {
-//     background: #501218;
-//     color: #fff;
-//   }
-// }
-
-.reset-btn {
-  grid-column: span 3;
-  background: #c3c3c3;
-  color: #501218;
-  font-weight: bold;
-  margin-top: 0.5rem;
-
-  &:hover {
-    background: #501218;
-    color: #fff;
-  }
+  //   &:hover,
+  //   &.selected {
+  //     background: #501218;
+  //     color: #fff;
+  //   }
+  // }
 }
-
-//////////////////////
+/////////////////////////////
 .info-div {
   background: radial-gradient(#30938b, #12504a);
   color: white;
@@ -506,7 +487,8 @@ input[type="checkbox"]:hover {
 }
 .sort-btn,
 .filter-btn,
-.help-btn {
+.help-btn,
+.filter-submit-btn {
   // Set up a gradient background with initial size 0 (hidden)
   background: linear-gradient(90deg, #501218 0%, #501218 100%) no-repeat,
     radial-gradient(#12504a 80%, #12504a 100%);
@@ -543,18 +525,18 @@ input[type="checkbox"]:hover {
 .filter-btn-div {
   display: flex;
   justify-content: center;
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
 }
 .filter-submit-btn {
-  text-align: center;
-  background: radial-gradient(#12504a);
-  color: white;
-  border-radius: 5px;
+  border-radius: 20px;
   padding: 10px;
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
-  text-decoration: none;
-  width: 80%;
-  margin: 10px 0;
   cursor: pointer;
+}
+.filtered {
+  background: $red;
 }
 .watched-card {
   filter: brightness(0.4);
@@ -586,6 +568,14 @@ input[type="checkbox"]:hover {
     margin: 0;
     position: absolute;
   }
+  .movie-content-card {
+    position: relative;
+  }
+  .movie-rating {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+  }
   .header-left {
     display: flex;
     flex-direction: column;
@@ -611,11 +601,11 @@ input[type="checkbox"]:hover {
     align-items: center;
     justify-content: space-between;
   }
-  .vote-group {
-    padding: 2px 10px;
-    font-size: 16px;
-    bottom: 25%;
-  }
+  // .vote-group {
+  //   padding: 2px 10px;
+  //   font-size: 16px;
+  //   bottom: 25%;
+  // }
   .year-release {
     margin: 0;
     padding: 0 10px;
@@ -817,6 +807,9 @@ input[type="checkbox"]:hover {
   .movie-section-left,
   .movie-section-right {
     width: 21vw;
+    display: flex;
+    align-items: center;
+    flex-flow: column;
   }
   .movie-section-center {
     width: 58vw;
@@ -836,6 +829,13 @@ input[type="checkbox"]:hover {
   .poster-image {
     border-radius: 5px;
     width: 80%;
+  }
+  .info-div svg {
+    font-size: 1.3em;
+  }
+  .info-div-text {
+    font-size: 14px;
+    margin: 10px 0;
   }
   .top-content {
     display: flex;
@@ -934,12 +934,20 @@ input[type="checkbox"]:hover {
   .rate-and-review-action {
     border-radius: 5px;
     padding: 5px;
-    margin: 0 5px;
+    margin: 0 10px;
     display: flex;
     align-items: center;
     background-color: gray;
     color: white;
     text-decoration: none;
+  }
+  .submit-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    color: white;
+    background: #12504a;
+    border: none;
+    border-radius: 20px;
   }
   .watched-checkbox {
     width: 1.5em;
@@ -1004,24 +1012,25 @@ input[type="checkbox"]:hover {
   .section-text-right {
     margin-top: 10px;
   }
-  .rate-and-review-checkbox {
-    width: 1.5em;
-    height: 1.5em;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid;
-    padding: 5px;
-    border-radius: 5px;
-    background: $red;
-    color: white;
-    align-items: center;
-  }
+  // .rate-and-review-checkbox {
+  //   width: 1.5em;
+  //   height: 1.5em;
+  //   display: flex;
+  //   justify-content: space-between;
+  //   border: 1px solid;
+  //   padding: 5px;
+  //   border-radius: 5px;
+  //   background: $red;
+  //   color: white;
+  //   align-items: center;
+  // }
   .rate-and-review-action:hover {
     background-color: #12504a;
   }
   .rate-and-review-label {
+    padding: 0 5px;
     font-size: 18px;
-    padding-left: 10px;
+    background-color: #12504a;
   }
   .rr-btn {
     font-size: 18px;

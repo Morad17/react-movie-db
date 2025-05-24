@@ -22,6 +22,7 @@ import ProfileImage from "../assets/images/profile-image-placeholder.png";
 import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
+import { IoIosHelpCircle } from "react-icons/io";
 
 const MoviePage = () => {
   ///UseStates///
@@ -39,6 +40,7 @@ const MoviePage = () => {
   });
   const [allReviews, setAllReviews] = useState();
   const [averageRating, setAverageRating] = useState();
+  const [helpClicked, setHelpClicked] = useState(false);
   ///Bookmark and Like ///
   const {
     addToBookmarkList,
@@ -271,7 +273,44 @@ const MoviePage = () => {
 
   return (
     <div className="movie-page-section">
-      <div className="movie-section-left"></div>
+      <div className="movie-section-left">
+        <div
+          className={`help-btn ${helpClicked && "btn-active"}`}
+          onClick={() => setHelpClicked(!helpClicked)}
+        >
+          <IoIosHelpCircle />
+          Help
+        </div>
+        {helpClicked && (
+          <div className="info-div">
+            <h3 className="info-div-title">Get Started</h3>
+            <p className="info-div-text">Click on the movie for more info </p>
+            <p className="info-div-text">
+              <BsBookmarkStarFill
+                style={{ fontSize: "1.3em", color: "gold" }}
+              />{" "}
+              Click The Bookmark Icon to add movie to bookmark list. Click again
+              to remove from list
+            </p>
+            <p className="info-div-text">
+              <BiHeartCircle style={{ fontSize: "1.5em", color: "gold" }} />
+              Click the Like icon to add movie to liked list. Click again to
+              remove.
+            </p>
+            <p className="info-div-text">
+              If You have watched the film, tick the CheckBox.
+            </p>
+            <div className="info-div-text">
+              If Rated ,a Rated Button will appear at the top. You can only rate
+              once.
+            </div>
+            <div className="info-div-text">
+              If not Rated, a Rate and Review Button will appear and you can
+              rate and review movie. Reviews are Optional.
+            </div>
+          </div>
+        )}
+      </div>
       {selectedMovieInfo ? (
         <div className="movie-section-center">
           <section
@@ -369,14 +408,11 @@ const MoviePage = () => {
                     />
                   </div>
                   {userActions.rated ? (
-                    <div className="rate-and-review-action">
+                    <div
+                      className="rate-and-review-action"
+                      style={{ background: "#12504a" }}
+                    >
                       <label className="rate-and-review-label">Rated</label>
-                      <input
-                        type="checkbox"
-                        className="rate-and-review-checkbox"
-                        checked={true}
-                        readOnly
-                      />
                     </div>
                   ) : (
                     <div className="rate-and-review-action">
@@ -503,7 +539,9 @@ const MoviePage = () => {
                               ></textarea>
                             </div>
 
-                            <button type="submit">Submit</button>
+                            <button className="submit-btn" type="submit">
+                              Submit
+                            </button>
                           </form>
                         </div>
                       </div>

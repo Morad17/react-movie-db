@@ -38,29 +38,23 @@ const VoteIcon = ({ vote }) => {
         >
           <GiRoundStar style={{ color: "gold", fontSize: "3em" }} />
         </span>
-      </span>
-      <p
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          margin: 0,
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "16px",
-          pointerEvents: "none",
-        }}
-      >
-        {vote?.toFixed(1) * 10}
-        <sup
+
+        <p
           style={{
-            fontSize: "10px",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            margin: 0,
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "16px",
+            pointerEvents: "none",
           }}
         >
-          %
-        </sup>
-      </p>
+          {vote?.toFixed(1)}
+        </p>
+      </span>
     </div>
   );
 };

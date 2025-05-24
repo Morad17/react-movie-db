@@ -213,7 +213,7 @@ const useMovieActions = () => {
         } else {
           toast("Rating unsuccessful");
         }
-        return res.data;
+        console.log(res.data);
       } catch (err) {
         console.log(err);
         toast("Rating unsuccessfull");

@@ -23,10 +23,11 @@ const MovieLibrary = () => {
   const [userMovieData, setUserMovieData] = useState([]);
   // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterTrigger, setFilterTrigger] = useState(0);
   const [sortOption, setSortOption] = useState("popularity.desc");
+  const [filterTrigger, setFilterTrigger] = useState(0);
   const [sorting, setSorting] = useState(false);
-  const [filters, setFilters] = useState(false);
+  const [filtersBtn, setFiltersBtn] = useState(false);
+  const [filtersUsed, setFiltersUsed] = useState(false);
   const [allFilters, setAllFilters] = useState({
     year: "",
     cast: "",
@@ -195,12 +196,19 @@ const MovieLibrary = () => {
               <h3 className="info-div-title">Get Started</h3>
               <p className="info-div-text">Click on the movie for more info </p>
               <p className="info-div-text">
-                <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to
-                bookmark list. Click again to remove from list
+                <BsBookmarkStarFill
+                  style={{ fontSize: "1.3em", color: "gold" }}
+                />{" "}
+                Click The Bookmark Icon to add movie to bookmark list. Click
+                again to remove from list
               </p>
               <p className="info-div-text">
-                <BiHeartCircle /> Click the Like icon to add movie to liked
-                list. Click again to remove.
+                <BiHeartCircle style={{ fontSize: "1.5em", color: "gold" }} />
+                Click the Like icon to add movie to liked list. Click again to
+                remove.
+              </p>
+              <p className="info-div-text">
+                Watched Films will appear as grayed out.
               </p>
             </div>
           )}
@@ -224,15 +232,15 @@ const MovieLibrary = () => {
         {/*-------------Filters---------*/}
         <div className="movie-content-left">
           <p
-            onClick={() => setFilters(!filters)}
-            className={`filter-btn ${filters && "btn-active"}`}
+            onClick={() => setFiltersBtn(!filtersBtn)}
+            className={`filter-btn ${filtersBtn && "btn-active"}`}
           >
             Filter
           </p>
-          {filters && (
+          {filtersBtn && (
             <div className="filters-function">
               <div className="genre-filter">
-                <p className="filter-title">By Genre:</p>
+                <p className="filter-title"> Genre:</p>
                 <div className="all-genres">
                   {genres.map((g, key) => {
                     const isSelected = allFilters.genres.includes(g.id);
@@ -251,7 +259,7 @@ const MovieLibrary = () => {
                 </div>
               </div>
               <div className="year-filter">
-                <p className="filter-title">By Year:</p>
+                <p className="filter-title"> Year:</p>
                 <div className="year-picker">
                   <DatePicker
                     placeholderText="yyyy"
@@ -268,23 +276,10 @@ const MovieLibrary = () => {
                     dateFormat="yyyy"
                     yearItemNumber={10}
                   />
-                  <p
-                    className="year-reset-btn"
-                    onClick={() => {
-                      setYearSearch();
-                      setAllFilters((prev) => ({
-                        ...prev,
-                        year: "",
-                      }));
-                      setFilterTrigger((prev) => prev + 1);
-                    }}
-                  >
-                    Reset
-                  </p>
                 </div>
               </div>
               <div className="watched-filter">
-                <p className="filter-title">By watched Movies:</p>
+                <p className="filter-title">Watched Movies:</p>
                 <div className="watched-checkbox">
                   <label>Include Movies Watched</label>
                   <input
@@ -295,8 +290,27 @@ const MovieLibrary = () => {
                 </div>
               </div>
               <div className="filter-btn-div">
-                <p className="filter-submit-btn" onClick={() => filterSearch()}>
-                  Filter Movies
+                <p
+                  className={`filter-submit-btn ${filtersUsed && "btn-active"}`}
+                  onClick={() => {
+                    if (!filtersUsed) {
+                      filterSearch();
+                      setFiltersUsed(true);
+                    } else {
+                      setAllFilters({
+                        year: "",
+                        cast: "",
+                        genres: [],
+                      });
+                      setYearSearch();
+                      setGenreSearch && setGenreSearch(""); // Only if you have this state
+                      setCastSearch && setCastSearch(""); // Only if you have this state
+                      setFilterTrigger((prev) => prev + 1);
+                      setFiltersUsed(false);
+                    }
+                  }}
+                >
+                  {filtersUsed ? "Filters On" : "Filters Off"}
                 </p>
               </div>
             </div>
@@ -331,7 +345,7 @@ const MovieLibrary = () => {
           </p>
           {sorting && (
             <div className="sort-function">
-              <p>Sort Results By:</p>
+              <p>Sort Results :</p>
               <Select
                 options={selectOptions}
                 classNamePrefix={"react-select"}
