@@ -10,6 +10,7 @@ body {
   padding: 0;
   margin: 0;
   background-color: $gray;
+  font-family: "Inter", Arial, sans-serif;
 }
 .home-section,
 .user-page-section {
@@ -26,7 +27,7 @@ body {
   align-items: center;
 }
 .nav-logo {
-  width: 9vw;
+  width: 70px;
   margin-left: 1vw;
   color: white;
 }
@@ -36,9 +37,32 @@ body {
   width: 90vw;
   list-style: none;
   .link {
+    position: relative;
     text-decoration: none;
     color: white;
     margin: 0 1.5rem;
+
+    // Remove border-bottom here
+    border-bottom: none;
+
+    // Pseudo-element for animated underline
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 4px;
+      background: $red;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+  }
+  .link.active-link::after {
+    transform: scaleX(1);
   }
 }
 .text-centered {
@@ -76,10 +100,7 @@ input[type="checkbox"]:hover {
   color: $turquoise;
 }
 .logo-svg {
-  width: 50px;
-  path {
-    fill: white;
-  }
+  width: 96px;
 }
 /*-------------Home Section------------*/
 .home-section {
@@ -153,6 +174,22 @@ input[type="checkbox"]:hover {
     flex-wrap: wrap;
     row-gap: 1vw;
   }
+  .banner {
+    border-radius: 5px;
+    background-image: var(--movie-banner);
+    background-size: cover;
+    min-height: 25vh;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  .banner-title {
+    color: white;
+    margin: 10px;
+  }
   .movie-library-header {
     display: flex;
     justify-content: space-evenly;
@@ -160,8 +197,8 @@ input[type="checkbox"]:hover {
   }
   .movie-header-left {
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    align-content: center;
   }
   .movie-header-center {
     text-align: center;
@@ -320,9 +357,16 @@ input[type="checkbox"]:hover {
   }
   .react-datepicker__year-text {
     background-color: $turquoise;
+    color: white;
     font-size: 14px;
     margin: 3px;
     padding: 5px;
+    border-radius: 5px;
+    &:hover,
+    &.selected {
+      background: #501218;
+      color: #fff;
+    }
   }
   .year-picker {
     display: flex;
@@ -348,6 +392,10 @@ input[type="checkbox"]:hover {
     cursor: pointer;
   }
 }
+.react-datepicker__input-container input:focus,
+.react-datepicker__input-container input:not(:placeholder-shown) {
+  color: white; // Show text when focused or has value
+}
 .year-reset-btn {
   background: #501218;
   padding: 0;
@@ -363,6 +411,87 @@ input[type="checkbox"]:hover {
   border-bottom-left-radius: 0;
   border: 1px solid white;
 }
+// /// DIY Year Picker ///
+// .year-picker-component {
+//   z-index: 1111;
+//   display: flex;
+//   flex-flow: column;
+//   gap: 0.5rem;
+//   max-height: 240px;
+//   padding: 0.5rem;
+//   background-color: #929292;
+//   border-radius: 5px;
+// }
+// .year-picker-decade-nav {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 1rem;
+//   margin-bottom: 0.5rem;
+
+//   button {
+//     background: none;
+//     border: none;
+//     color: #501218;
+//     font-size: 1.5rem;
+//     cursor: pointer;
+//     padding: 0 0.5rem;
+
+//     &:disabled {
+//       color: #ccc;
+//       cursor: not-allowed;
+//     }
+//   }
+
+//   span {
+//     font-weight: bold;
+//     font-size: 0.8rem;
+//     color: #12504a;
+//   }
+// }
+
+// .year-picker-grid {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 0.5rem;
+//   margin-bottom: 0.5rem;
+// }
+
+// .year-btn {
+//   flex: 1 0 30%;
+//   box-sizing: border-box;
+//   text-align: center;
+//   background: #12504a;
+//   color: #fff;
+//   border: none;
+//   border-radius: 5px;
+//   padding: 0.5em 0;
+//   font-size: 0.8rem;
+//   cursor: pointer;
+//   transition: background 0.2s;
+//   outline: none;
+
+//   &:hover,
+//   &.selected {
+//     background: #501218;
+//     color: #fff;
+//   }
+// }
+
+.reset-btn {
+  grid-column: span 3;
+  background: #c3c3c3;
+  color: #501218;
+  font-weight: bold;
+  margin-top: 0.5rem;
+
+  &:hover {
+    background: #501218;
+    color: #fff;
+  }
+}
+
+//////////////////////
 .info-div {
   background: radial-gradient(#30938b, #12504a);
   color: white;
@@ -376,8 +505,15 @@ input[type="checkbox"]:hover {
   transform: scale(1.01);
 }
 .sort-btn,
-.filter-btn {
-  background: radial-gradient(#12504a);
+.filter-btn,
+.help-btn {
+  // Set up a gradient background with initial size 0 (hidden)
+  background: linear-gradient(90deg, #501218 0%, #501218 100%) no-repeat,
+    radial-gradient(#12504a 80%, #12504a 100%);
+  background-size: 0% 100%, 100% 100%;
+  background-position: left top, left top;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   color: white;
   border-radius: 5px;
   padding: 10px;
@@ -387,6 +523,18 @@ input[type="checkbox"]:hover {
   margin: 10px 0;
   cursor: pointer;
 }
+.btn-active {
+  background-size: 100% 100%, 100% 100%;
+}
+.help-btn {
+  display: flex;
+  align-items: center;
+}
+.help-btn svg {
+  font-size: 20px;
+  margin-right: 5px;
+}
+.help-btn,
 .sort-btn:hover,
 .filter-btn:hover {
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/Authprovider";
 
 import Logo from "../assets/images/movie-logo.svg";
 import LogoSvg from "./LogoSvg";
+import LogoSvg2 from "./LogoSvg2";
 
 const Navbar = () => {
   const [loggedUser, setLoggedUser] = useState("");
@@ -26,57 +27,81 @@ const Navbar = () => {
       {loggedUser ? (
         <div className="logged-in-nav">
           <div className="nav-logo">
-            <LogoSvg />
+            <LogoSvg2 fill={"#501218"} />
           </div>
           <ul className="main-nav-links">
             <li>
-              <Link className="link" to="/userPage">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/userPage"
+              >
                 {loggedUser}
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link className="link" to="/library">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/library"
+              >
                 Movies
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link className="link" to="/">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/"
+              >
                 Stats
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link className="link" onClick={() => logout()}>
+              <NavLink className="link" onClick={() => logout()}>
                 Logout
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>
       ) : (
         <div className="logged-out-nav">
           <div className="nav-logo">
-            <p>test</p>
-            <img src={Logo} alt="" />
+            <LogoSvg2 />
           </div>
           <ul className="main-nav-links">
             <li>
-              <Link className="link" to="/">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/"
+              >
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link className="link" to="/library">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/library"
+              >
                 Movies
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link className="link" to="/">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link className="link" to="/">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "link active-link" : "link"
+                }
+                to="/login"
+              >
                 Login
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>

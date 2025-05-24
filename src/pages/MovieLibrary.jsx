@@ -8,11 +8,14 @@ import Pagination from "../components/Pagination";
 import SearchMovie from "../components/SearchMovie";
 import GenreColors from "../components/GenreColors";
 
+import { IoIosHelpCircle } from "react-icons/io";
 import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import Banner from "../assets/images/curtain-background.png";
+import LogoSvg from "../components/LogoSvg";
 const MovieLibrary = () => {
   ////Use States////
   const [movies, setMovies] = useState([]);
@@ -34,8 +37,9 @@ const MovieLibrary = () => {
   //DatePicker
   const [yearSearch, setYearSearch] = useState();
   const [yearChecked, SetYearChecked] = useState(false);
-
   const [castSearch, setCastSearch] = useState();
+  //Help
+  const [helpClicked, setHelpClicked] = useState(false);
   //Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
@@ -133,12 +137,12 @@ const MovieLibrary = () => {
 
   ///Style Components for Select ///
   const selectOptions = [
-    { label: "Popularity Ascending", value: "popularity.asc" },
     { label: "Popularity Descending", value: "popularity.desc" },
-    { label: "Vote Average Ascending", value: "vote_average.asc" },
+    { label: "Popularity Ascending", value: "popularity.asc" },
     { label: "Vote Average Descending", value: "vote_average.desc" },
-    { label: "Release Date Ascending", value: "releas_-date.asc" },
+    { label: "Vote Average Ascending", value: "vote_average.asc" },
     { label: "Release Data Descending", value: "release_date.desc" },
+    { label: "Release Date Ascending", value: "releas_-date.asc" },
     { label: "Title (A-Z)", value: "title.desc" },
     { label: "Title (Z -A)", value: "title.asc" },
   ];
@@ -179,21 +183,37 @@ const MovieLibrary = () => {
     <div className="movie-library">
       <section className="movie-library-header">
         <div className="movie-header-left">
-          <div className="info-div">
-            <h3 className="info-div-title">Get Started</h3>
-            <p className="info-div-text">Click on the movie for more info </p>
-            <p className="info-div-text">
-              <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to
-              bookmark list. Click again to remove from list
-            </p>
-            <p className="info-div-text">
-              <BiHeartCircle /> Click the Like icon to add movie to liked list.
-              Click again to remove.
-            </p>
+          <div
+            className={`help-btn ${helpClicked && "btn-active"}`}
+            onClick={() => setHelpClicked(!helpClicked)}
+          >
+            <IoIosHelpCircle />
+            Help
           </div>
+          {helpClicked && (
+            <div className="info-div">
+              <h3 className="info-div-title">Get Started</h3>
+              <p className="info-div-text">Click on the movie for more info </p>
+              <p className="info-div-text">
+                <BsBookmarkStarFill /> Click The Bookmark Icon to add movie to
+                bookmark list. Click again to remove from list
+              </p>
+              <p className="info-div-text">
+                <BiHeartCircle /> Click the Like icon to add movie to liked
+                list. Click again to remove.
+              </p>
+            </div>
+          )}
         </div>
         <div className="movie-header-center">
-          <h2>All Movies</h2>
+          <div
+            className="banner"
+            style={{ "--movie-banner": `url(${Banner})` }}
+          >
+            <LogoSvg />
+            <h2 className="banner-title">All Movies</h2>
+          </div>
+
           <div className="search-div">
             <SearchMovie movieSearch={handleMovieSearch} />
           </div>
@@ -203,7 +223,10 @@ const MovieLibrary = () => {
       <section className="movie-library-content">
         {/*-------------Filters---------*/}
         <div className="movie-content-left">
-          <p onClick={() => setFilters(!filters)} className="filter-btn">
+          <p
+            onClick={() => setFilters(!filters)}
+            className={`filter-btn ${filters && "btn-active"}`}
+          >
             Filter
           </p>
           {filters && (
@@ -243,8 +266,19 @@ const MovieLibrary = () => {
                     }}
                     showYearPicker
                     dateFormat="yyyy"
+                    yearItemNumber={10}
                   />
-                  <p className="year-reset-btn" onClick={() => setYearSearch()}>
+                  <p
+                    className="year-reset-btn"
+                    onClick={() => {
+                      setYearSearch();
+                      setAllFilters((prev) => ({
+                        ...prev,
+                        year: "",
+                      }));
+                      setFilterTrigger((prev) => prev + 1);
+                    }}
+                  >
                     Reset
                   </p>
                 </div>
@@ -289,7 +323,10 @@ const MovieLibrary = () => {
         </div>
         {/*--------------Sort---------*/}
         <div className="movie-content-right">
-          <p onClick={() => setSorting(!sorting)} className="sort-btn">
+          <p
+            onClick={() => setSorting(!sorting)}
+            className={`sort-btn ${sorting && "btn-active"}`}
+          >
             Sort
           </p>
           {sorting && (

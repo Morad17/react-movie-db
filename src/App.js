@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import {
+  Outlet,
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
@@ -13,57 +18,58 @@ import { ToastContainer } from "react-toastify";
 import MoviePage from "./pages/MoviePage";
 
 function App() {
+  const [loggedUser, setLoggedUser] = useState(null);
 
-  const [loggedUser, setLoggedUser ] = useState(null)
-
-  useEffect(()=> {
-    const username = localStorage.getItem("username")
-    if (username) setLoggedUser(username)
-    },[loggedUser])
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (username) setLoggedUser(username);
+  }, [loggedUser]);
 
   const Layout = () => {
-    return(
+    return (
       <div className="main-layout">
         <AuthProvider>
           <Navbar />
           <Outlet />
           <Footer />
         </AuthProvider>
-        
       </div>
-    
-    )
-  }
+    );
+  };
 
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: "/",
       element: <Layout />,
       children: [
         {
-        path: '/',
-        element: <ProtectedRoute />
-      },
-      {
-        path:'/library',
-        element:<MovieLibrary />,
-      },
-      {
-        path: '/userPage',
-        element: <UserPage />
-      },
-      {
-        path: '/moviePage/:id',
-        element: <MoviePage />
-      },
-    ]
-    }
-  ])
+          path: "/",
+          element: <ProtectedRoute />,
+        },
+        {
+          path: "/login",
+          element: <Home />,
+        },
+        {
+          path: "/library",
+          element: <MovieLibrary />,
+        },
+        {
+          path: "/userPage",
+          element: <UserPage />,
+        },
+        {
+          path: "/moviePage/:id",
+          element: <MoviePage />,
+        },
+      ],
+    },
+  ]);
 
   return (
     <div className="App">
-     <RouterProvider  router={router} />
-     <ToastContainer autoClose={2000} draggable={false} />
+      <RouterProvider router={router} />
+      <ToastContainer autoClose={2000} draggable={false} />
     </div>
   );
 }
