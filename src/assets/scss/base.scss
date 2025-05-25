@@ -16,6 +16,9 @@ body {
 .user-page-section {
   padding: 0 21vw;
 }
+.pointer {
+  cursor: pointer;
+}
 .main-nav {
   background-color: $turquoise;
   padding: 10px 0;
@@ -473,6 +476,10 @@ input[type="checkbox"]:hover {
   // }
 }
 /////////////////////////////
+.help-section {
+  width: 80%;
+  margin-right: 20px;
+}
 .info-div {
   background: radial-gradient(#30938b, #12504a);
   color: white;
@@ -488,7 +495,8 @@ input[type="checkbox"]:hover {
 .sort-btn,
 .filter-btn,
 .help-btn,
-.filter-submit-btn {
+.filter-submit-btn,
+.quick-action-btn {
   // Set up a gradient background with initial size 0 (hidden)
   background: linear-gradient(90deg, #501218 0%, #501218 100%) no-repeat,
     radial-gradient(#12504a 80%, #12504a 100%);
@@ -511,6 +519,7 @@ input[type="checkbox"]:hover {
 .help-btn {
   display: flex;
   align-items: center;
+  width: 30%;
 }
 .help-btn svg {
   font-size: 20px;
@@ -922,16 +931,8 @@ input[type="checkbox"]:hover {
   .save-svg {
     padding: 0 5px;
   }
+  .rate-and-review-action,
   .watched-action {
-    border-radius: 5px;
-    padding: 5px;
-    margin: 0 5px;
-    display: flex;
-    align-items: center;
-    background-color: gray;
-    color: white;
-  }
-  .rate-and-review-action {
     border-radius: 5px;
     padding: 5px;
     margin: 0 10px;
@@ -940,6 +941,9 @@ input[type="checkbox"]:hover {
     background-color: gray;
     color: white;
     text-decoration: none;
+  }
+  .watched-action {
+    margin: 0 5px;
   }
   .submit-btn {
     cursor: pointer;
@@ -1012,19 +1016,8 @@ input[type="checkbox"]:hover {
   .section-text-right {
     margin-top: 10px;
   }
-  // .rate-and-review-checkbox {
-  //   width: 1.5em;
-  //   height: 1.5em;
-  //   display: flex;
-  //   justify-content: space-between;
-  //   border: 1px solid;
-  //   padding: 5px;
-  //   border-radius: 5px;
-  //   background: $red;
-  //   color: white;
-  //   align-items: center;
-  // }
-  .rate-and-review-action:hover {
+  .rate-and-review-action:hover,
+  .watched-action:hover {
     background-color: #12504a;
   }
   .rate-and-review-label {
@@ -1032,19 +1025,28 @@ input[type="checkbox"]:hover {
     font-size: 18px;
     background-color: #12504a;
   }
-  .rr-btn {
+  .rr-btn,
+  .watched-btn {
     font-size: 18px;
     padding: 0 5px;
     color: white;
     text-decoration: none;
   }
-  .rate-svg {
+  .rate-svg,
+  .watched-svg {
     display: flex;
     align-items: center;
   }
-  .rate-svg svg {
+  .rate-svg svg,
+  .watched-svg svg {
     font-size: 1.3em;
-    cursor: pointer;
+  }
+  .quick-action-btn {
+    display: flex;
+    align-items: center;
+  }
+  .quick-action-btn svg {
+    padding-right: 10px;
   }
 }
 

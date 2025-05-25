@@ -15,6 +15,9 @@ import { BsBookmarkStarFill } from "react-icons/bs";
 import { GiRoundStar } from "react-icons/gi";
 import { BiHeartCircle } from "react-icons/bi";
 import { PiNotePencilLight } from "react-icons/pi";
+import { TbCheckbox } from "react-icons/tb";
+import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import { MdTv } from "react-icons/md";
 import VoteIcon from "../components/VoteIcon";
 //Files
 import placeholder from "../assets/images/poster-placeholder.png";
@@ -274,13 +277,16 @@ const MoviePage = () => {
   return (
     <div className="movie-page-section">
       <div className="movie-section-left">
-        <div
-          className={`help-btn ${helpClicked && "btn-active"}`}
-          onClick={() => setHelpClicked(!helpClicked)}
-        >
-          <IoIosHelpCircle />
-          Help
+        <div className="help-section">
+          <div
+            className={`help-btn ${helpClicked && "btn-active"}`}
+            onClick={() => setHelpClicked(!helpClicked)}
+          >
+            <IoIosHelpCircle />
+            Help
+          </div>
         </div>
+
         {helpClicked && (
           <div className="info-div">
             <h3 className="info-div-title">Get Started</h3>
@@ -308,6 +314,78 @@ const MoviePage = () => {
               If not Rated, a Rate and Review Button will appear and you can
               rate and review movie. Reviews are Optional.
             </div>
+          </div>
+        )}
+        <div
+          className={`quick-action-bookmark quick-action-btn ${
+            userActions.bookmarkList ? "btn-active" : ""
+          }`}
+          onClick={() =>
+            !isDisabled &&
+            addToBookmarkList({
+              id: selectedMovieInfo.id,
+              title: selectedMovieInfo.title,
+              username,
+              poster_path: selectedMovieInfo.poster_path,
+              userActions,
+              setUserActions,
+            })
+          }
+        >
+          <BsBookmarkStarFill id="bookmarkIcon" />
+          {userActions.bookmarkList ? "Bookmarked" : "Bookmark"}
+        </div>
+        <div
+          className={`quick-action-like quick-action-btn ${
+            userActions.likedList ? "btn-active" : ""
+          }`}
+          onClick={() =>
+            !isDisabled &&
+            addToLikedList({
+              id: selectedMovieInfo.id,
+              title: selectedMovieInfo.title,
+              username,
+              poster_path: selectedMovieInfo.poster_path,
+              userActions,
+              setUserActions,
+            })
+          }
+        >
+          <BiHeartCircle id="likeIcon" />
+          {userActions.likedList ? "Liked" : "Like"}
+        </div>
+        <div
+          className={`quick-action-watched quick-action-btn ${
+            userActions.watched ? "btn-active" : ""
+          }`}
+          onClick={() =>
+            !isDisabled &&
+            addToWatched({
+              id: selectedMovieInfo.id,
+              title: selectedMovieInfo.title,
+              username,
+              poster_path: selectedMovieInfo.poster_path,
+              userActions,
+              setUserActions,
+            })
+          }
+        >
+          <MdTv id="watchedIcon" />
+          {userActions.watched ? "Watched" : "Add To Watched"}
+        </div>
+        {userActions.rated ? (
+          <div className="quick-action-rated">
+            <PiNotePencilLight />
+            Rated
+          </div>
+        ) : (
+          <div
+            className={`quick-action-rate-review quick-action-btn ${
+              userActions.rated ? "btn-active" : ""
+            }`}
+          >
+            <PiNotePencilLight />
+            Rate & Review
           </div>
         )}
       </div>
@@ -388,24 +466,39 @@ const MoviePage = () => {
                       })
                     }
                   />
-                  <div className="watched-action">
-                    <label className="watched-action-label">Watched</label>
-                    <input
-                      type="checkbox"
-                      className="watched-checkbox"
-                      checked={!!userActions.watched}
-                      onChange={() =>
-                        !isDisabled &&
-                        addToWatched({
-                          id: selectedMovieInfo.id,
-                          title: selectedMovieInfo.title,
-                          username,
-                          poster_path: selectedMovieInfo.poster_path,
-                          userActions,
-                          setUserActions,
-                        })
-                      }
-                    />
+
+                  <div
+                    className="watched-action pointer"
+                    style={
+                      userActions.watched
+                        ? { backgroundColor: "#12504a" }
+                        : { backgroundColor: "gray" }
+                    }
+                    onClick={() =>
+                      !isDisabled &&
+                      addToWatched({
+                        id: selectedMovieInfo.id,
+                        title: selectedMovieInfo.title,
+                        username,
+                        poster_path: selectedMovieInfo.poster_path,
+                        userActions,
+                        setUserActions,
+                      })
+                    }
+                  >
+                    {userActions.watched ? (
+                      <div className="watched-svg pointer">
+                        <TbCheckbox />
+                      </div>
+                    ) : (
+                      <div className="watched-svg pointer">
+                        <MdOutlineCheckBoxOutlineBlank />
+                      </div>
+                    )}
+
+                    <label className="watched-btn pointer">
+                      {userActions.watched ? "Watched" : "Add To Watched"}
+                    </label>
                   </div>
                   {userActions.rated ? (
                     <div
@@ -415,7 +508,7 @@ const MoviePage = () => {
                       <label className="rate-and-review-label">Rated</label>
                     </div>
                   ) : (
-                    <div className="rate-and-review-action">
+                    <div className="rate-and-review-action pointer">
                       <div className="rate-svg">
                         <PiNotePencilLight />
                       </div>
