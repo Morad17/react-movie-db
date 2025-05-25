@@ -107,10 +107,12 @@ app.post("/getUserTable", (req, res) => {
       const tableName = data[0].tableName;
       const qTable = `SELECT * FROM ${tableName}`;
       mdb.query(qTable, (err, data) => {
-        if (err) return console.log(err, "error finding table info");
-        if (data.length > 0) {
-          return res.json(data);
-        } else return res.json(err);
+        if (err) {
+          console.log(err, "error finding table info");
+          return res.json({ fatal: true, error: err });
+        }
+        // Returns an array, even if empty
+        return res.json(data);
       });
     } else return console.log(err, "table not found");
   });

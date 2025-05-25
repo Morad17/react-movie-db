@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
+import { Rating } from "react-simple-star-rating";
 import useMovieActions from "../hooks/useMovieActions";
 import ReactCountryFlag from "react-country-flag";
 //Css
@@ -42,6 +43,7 @@ const MoviePage = () => {
     review: null,
   });
   const [allReviews, setAllReviews] = useState();
+  const [createReview, setCreateReview] = useState(false);
   const [averageRating, setAverageRating] = useState();
   const [helpClicked, setHelpClicked] = useState(false);
   ///Bookmark and Like ///
@@ -63,8 +65,9 @@ const MoviePage = () => {
     if (username) {
       try {
         const res = await axios.post("http://localhost:3070/getUserTable", {
-          username: username,
+          username,
         });
+        console.log(res.data);
         const movieInfo = res.data.find((movie) => movie.movieId === id);
         movieInfo &&
           setUserActions({
@@ -242,12 +245,12 @@ const MoviePage = () => {
   const budget = () => {
     if (selectedMovieInfo.budget === 0) {
       return "N/A";
-    } else return selectedMovieInfo.budget.toLocaleString();
+    } else return "$" + selectedMovieInfo.budget.toLocaleString();
   };
   const revenue = () => {
     if (selectedMovieInfo.revenue === 0) {
       return "N/A";
-    } else return selectedMovieInfo.revenue.toLocaleString();
+    } else return "$" + selectedMovieInfo.revenue.toLocaleString();
   };
 
   //Handle Ratig and Review Submissiion//
@@ -276,6 +279,7 @@ const MoviePage = () => {
 
   return (
     <div className="movie-page-section">
+      {/*-------------Left Hand Quick Actions-----------*/}
       <div className="movie-section-left">
         <div className="help-section">
           <div
@@ -371,10 +375,10 @@ const MoviePage = () => {
           }
         >
           <MdTv id="watchedIcon" />
-          {userActions.watched ? "Watched" : "Add To Watched"}
+          {userActions.watched ? "Watched" : "Mark As Watched"}
         </div>
         {userActions.rated ? (
-          <div className="quick-action-rated">
+          <div className="quick-action-rated ">
             <PiNotePencilLight />
             Rated
           </div>
@@ -383,12 +387,71 @@ const MoviePage = () => {
             className={`quick-action-rate-review quick-action-btn ${
               userActions.rated ? "btn-active" : ""
             }`}
+            onClick={() => {
+              setCreateReview(!createReview);
+              console.log(createReview);
+            }}
           >
             <PiNotePencilLight />
             Rate & Review
           </div>
         )}
+        {createReview && (
+          <div className="create-review">
+            <form onSubmit={handleRR}>
+              <div className="rating-group">
+                <label>Rating /100</label>
+                <Rating
+                  onClick={(e) => {
+                    setUserActions((prev) => ({
+                      ...prev,
+                      rating: e * 2,
+                    }));
+                  }}
+                  initialValue={userActions.rating || 0}
+                  allowFraction={true}
+                  tooltipArray={[1, 2, , 4, 5, 6, 7, 8, 9, 10]}
+                  showTooltip
+                />
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  value={userActions.rating || ""}
+                  onChange={(e) =>
+                    setUserActions((prev) => ({
+                      ...prev,
+                      rating: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </div>
+              <div className="review-group">
+                <label>(Optional) Leave A Review</label>
+                <textarea
+                  name="review"
+                  minLength="4"
+                  maxLength="500"
+                  value={userActions.review || ""}
+                  onChange={(e) =>
+                    setUserActions((prev) => ({
+                      ...prev,
+                      review: e.target.value,
+                    }))
+                  }
+                ></textarea>
+              </div>
+
+              <button className="submit-btn" type="submit">
+                Submit
+              </button>
+            </form>
+          </div>
+        )}
       </div>
+      {/*-------------Movie Banner, Quick Info & Actions----------*/}
       {selectedMovieInfo ? (
         <div className="movie-section-center">
           <section
@@ -497,7 +560,7 @@ const MoviePage = () => {
                     )}
 
                     <label className="watched-btn pointer">
-                      {userActions.watched ? "Watched" : "Add To Watched"}
+                      {userActions.watched ? "Watched" : "Mark As Watched"}
                     </label>
                   </div>
                   {userActions.rated ? (
@@ -512,22 +575,12 @@ const MoviePage = () => {
                       <div className="rate-svg">
                         <PiNotePencilLight />
                       </div>
-
-                      <a
-                        href="#create-rating-review"
-                        className="rr-btn"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const el = document.getElementById(
-                            "create-rating-review"
-                          );
-                          if (el) {
-                            el.scrollIntoView({ behavior: "smooth" });
-                          }
-                        }}
+                      <p
+                        className="rr-btn pointer"
+                        onClick={() => setCreateReview(!createReview)}
                       >
                         Rate & Review
-                      </a>
+                      </p>
                     </div>
                   )}
                 </div>
@@ -664,9 +717,9 @@ const MoviePage = () => {
                   )}
                 </p>
                 <h3 className="section-title-right">Budget</h3>
-                <p className="section-text-right">${budget()}</p>
+                <p className="section-text-right">{budget()}</p>
                 <h3 className="section-title-right">Revenue</h3>
-                <p className="section-text-right">${revenue()}</p>
+                <p className="section-text-right">{revenue()}</p>
                 <h3 className="section-title-right">Runtime</h3>
                 <p className="section-text-right">
                   {selectedMovieInfo.runtime} Minutes

@@ -184,13 +184,16 @@ const MovieLibrary = () => {
     <div className="movie-library">
       <section className="movie-library-header">
         <div className="movie-header-left">
-          <div
-            className={`help-btn ${helpClicked && "btn-active"}`}
-            onClick={() => setHelpClicked(!helpClicked)}
-          >
-            <IoIosHelpCircle />
-            Help
+          <div className="help-section">
+            <div
+              className={`help-btn ${helpClicked && "btn-active"}`}
+              onClick={() => setHelpClicked(!helpClicked)}
+            >
+              <IoIosHelpCircle />
+              Help
+            </div>
           </div>
+
           {helpClicked && (
             <div className="info-div">
               <h3 className="info-div-title">Get Started</h3>
@@ -318,10 +321,11 @@ const MovieLibrary = () => {
         </div>
         <div className="all-movies">
           {movies.map((movie, key) => {
-            const userMovie =
-              userMovieData?.find(
-                (userMovie) => userMovie.movieName === movie.title
-              ) || null;
+            const userMovie = Array.isArray(userMovieData)
+              ? userMovieData?.find(
+                  (userMovie) => userMovie.movieName === movie.title
+                )
+              : null;
             return (
               <MovieCard
                 userData={userMovie}
