@@ -248,10 +248,14 @@ app.post("/createRatingReview", (req, res) => {
       ];
       ///Add To Users Table Review
       mdb.query(queryTable, [...valTable], (err, data) => {
-        if (err) return console.log(err, "error whilst pushing to user table");
-        if (data.length > 0) {
-          return res.send("Successfully added rating & review to user Table");
-        } else return err;
+        if (err) {
+          console.log(err, "error whilst pushing to user table");
+          return res.status(500).json({ success: false, error: err });
+        }
+        // Always send a response
+        return res.json({
+          success: true,
+        });
       });
     }
   });

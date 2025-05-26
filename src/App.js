@@ -16,6 +16,7 @@ import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import MoviePage from "./pages/MoviePage";
+import MobileNav from "./components/MobileNav";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState(null);
@@ -26,10 +27,12 @@ function App() {
   }, [loggedUser]);
 
   const Layout = () => {
+    const currentWidth = window.innerWidth;
     return (
       <div className="main-layout">
         <AuthProvider>
-          <Navbar />
+          {currentWidth < 769 ? <MobileNav /> : <Navbar />}
+
           <Outlet />
           <Footer />
         </AuthProvider>

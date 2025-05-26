@@ -19,6 +19,7 @@ body {
 .pointer {
   cursor: pointer;
 }
+/*---------Navbar-------*/
 .main-nav {
   background-color: $turquoise;
   padding: 10px 0;
@@ -69,23 +70,84 @@ body {
     transform: scaleX(1);
   }
 }
-.text-centered {
-  text-align: center;
+.profile-image-link {
+  width: 16px;
+  border-radius: 50%;
+  background: gray;
+  border: 1px solid black;
 }
-.bookmarked {
-  color: $yellow !important;
-}
-.liked {
-  color: $yellow !important;
-}
-input[type="checkbox"] {
-  accent-color: #12504a;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-input[type="checkbox"]:hover {
-  accent-color: $yellow;
+///Mobile Nav
+.mobile-navbar {
+  background-color: $turquoise;
+  padding: 0 10px;
+  .closed-mobile-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-center,
+  .section-left,
+  .section-right {
+    width: 33%;
+  }
+  .text-centered {
+    text-align: center;
+  }
+  .bookmarked {
+    color: $red !important;
+  }
+  .liked {
+    color: $red !important;
+  }
+  input[type="checkbox"] {
+    accent-color: #12504a;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+  input[type="checkbox"]:hover {
+    accent-color: $yellow;
+  }
+  .section-center svg {
+    width: 50px;
+  }
+  .section-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .mobile-nav-links {
+    list-style: none;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+  }
+  .mobile-nav-links svg {
+    width: 16px;
+    color: white;
+  }
+
+  .logged-in-nav-links,
+  .logged-out-nav-links {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    justify-content: center;
+    padding: 0;
+  }
+  .logged-in-nav-links li,
+  .logged-out-nav-links li {
+    padding: 10px;
+    text-align: center;
+  }
+  .link {
+    text-decoration: none;
+    color: white;
+  }
+  .main-mobile-nav svg {
+    padding-right: 5px;
+  }
 }
 /*////////////////Icons////////////////*/
 .save-svg {
@@ -1018,8 +1080,12 @@ input[type="checkbox"]:hover {
     margin-bottom: 5px;
     padding-left: 10px;
   }
+  .section-title-right {
+    font-size: 16px;
+  }
   .section-text-right {
     margin-top: 10px;
+    font-size: 14px;
   }
   .rate-and-review-action:hover,
   .watched-action:hover {
@@ -1027,8 +1093,8 @@ input[type="checkbox"]:hover {
   }
   .rate-and-review-label {
     padding: 0 5px;
+    margin: 0;
     font-size: 18px;
-    background-color: #12504a;
   }
   .rr-btn,
   .watched-btn {
@@ -1064,6 +1130,47 @@ input[type="checkbox"]:hover {
     width: 80%;
     margin: 10px 0;
     background: $red;
+  }
+  .create-review {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .create-review form {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    flex-flow: column;
+    gap: 10px;
+    border: 1px solid gray;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .group-label {
+    width: 100%;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+  hr {
+    border: 1px solid gray;
+    margin: 20px 0;
+  }
+  .review-textarea {
+    width: 100% !important;
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+  }
+  //Rating Component
+  .style-module_starRatingWrap__q-lJC {
+    display: flex;
+    justify-content: center;
   }
 }
 

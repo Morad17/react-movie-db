@@ -214,7 +214,7 @@ const MoviePage = () => {
   }, []);
   useEffect(() => {
     getAllRR();
-  }, []);
+  }, [userActions.rating]);
 
   useEffect(() => {
     getCast();
@@ -255,14 +255,14 @@ const MoviePage = () => {
 
   //Handle Ratig and Review Submissiion//
 
-  const handleRR = (e) => {
+  const handleRR = async (e) => {
     const { id } = params;
     e.preventDefault();
     console.log(userActions);
     const { title, poster_path } = selectedMovieInfo;
     const { rating, review } = userActions;
-    if (userActions.rating > 3) {
-      createRatingReview({
+    if (userActions.rating) {
+      const res = await createRatingReview({
         id,
         username,
         profileImage,
@@ -272,8 +272,17 @@ const MoviePage = () => {
         poster_path,
         date: new Date(),
       });
+      if (res && res.success) {
+        setUserActions((prev) => ({
+          ...prev,
+          rated: true,
+          rating,
+          review,
+        }));
+        setCreateReview(false);
+      }
     } else {
-      toast("Please  fill in the rating fully");
+      toast("Please add your Rating /10");
     }
   };
 
@@ -400,7 +409,8 @@ const MoviePage = () => {
           <div className="create-review">
             <form onSubmit={handleRR}>
               <div className="rating-group">
-                <label>Rating /100</label>
+                <p className="group-label">Rating /10</p>
+                <hr />
                 <Rating
                   onClick={(e) => {
                     setUserActions((prev) => ({
@@ -412,28 +422,17 @@ const MoviePage = () => {
                   allowFraction={true}
                   tooltipArray={[1, 2, , 4, 5, 6, 7, 8, 9, 10]}
                   showTooltip
-                />
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="100"
-                  value={userActions.rating || ""}
-                  onChange={(e) =>
-                    setUserActions((prev) => ({
-                      ...prev,
-                      rating: e.target.value,
-                    }))
-                  }
-                  required
+                  size={30}
+                  tooltipDefaultText="0/10"
                 />
               </div>
               <div className="review-group">
-                <label>(Optional) Leave A Review</label>
+                <p className="group-label">(Optional) Leave A Review</p>
+                <hr />
                 <textarea
+                  className="review-textarea"
                   name="review"
                   minLength="4"
-                  maxLength="500"
                   value={userActions.review || ""}
                   onChange={(e) =>
                     setUserActions((prev) => ({
@@ -534,7 +533,7 @@ const MoviePage = () => {
                     className="watched-action pointer"
                     style={
                       userActions.watched
-                        ? { backgroundColor: "#12504a" }
+                        ? { backgroundColor: "#501218" }
                         : { backgroundColor: "gray" }
                     }
                     onClick={() =>
@@ -559,16 +558,16 @@ const MoviePage = () => {
                       </div>
                     )}
 
-                    <label className="watched-btn pointer">
+                    <p className="watched-btn pointer">
                       {userActions.watched ? "Watched" : "Mark As Watched"}
-                    </label>
+                    </p>
                   </div>
                   {userActions.rated ? (
                     <div
                       className="rate-and-review-action"
-                      style={{ background: "#12504a" }}
+                      style={{ background: "#501218" }}
                     >
-                      <label className="rate-and-review-label">Rated</label>
+                      <p className="rate-and-review-label">Rated</p>
                     </div>
                   ) : (
                     <div className="rate-and-review-action pointer">
@@ -649,47 +648,7 @@ const MoviePage = () => {
                         <div
                           id="create-rating-review"
                           className="create-rating-review"
-                        >
-                          <h3>Create Rating & Review:</h3>
-                          <form onSubmit={handleRR}>
-                            <div className="rating-group">
-                              <label>Rating /100</label>
-                              <input
-                                type="number"
-                                step="0.1"
-                                min="0"
-                                max="100"
-                                value={userActions.rating || ""}
-                                onChange={(e) =>
-                                  setUserActions((prev) => ({
-                                    ...prev,
-                                    rating: e.target.value,
-                                  }))
-                                }
-                                required
-                              />
-                            </div>
-                            <div className="review-group">
-                              <label>(Optional) Leave A Review</label>
-                              <textarea
-                                name="review"
-                                minLength="4"
-                                maxLength="500"
-                                value={userActions.review || ""}
-                                onChange={(e) =>
-                                  setUserActions((prev) => ({
-                                    ...prev,
-                                    review: e.target.value,
-                                  }))
-                                }
-                              ></textarea>
-                            </div>
-
-                            <button className="submit-btn" type="submit">
-                              Submit
-                            </button>
-                          </form>
-                        </div>
+                        ></div>
                       </div>
                     )}
                   </div>

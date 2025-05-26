@@ -213,13 +213,15 @@ const useMovieActions = () => {
         } else {
           toast("Rating unsuccessful");
         }
-        console.log(res.data);
+        return res.data;
       } catch (err) {
         console.log(err);
         toast("Rating unsuccessfull");
+        return { success: false };
       }
     } else {
       toast("You must be logged in to leave a rating/review");
+      return { success: false };
     }
   };
 
