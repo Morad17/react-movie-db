@@ -5,9 +5,6 @@ import { useAuth } from "../hooks/Authprovider";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { RiFilmAiFill, RiLogoutBoxRFill } from "react-icons/ri";
 import { FaChartPie } from "react-icons/fa6";
-
-import Logo from "../assets/images/movie-logo.svg";
-import LogoSvg from "./LogoSvg";
 import LogoSvg2 from "./LogoSvg2";
 
 const MobileNav = () => {
@@ -76,6 +73,7 @@ const MobileNav = () => {
         <nav className="main-mobile-nav">
           {loggedUser.username ? (
             <ul className="logged-in-nav-links">
+              <hr />
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -91,6 +89,7 @@ const MobileNav = () => {
                   {loggedUser.username}
                 </NavLink>
               </li>
+              <hr />
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -102,6 +101,7 @@ const MobileNav = () => {
                   All Movies
                 </NavLink>
               </li>
+              <hr />
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -113,12 +113,14 @@ const MobileNav = () => {
                   Stats
                 </NavLink>
               </li>
+              <hr />
               <li>
                 <NavLink className="link" onClick={() => logout()}>
                   <RiLogoutBoxRFill />
                   Logout
                 </NavLink>
               </li>
+              <hr className="last-hr" />
             </ul>
           ) : (
             <ul className="logged-out-nav-links">

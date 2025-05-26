@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import MoviePage from "./pages/MoviePage";
 import MobileNav from "./components/MobileNav";
+import MobileMovieLibrary from "./pages/MobileMovieLibrary";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState(null);
@@ -25,9 +26,8 @@ function App() {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
   }, [loggedUser]);
-
+  const currentWidth = window.innerWidth;
   const Layout = () => {
-    const currentWidth = window.innerWidth;
     return (
       <div className="main-layout">
         <AuthProvider>
@@ -55,7 +55,8 @@ function App() {
         },
         {
           path: "/library",
-          element: <MovieLibrary />,
+          element:
+            currentWidth < 768 ? <MovieLibrary /> : <MobileMovieLibrary />,
         },
         {
           path: "/userPage",
