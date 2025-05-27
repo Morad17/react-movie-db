@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const Pagination = ({ paginate, totalPages }) => {
+const Pagination = ({ paginate, totalPages, pagesPerGroup = 10 }) => {
   const [currentPageGroup, setCurrentPageGroup] = useState(1); // Tracks the current group of 10 pages
 
-  const pagesPerGroup = 10; // Limit of pages per group
   const totalGroups = Math.ceil(totalPages / pagesPerGroup); // Total number of groups
 
   // Calculate the start and end page numbers for the current group
@@ -45,10 +44,7 @@ const Pagination = ({ paginate, totalPages }) => {
         {/* Page numbers */}
         {pageNumbers.map((num) => (
           <li key={num}>
-            <a
-              className="page-link"
-              onClick={() => paginate(num)}
-            >
+            <a className="page-link" onClick={() => paginate(num)}>
               {num}
             </a>
           </li>

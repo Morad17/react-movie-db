@@ -164,6 +164,25 @@ app.post("/addToBookmarkList", (req, res) => {
       });
     }
   });
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, profileImage, movieId,movieName, bookmarked,date) VALUES (?,?, ?, ?, ?,?)
+    ON DUPLICATE KEY UPDATE
+    bookmarked = VALUES(bookmarked)
+    `;
+
+  const valGroupTable = [
+    req.body.username,
+    req.body.profileImage,
+    req.body.movieId,
+    req.body.movieName,
+    req.body.bookmarkList,
+    req.body.date,
+  ];
+  mdb.query(groupQuery, [...valGroupTable], (err, data) => {
+    if (err) return console.log(err, "error whilst pushing to table");
+    if (data.length > 0) {
+      return res.send("Succesfully Bookmarked Movie");
+    } else return err;
+  });
 });
 
 //Like List
@@ -194,6 +213,25 @@ app.post("/addToLikedList", (req, res) => {
       });
     }
   });
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, profileImage, movieId,movieName, liked,date) VALUES (?,?, ?, ?, ?,?)
+    ON DUPLICATE KEY UPDATE
+    liked = VALUES(liked)
+    `;
+
+  const valGroupTable = [
+    req.body.username,
+    req.body.profileImage,
+    req.body.movieId,
+    req.body.movieName,
+    req.body.likedList,
+    req.body.date,
+  ];
+  mdb.query(groupQuery, [...valGroupTable], (err, data) => {
+    if (err) return console.log(err, "error whilst pushing to table");
+    if (data.length > 0) {
+      return res.send("Succesfully Liked Movie");
+    } else return err;
+  });
 });
 
 //Watched List
@@ -223,6 +261,25 @@ app.post("/addToWatched", (req, res) => {
         } else return res.json(err);
       });
     }
+  });
+  const groupQuery = `INSERT INTO watched (username, profileImage, movieId,movieName, watched,date) VALUES (?,?, ?, ?, ?,?)
+    ON DUPLICATE KEY UPDATE
+    watched = VALUES(watched)
+    `;
+
+  const valGroupTable = [
+    req.body.username,
+    req.body.profileImage,
+    req.body.movieId,
+    req.body.movieName,
+    req.body.watched,
+    req.body.date,
+  ];
+  mdb.query(groupQuery, [...valGroupTable], (err, data) => {
+    if (err) return console.log(err, "error whilst pushing to table");
+    if (data.length > 0) {
+      return res.send("Succesfully added Movie to Watched");
+    } else return err;
   });
 });
 //Create Review

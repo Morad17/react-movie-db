@@ -351,7 +351,11 @@ const MobileMovieLibrary = () => {
             );
           })}
 
-          <Pagination paginate={paginate} totalPages={totalPages} />
+          <Pagination
+            paginate={paginate}
+            totalPages={totalPages}
+            pagesPerGroup={3}
+          />
         </div>
       </section>
     </div>
