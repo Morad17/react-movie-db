@@ -136,7 +136,7 @@ app.get("/getAllRatingReviews", (req, res) => {
 
 ////Add Movie To Database
 
-//Watch List
+//Bookmark List
 app.post("/addToBookmarkList", (req, res) => {
   const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
   const valTable = [req.body.username];
@@ -164,14 +164,13 @@ app.post("/addToBookmarkList", (req, res) => {
       });
     }
   });
-  const groupQuery = `INSERT INTO bookmarkedLiked (username, profileImage, movieId,movieName, bookmarked,date) VALUES (?,?, ?, ?, ?,?)
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, bookmarked,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     bookmarked = VALUES(bookmarked)
     `;
 
   const valGroupTable = [
     req.body.username,
-    req.body.profileImage,
     req.body.movieId,
     req.body.movieName,
     req.body.bookmarkList,
@@ -213,14 +212,13 @@ app.post("/addToLikedList", (req, res) => {
       });
     }
   });
-  const groupQuery = `INSERT INTO bookmarkedLiked (username, profileImage, movieId,movieName, liked,date) VALUES (?,?, ?, ?, ?,?)
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, liked,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     liked = VALUES(liked)
     `;
 
   const valGroupTable = [
     req.body.username,
-    req.body.profileImage,
     req.body.movieId,
     req.body.movieName,
     req.body.likedList,
@@ -262,14 +260,13 @@ app.post("/addToWatched", (req, res) => {
       });
     }
   });
-  const groupQuery = `INSERT INTO watched (username, profileImage, movieId,movieName, watched,date) VALUES (?,?, ?, ?, ?,?)
+  const groupQuery = `INSERT INTO watched (username, movieId,movieName, watched,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     watched = VALUES(watched)
     `;
 
   const valGroupTable = [
     req.body.username,
-    req.body.profileImage,
     req.body.movieId,
     req.body.movieName,
     req.body.watched,
@@ -336,8 +333,45 @@ app.post("/createRatingReview", (req, res) => {
   });
 });
 
-// Initialise Node App//
+////////Get Total Metrics for movie ///////
+//Bookmarks Likes
+app.get("/getBookmarkedLikedTotalMovie", (req, res) => {
+  const { movieId } = req.query;
+  const query = `
+    SELECT
+      SUM(CASE WHEN bookmarked = 1 THEN 1 ELSE 0 END) AS totalBookmarked,
+      SUM(CASE WHEN liked = 1 THEN 1 ELSE 0 END) AS totalLiked
+    FROM bookmarkedLiked
+    WHERE movieId = ?
+  `;
+  mdb.query(query, [movieId], (err, data) => {
+    if (err) {
+      console.log(err, "error getting totals from bookmarkedLiked");
+      return res.status(500).json({ error: err });
+    }
+    return res.json(data[0]);
+  });
+});
 
+//Watched
+app.get("/getWatchedTotalMovie", (req, res) => {
+  const { movieId } = req.query;
+  const query = `
+    SELECT
+      SUM(CASE WHEN watched = 1 THEN 1 ELSE 0 END) AS totalWatched
+    FROM watched
+    WHERE movieId = ?
+  `;
+  mdb.query(query, [movieId], (err, data) => {
+    if (err) {
+      console.log(err, "error getting totals from watched");
+      return res.status(500).json({ error: err });
+    }
+    return res.json(data[0]);
+  });
+});
+
+// Initialise Node App//
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

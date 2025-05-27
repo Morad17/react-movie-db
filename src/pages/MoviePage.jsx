@@ -42,6 +42,13 @@ const MoviePage = () => {
     rating: false,
     review: null,
   });
+  const [metrics, setMetrics] = useState({
+    bookmarked: 0,
+    liked: 0,
+    rated: 0,
+    reviewed: 0,
+    watched: 0,
+  });
   const [allReviews, setAllReviews] = useState();
   const [createReview, setCreateReview] = useState(false);
   const [averageRating, setAverageRating] = useState();
@@ -67,7 +74,6 @@ const MoviePage = () => {
         const res = await axios.post("http://localhost:3070/getUserTable", {
           username,
         });
-        console.log(res.data);
         const movieInfo = res.data.find((movie) => movie.movieId === id);
         movieInfo &&
           setUserActions({
@@ -75,7 +81,6 @@ const MoviePage = () => {
             likedList: movieInfo.likedList,
             watched: movieInfo.watched,
           });
-        console.log(userActions);
       } catch (err) {
         console.log(err);
       }
@@ -181,24 +186,55 @@ const MoviePage = () => {
           // Get all ratings & make average score
           const allRatings = res.data
             .filter(
-              (review) =>
-                String(review.movieId) === String(id) &&
-                typeof review.rating === "number"
+              (rate) =>
+                String(rate.movieId) === String(id) &&
+                typeof rate.rating === "number"
             )
-            .map((review) => review.rating);
+            .map((rate) => rate.rating);
+          const allReviews = res.data.filter(
+            (rev) => String(rev.movieId) === String(id)
+          );
+          const allReviewsTotal = allReviews.map((rev) => rev.review).length;
           const avgRating =
             allRatings.length > 0
               ? allRatings.reduce((sum, rating) => sum + rating, 0) /
                 allRatings.length
               : false;
-
+          setAllReviews(allReviews);
           setAverageRating(avgRating);
+          setMetrics((prev) => ({
+            ...prev,
+            rated: allRatings.length,
+            reviewed: allReviewsTotal,
+          }));
         }
       } catch (err) {
         console.log(err);
       }
     } else {
       return toast(`You must be logged in to Review and Rate`);
+    }
+  };
+  const getTotalBookmarkedLiked = async () => {
+    const { id } = params;
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getBookmarkedLikedTotalMovie?movieId=${id}`
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getTotalWatched = async () => {
+    const { id } = params;
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getWatchedTotalMovie?movieId=${id}`
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
     }
   };
   useEffect(() => {
@@ -219,6 +255,14 @@ const MoviePage = () => {
   useEffect(() => {
     getCast();
   }, []);
+
+  useEffect(() => {
+    getTotalBookmarkedLiked();
+  }, [userActions.bookmarkList, userActions.likedList]);
+
+  useEffect(() => {
+    getTotalWatched();
+  }, [userActions.watched]);
   // Finds Age Rating and returns correct certificate //
   const ageRating = () => {
     const results = selectedMovieInfo?.release_dates?.results; // Safely access release_dates.results
@@ -258,7 +302,6 @@ const MoviePage = () => {
   const handleRR = async (e) => {
     const { id } = params;
     e.preventDefault();
-    console.log(userActions);
     const { title, poster_path } = selectedMovieInfo;
     const { rating, review } = userActions;
     if (userActions.rating) {
@@ -270,7 +313,7 @@ const MoviePage = () => {
         rating,
         review,
         poster_path,
-        date: new Date(),
+        date: new Date().toISOString().slice(0, 10),
       });
       if (res && res.success) {
         setUserActions((prev) => ({
@@ -340,6 +383,7 @@ const MoviePage = () => {
               title: selectedMovieInfo.title,
               username,
               poster_path: selectedMovieInfo.poster_path,
+              date: new Date().toISOString().slice(0, 10),
               userActions,
               setUserActions,
             })
@@ -359,6 +403,7 @@ const MoviePage = () => {
               title: selectedMovieInfo.title,
               username,
               poster_path: selectedMovieInfo.poster_path,
+              date: new Date().toISOString().slice(0, 10),
               userActions,
               setUserActions,
             })
@@ -378,6 +423,7 @@ const MoviePage = () => {
               title: selectedMovieInfo.title,
               username,
               poster_path: selectedMovieInfo.poster_path,
+              date: new Date().toISOString().slice(0, 10),
               userActions,
               setUserActions,
             })
@@ -398,7 +444,6 @@ const MoviePage = () => {
             }`}
             onClick={() => {
               setCreateReview(!createReview);
-              console.log(createReview);
             }}
           >
             <PiNotePencilLight />
@@ -506,6 +551,7 @@ const MoviePage = () => {
                         title: selectedMovieInfo.title,
                         username,
                         poster_path: selectedMovieInfo.poster_path,
+                        date: new Date().toISOString().slice(0, 10),
                         userActions,
                         setUserActions,
                       })
@@ -523,6 +569,7 @@ const MoviePage = () => {
                         title: selectedMovieInfo.title,
                         username,
                         poster_path: selectedMovieInfo.poster_path,
+                        date: new Date().toISOString().slice(0, 10),
                         userActions,
                         setUserActions,
                       })
@@ -543,6 +590,7 @@ const MoviePage = () => {
                         title: selectedMovieInfo.title,
                         username,
                         poster_path: selectedMovieInfo.poster_path,
+                        date: new Date().toISOString().slice(0, 10),
                         userActions,
                         setUserActions,
                       })
@@ -588,6 +636,28 @@ const MoviePage = () => {
                   <p className="overview-text">{selectedMovieInfo.overview}</p>
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="metrics-section">
+            <div className="bookmark-metric">
+              <BsBookmarkStarFill />
+              <p>Total Bookmarked: {metrics?.bookmarked}</p>
+            </div>
+            <div className="like-metric">
+              <BiHeartCircle />
+              <p>Total Liked: {metrics?.liked}</p>
+            </div>
+            <div className="watched-metric">
+              <MdTv />
+              <p>Total Watched: {metrics?.watched}</p>
+            </div>
+            <div className="rated-metric">
+              <PiNotePencilLight />
+              <p>Total Ratings:{metrics?.rated}</p>
+            </div>
+            <div className="rated-metric">
+              <PiNotePencilLight />
+              <p>Total Reviews:{metrics?.reviewed}</p>
             </div>
           </section>
           <section className="movie-page-content">

@@ -70,7 +70,6 @@ const MovieCard = ({
   if (!watchedFilter && userActions.watched) {
     return null;
   }
-
   return (
     <div className={`movie-card $userActionso.watched ? "watched-card" : ""}`}>
       <div className="movie-content-card">
@@ -88,6 +87,7 @@ const MovieCard = ({
                   title,
                   username,
                   poster_path,
+                  date: new Date().toISOString().slice(0, 10),
                   userActions,
                   setUserActions,
                 })
@@ -103,6 +103,7 @@ const MovieCard = ({
                   title,
                   username,
                   poster_path,
+                  date: new Date().toISOString().slice(0, 10),
                   userActions,
                   setUserActions,
                 })

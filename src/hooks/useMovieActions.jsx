@@ -10,6 +10,7 @@ const useMovieActions = () => {
     id,
     title,
     poster_path,
+    date,
     bookmarkList,
     userActions,
     setUserActions,
@@ -25,6 +26,7 @@ const useMovieActions = () => {
               movieId: id,
               movieName: title,
               poster_path,
+              date,
               bookmarkList: false,
             }
           );
@@ -50,6 +52,7 @@ const useMovieActions = () => {
               movieId: id,
               movieName: title,
               poster_path,
+              date,
               bookmarkList: true,
             }
           );
@@ -74,6 +77,7 @@ const useMovieActions = () => {
     id,
     title,
     poster_path,
+    date,
     userActions,
     setUserActions,
   }) => {
@@ -86,6 +90,7 @@ const useMovieActions = () => {
             movieId: id,
             movieName: title,
             poster_path,
+            date,
             likedList: false,
           });
           toast(`Successfully removed ${title} from the Liked list`);
@@ -108,6 +113,7 @@ const useMovieActions = () => {
             movieId: id,
             movieName: title,
             poster_path,
+            date,
             likedList: true,
           });
           toast(`Successfully Liked ${title}`);
@@ -130,6 +136,7 @@ const useMovieActions = () => {
     id,
     title,
     poster_path,
+    date,
     userActions,
     setUserActions,
   }) => {
@@ -142,6 +149,7 @@ const useMovieActions = () => {
             movieId: id,
             movieName: title,
             poster_path,
+            date,
             watched: false,
           });
           toast(`Successfully changed to not Watched`);
@@ -165,6 +173,7 @@ const useMovieActions = () => {
             movieId: id,
             movieName: title,
             poster_path,
+            date,
             watched: true,
           });
           toast(`Successfully Changed to Watched`);
