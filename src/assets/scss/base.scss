@@ -362,25 +362,32 @@ input[type="checkbox"]:hover {
   .search-input:focus {
     outline: none;
   }
+  .search-btn-div {
+    display: flex;
+    height: 100%;
+    width: 20%;
+  }
   .search-btn {
     height: 100%;
-    width: 10%;
+    width: 50%;
     color: white;
     background-color: #12504a;
     align-content: center;
     cursor: pointer;
     border: 1px solid white;
     border-right: 0;
+    margin: 0;
   }
   .reset-search-btn {
     height: 100%;
-    width: 10%;
+    width: 50%;
     color: white;
     background-color: #12504a;
     cursor: pointer;
     border-radius: 0 5px 5px 0;
     align-content: center;
     border: 1px solid white;
+    margin: 0;
   }
   .filter-title {
     background: radial-gradient(#12504a);
@@ -492,10 +499,11 @@ input[type="checkbox"]:hover {
     color: transparent;
     cursor: pointer;
   }
-}
-.react-datepicker__input-container input:focus,
-.react-datepicker__input-container input:not(:placeholder-shown) {
-  color: white; // Show text when focused or has value
+
+  .react-datepicker__input-container input:focus,
+  .react-datepicker__input-container input:not(:placeholder-shown) {
+    color: white; // Show text when focused or has value
+  }
 }
 // /// DIY Year Picker ///
 .diy {
@@ -1190,6 +1198,269 @@ input[type="checkbox"]:hover {
   .style-module_starRatingWrap__q-lJC {
     display: flex;
     justify-content: center;
+  }
+}
+/*--------Mobile Movie Library------*/
+.mobile-movie-library {
+  .movie-library-header {
+    padding-bottom: 10px;
+  }
+  //banner
+  .banner {
+    background-image: var(--movie-banner);
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+  }
+  .banner-title {
+    color: white;
+    margin: 10px;
+  }
+  .banner svg {
+    margin: 10px;
+  }
+
+  //search bar
+  .search-movie {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .search-input {
+    width: 100%;
+    border: none;
+    height: 100%;
+    font-size: 20px;
+    padding: 15px 0;
+  }
+  .search-input:focus {
+    outline: none;
+  }
+  .search-btn-div {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+  }
+  .search-btn {
+    height: 100%;
+    width: 50%;
+    color: white;
+    background-color: #12504a;
+    align-content: center;
+    cursor: pointer;
+    border: 1px solid white;
+    border-right: 0;
+    margin: 0;
+    padding: 10px 0;
+  }
+  .reset-search-btn {
+    height: 100%;
+    width: 50%;
+    color: white;
+    background-color: #12504a;
+    cursor: pointer;
+    align-content: center;
+    border: 1px solid white;
+    margin: 0;
+    padding: 10px 0;
+  }
+  //Action Buttons
+  .movie-library-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .help-btn {
+    width: 40%;
+  }
+  //filter btn
+  .filter-title {
+    background: radial-gradient(#12504a);
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    width: 80%;
+    margin: 10px 0;
+    font-size: 17px;
+  }
+  .genre-filter,
+  .year-filter,
+  .watched-filter,
+  .actor-filter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+  }
+  .all-genres {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 80%;
+  }
+  .movie-genre {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    color: white;
+    background-color: $turquoise;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  .selectedGenre {
+    background-color: #501218;
+  }
+  .movie-genre:hover {
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+    transform: scale(1.01);
+    color: $yellow;
+  }
+  .react-datepicker__year-wrapper {
+    justify-content: space-around;
+  }
+  .react-datepicker__year-text {
+    background-color: $turquoise;
+    color: white;
+    font-size: 16px;
+    margin: 3px;
+    padding: 5px;
+    border-radius: 5px;
+    &:hover,
+    &.selected {
+      background: #501218;
+      color: #fff;
+    }
+  }
+  .react-datepicker__navigation-icon:before {
+    border-color: $turquoise;
+  }
+  .year-picker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    height: 40px;
+    border: 1px solid;
+    border-radius: 5px;
+    background: $turquoise;
+    color: white;
+  }
+  .react-datepicker__input-container input {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    padding: 0;
+    font-weight: bold;
+    background-color: $turquoise;
+    color: transparent;
+    cursor: pointer;
+  }
+  .react-datepicker__input-container input:focus,
+  .react-datepicker__input-container input:not(:placeholder-shown) {
+    color: white; // Show text when focused or has value
+  }
+  .react-select__input {
+    color: transparent !important;
+    cursor: pointer !important;
+  }
+  //Watched btn
+  .watched-checkbox {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid;
+    padding: 8px;
+    border-radius: 5px;
+    background: $red;
+    color: white;
+    align-items: center;
+    font-size: 16px;
+  }
+  .watched-action-label {
+    font-size: 18px;
+    padding-left: 10px;
+  }
+  //Sort
+  .sort-function {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    background-color: $turquoise;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    p {
+      margin: 0;
+      padding-bottom: 10px;
+    }
+    select {
+      background: #c3c3c3;
+      border-radius: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    select:focus {
+      outline: none;
+    }
+    select:focus option:hover {
+      background-color: $turquoise;
+    }
+  }
+  /*---Mobile-Movie-card---*/
+  .all-movies {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .movie-card {
+    width: 80%;
+    flex-direction: row;
+  }
+  .movie-content-card {
+    width: 80%;
+  }
+  .movie-footer {
+    width: 100%;
+    background-color: #12504a;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 5px;
+  }
+  .movie-title {
+    font-size: 16px;
+  }
+  .movie-image {
+    mask-image: none;
+  }
+  .save-svg {
+    font-size: 25px;
+    padding-bottom: 10px;
+  }
+  .heart-svg {
+    font-size: 28px;
+  }
+  .movie-rating,
+  .movie-rating p {
+    font-size: 14px !important;
   }
 }
 

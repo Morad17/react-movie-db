@@ -181,144 +181,158 @@ const MobileMovieLibrary = () => {
   };
 
   return (
-    <div className="movie-library">
+    <div className="mobile-movie-library">
       <section className="movie-library-header">
-        <div className="movie-header-left">
-          <div className="help-section">
-            <div
-              className={`help-btn ${helpClicked && "btn-active"}`}
-              onClick={() => setHelpClicked(!helpClicked)}
-            >
-              <IoIosHelpCircle />
-              Help
-            </div>
-          </div>
-
-          {helpClicked && (
-            <div className="info-div">
-              <h3 className="info-div-title">Get Started</h3>
-              <p className="info-div-text">Click on the movie for more info </p>
-              <p className="info-div-text">
-                <BsBookmarkStarFill
-                  style={{ fontSize: "1.3em", color: "gold" }}
-                />{" "}
-                Click The Bookmark Icon to add movie to bookmark list. Click
-                again to remove from list
-              </p>
-              <p className="info-div-text">
-                <BiHeartCircle style={{ fontSize: "1.5em", color: "gold" }} />
-                Click the Like icon to add movie to liked list. Click again to
-                remove.
-              </p>
-              <p className="info-div-text">
-                Watched Films will appear as grayed out.
-              </p>
-            </div>
-          )}
+        <div className="banner" style={{ "--movie-banner": `url(${Banner})` }}>
+          <LogoSvg />
+          <h2 className="banner-title">All Movies</h2>
         </div>
-        <div className="movie-header-center">
-          <div
-            className="banner"
-            style={{ "--movie-banner": `url(${Banner})` }}
-          >
-            <LogoSvg />
-            <h2 className="banner-title">All Movies</h2>
-          </div>
 
-          <div className="search-div">
-            <SearchMovie movieSearch={handleMovieSearch} />
-          </div>
+        <div className="search-div">
+          <SearchMovie movieSearch={handleMovieSearch} />
         </div>
-        <div className="movie-header-right"></div>
       </section>
-      <section className="movie-library-content">
-        {/*-------------Filters---------*/}
-        <div className="movie-content-left">
-          <p
-            onClick={() => setFiltersBtn(!filtersBtn)}
-            className={`filter-btn ${filtersBtn && "btn-active"}`}
+      {/*-------------Action Buttons---------*/}
+      <section className="movie-library-actions">
+        <div className="help-section">
+          <div
+            className={`help-btn ${helpClicked && "btn-active"}`}
+            onClick={() => setHelpClicked(!helpClicked)}
           >
-            Filter
-          </p>
-          {filtersBtn && (
-            <div className="filters-function">
-              <div className="genre-filter">
-                <p className="filter-title"> Genre:</p>
-                <div className="all-genres">
-                  {genres.map((g, key) => {
-                    const isSelected = allFilters.genres.includes(g.id);
-                    return (
-                      <p
-                        className={`movie-genre ${
-                          isSelected ? "selectedGenre" : ""
-                        }`}
-                        onClick={() => genreFilterHandler(g.id)}
-                        key={key}
-                      >
-                        {g.name}
-                      </p>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="year-filter">
-                <p className="filter-title"> Year:</p>
-                <div className="year-picker">
-                  <DatePicker
-                    placeholderText="yyyy"
-                    selected={yearSearch}
-                    onChange={(date) => {
-                      setYearSearch(date);
-                      setAllFilters((prev) => ({
-                        ...prev,
-                        year: date ? date.getFullYear() : "",
-                      }));
-                      SetYearChecked(true);
-                    }}
-                    showYearPicker
-                    dateFormat="yyyy"
-                    yearItemNumber={10}
-                  />
-                </div>
-              </div>
-              <div className="watched-filter">
-                <p className="filter-title">Watched Movies:</p>
-                <div className="watched-checkbox">
-                  <label>Include Movies Watched</label>
-                  <input
-                    type="checkbox"
-                    checked={watchedFilter}
-                    onChange={() => setWatchedFilter(!watchedFilter)}
-                  />
-                </div>
-              </div>
-              <div className="filter-btn-div">
-                <p
-                  className={`filter-submit-btn ${filtersUsed && "btn-active"}`}
-                  onClick={() => {
-                    if (!filtersUsed) {
-                      filterSearch();
-                      setFiltersUsed(true);
-                    } else {
-                      setAllFilters({
-                        year: "",
-                        cast: "",
-                        genres: [],
-                      });
-                      setYearSearch();
-                      setGenreSearch && setGenreSearch(""); // Only if you have this state
-                      setCastSearch && setCastSearch(""); // Only if you have this state
-                      setFilterTrigger((prev) => prev + 1);
-                      setFiltersUsed(false);
-                    }
-                  }}
-                >
-                  {filtersUsed ? "Filters On" : "Filters Off"}
-                </p>
+            <IoIosHelpCircle />
+            Help
+          </div>
+        </div>
+
+        {helpClicked && (
+          <div className="info-div">
+            <h3 className="info-div-title">Get Started</h3>
+            <p className="info-div-text">Click on the movie for more info </p>
+            <p className="info-div-text">
+              <BsBookmarkStarFill
+                style={{ fontSize: "1.3em", color: "gold" }}
+              />{" "}
+              Click The Bookmark Icon to add movie to bookmark list. Click again
+              to remove from list
+            </p>
+            <p className="info-div-text">
+              <BiHeartCircle style={{ fontSize: "1.5em", color: "gold" }} />
+              Click the Like icon to add movie to liked list. Click again to
+              remove.
+            </p>
+            <p className="info-div-text">
+              Watched Films will appear as grayed out.
+            </p>
+          </div>
+        )}
+        {/*-------------Filters---------*/}
+        <p
+          onClick={() => setFiltersBtn(!filtersBtn)}
+          className={`filter-btn ${filtersBtn && "btn-active"}`}
+        >
+          Filter
+        </p>
+        {filtersBtn && (
+          <div className="filters-function">
+            <div className="genre-filter">
+              <p className="filter-title"> Genre:</p>
+              <div className="all-genres">
+                {genres.map((g, key) => {
+                  const isSelected = allFilters.genres.includes(g.id);
+                  return (
+                    <p
+                      className={`movie-genre ${
+                        isSelected ? "selectedGenre" : ""
+                      }`}
+                      onClick={() => genreFilterHandler(g.id)}
+                      key={key}
+                    >
+                      {g.name}
+                    </p>
+                  );
+                })}
               </div>
             </div>
-          )}
-        </div>
+            <div className="year-filter">
+              <p className="filter-title"> Year:</p>
+              <div className="year-picker">
+                <DatePicker
+                  placeholderText="yyyy"
+                  selected={yearSearch}
+                  onChange={(date) => {
+                    setYearSearch(date);
+                    setAllFilters((prev) => ({
+                      ...prev,
+                      year: date ? date.getFullYear() : "",
+                    }));
+                    SetYearChecked(true);
+                  }}
+                  showYearPicker
+                  dateFormat="yyyy"
+                  yearItemNumber={10}
+                />
+              </div>
+            </div>
+            <div className="watched-filter">
+              <p className="filter-title">Watched Movies:</p>
+              <div className="watched-checkbox">
+                <label>Include Movies Watched</label>
+                <input
+                  type="checkbox"
+                  checked={watchedFilter}
+                  onChange={() => setWatchedFilter(!watchedFilter)}
+                />
+              </div>
+            </div>
+            <div className="filter-btn-div">
+              <p
+                className={`filter-submit-btn ${filtersUsed && "btn-active"}`}
+                onClick={() => {
+                  if (!filtersUsed) {
+                    filterSearch();
+                    setFiltersUsed(true);
+                  } else {
+                    setAllFilters({
+                      year: "",
+                      cast: "",
+                      genres: [],
+                    });
+                    setYearSearch();
+                    setGenreSearch && setGenreSearch(""); // Only if you have this state
+                    setCastSearch && setCastSearch(""); // Only if you have this state
+                    setFilterTrigger((prev) => prev + 1);
+                    setFiltersUsed(false);
+                  }
+                }}
+              >
+                {filtersUsed ? "Filters On" : "Filters Off"}
+              </p>
+            </div>
+          </div>
+        )}
+        {/*--------------Sort---------*/}
+        <p
+          onClick={() => setSorting(!sorting)}
+          className={`sort-btn ${sorting && "btn-active"}`}
+        >
+          Sort
+        </p>
+        {sorting && (
+          <div className="sort-function">
+            <p>Sort Results :</p>
+            <Select
+              options={selectOptions}
+              classNamePrefix={"react-select"}
+              styles={selectStyles}
+              value={selectOptions.find(
+                (option) => option.value === sortOption
+              )}
+              onChange={(selectedOption) => setSortOption(selectedOption.value)}
+            />
+          </div>
+        )}
+      </section>
+      <section className="all-movie-cards">
         <div className="all-movies">
           {movies.map((movie, key) => {
             const userMovie = Array.isArray(userMovieData)
@@ -338,31 +352,6 @@ const MobileMovieLibrary = () => {
           })}
 
           <Pagination paginate={paginate} totalPages={totalPages} />
-        </div>
-        {/*--------------Sort---------*/}
-        <div className="movie-content-right">
-          <p
-            onClick={() => setSorting(!sorting)}
-            className={`sort-btn ${sorting && "btn-active"}`}
-          >
-            Sort
-          </p>
-          {sorting && (
-            <div className="sort-function">
-              <p>Sort Results :</p>
-              <Select
-                options={selectOptions}
-                classNamePrefix={"react-select"}
-                styles={selectStyles}
-                value={selectOptions.find(
-                  (option) => option.value === sortOption
-                )}
-                onChange={(selectedOption) =>
-                  setSortOption(selectedOption.value)
-                }
-              />
-            </div>
-          )}
         </div>
       </section>
     </div>

@@ -21,12 +21,18 @@ import MobileMovieLibrary from "./pages/MobileMovieLibrary";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState(null);
+  const [currentWidth, setCurrentWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setCurrentWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
   }, [loggedUser]);
-  const currentWidth = window.innerWidth;
   const Layout = () => {
     return (
       <div className="main-layout">
@@ -56,7 +62,7 @@ function App() {
         {
           path: "/library",
           element:
-            currentWidth < 768 ? <MovieLibrary /> : <MobileMovieLibrary />,
+            currentWidth < 768 ? <MobileMovieLibrary /> : <MovieLibrary />,
         },
         {
           path: "/userPage",
