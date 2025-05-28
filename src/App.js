@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Outlet,
   createBrowserRouter,
@@ -33,52 +33,56 @@ function App() {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
   }, [loggedUser]);
-  const Layout = () => {
-    return (
-      <div className="main-layout">
-        <AuthProvider>
-          {currentWidth < 769 ? <MobileNav /> : <Navbar />}
 
-          <Outlet />
-          <Footer />
-        </AuthProvider>
-      </div>
-    );
-  };
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Layout />,
-      children: [
+  const router = useMemo(
+    () =>
+      createBrowserRouter([
         {
           path: "/",
-          element: <ProtectedRoute />,
+          element: (
+            <div className="main-layout">
+              <AuthProvider>
+                {currentWidth < 769 ? <MobileNav /> : <Navbar />}
+
+                <Outlet />
+                <Footer />
+              </AuthProvider>
+            </div>
+          ),
+          children: [
+            {
+              path: "/",
+              element: <ProtectedRoute />,
+            },
+            {
+              path: "/login",
+              element: <Home />,
+            },
+            {
+              path: "/library",
+              element:
+                currentWidth < 769 ? <MobileMovieLibrary /> : <MovieLibrary />,
+            },
+            {
+              path: "/userPage",
+              element: <UserPage />,
+            },
+            {
+              path: "/moviePage/:id",
+              element: <MoviePage />,
+            },
+          ],
         },
-        {
-          path: "/login",
-          element: <Home />,
-        },
-        {
-          path: "/library",
-          element:
-            currentWidth < 768 ? <MobileMovieLibrary /> : <MovieLibrary />,
-        },
-        {
-          path: "/userPage",
-          element: <UserPage />,
-        },
-        {
-          path: "/moviePage/:id",
-          element: <MoviePage />,
-        },
-      ],
-    },
-  ]);
+      ]),
+    [currentWidth]
+  );
 
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      <RouterProvider
+        router={router}
+        key={currentWidth < 769 ? "mobile" : "desktop"}
+      />
       <ToastContainer autoClose={2000} draggable={false} />
     </div>
   );
