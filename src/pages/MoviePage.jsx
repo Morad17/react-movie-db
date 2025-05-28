@@ -43,12 +43,13 @@ const MoviePage = () => {
     review: null,
   });
   const [metrics, setMetrics] = useState({
-    bookmarked: 0,
-    liked: 0,
-    rated: 0,
-    reviewed: 0,
-    watched: 0,
+    totalBookmarked: 0,
+    totalLiked: 0,
+    totalRated: 0,
+    totalReviewed: 0,
+    totalWatched: 0,
   });
+  const [loggedUser, setLoggedUser] = useState(null);
   const [allReviews, setAllReviews] = useState();
   const [createReview, setCreateReview] = useState(false);
   const [averageRating, setAverageRating] = useState();
@@ -61,29 +62,31 @@ const MoviePage = () => {
     createRatingReview,
     isDisabled,
   } = useMovieActions();
-
-  const username = localStorage.getItem("username");
   const params = useParams();
   const profileImage = localStorage.getItem("profileImage");
+
+  //Chcked Is Users Logged in
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (username) setLoggedUser(username);
+  }, [loggedUser]);
 
   ///Find If User Bookmarked or Liked Movie
   const getUserMovieData = async () => {
     const { id } = params;
-    if (username) {
-      try {
-        const res = await axios.post("http://localhost:3070/getUserTable", {
-          username,
+    try {
+      const res = await axios.post("http://localhost:3070/getUserTable", {
+        loggedUser,
+      });
+      const movieInfo = res.data.find((movie) => movie.movieId === id);
+      movieInfo &&
+        setUserActions({
+          bookmarkList: movieInfo.bookmarkList,
+          likedList: movieInfo.likedList,
+          watched: movieInfo.watched,
         });
-        const movieInfo = res.data.find((movie) => movie.movieId === id);
-        movieInfo &&
-          setUserActions({
-            bookmarkList: movieInfo.bookmarkList,
-            likedList: movieInfo.likedList,
-            watched: movieInfo.watched,
-          });
-      } catch (err) {
-        console.log(err);
-      }
+    } catch (err) {
+      console.log(err);
     }
   };
   // Selected Movie Info
@@ -150,78 +153,82 @@ const MoviePage = () => {
     }
   };
 
-  const getAllRR = async () => {
+  ////Get user Actions details
+  const getUserRR = async () => {
     const { id } = params;
-    if (username) {
-      try {
-        const res = await axios.get(
-          `http://localhost:3070/getAllRatingReviews?movieId=${id}`
-        );
-        // Set users Review
-        if (Array.isArray(res.data)) {
-          const myReview = res.data.find(
-            (review) =>
-              String(review.movieId) === String(id) &&
-              review.username === username
-          );
-          setUserActions((prev) => ({
-            ...prev,
-            rating: myReview.rating,
-            review: myReview.review,
-            rated:
-              typeof myReview.rating === "number" && myReview.rating >= 0
-                ? true
-                : false,
-            reviewed:
-              typeof myReview.review === "string" && myReview.review.length > 0
-                ? true
-                : false,
-          }));
-          //Set All Movie Reviews
-          const allMovieReviews = res.data.filter(
-            (review) =>
-              String(review.movieId) === String(id) && review.review.length > 0
-          );
-          setAllReviews(allMovieReviews);
-          // Get all ratings & make average score
-          const allRatings = res.data
-            .filter(
-              (rate) =>
-                String(rate.movieId) === String(id) &&
-                typeof rate.rating === "number"
-            )
-            .map((rate) => rate.rating);
-          const allReviews = res.data.filter(
-            (rev) => String(rev.movieId) === String(id)
-          );
-          const allReviewsTotal = allReviews.map((rev) => rev.review).length;
-          const avgRating =
-            allRatings.length > 0
-              ? allRatings.reduce((sum, rating) => sum + rating, 0) /
-                allRatings.length
-              : false;
-          setAllReviews(allReviews);
-          setAverageRating(avgRating);
-          setMetrics((prev) => ({
-            ...prev,
-            rated: allRatings.length,
-            reviewed: allReviewsTotal,
-          }));
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      return toast(`You must be logged in to Review and Rate`);
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getUserRatingReview?movieId=${id}&username=${loggedUser}`
+      );
+      console.log(res.data);
+      // Set users Review
+      const myReview = res.data[0];
+      setUserActions((prev) => ({
+        ...prev,
+        rating: myReview.rating,
+        review: myReview.review,
+        rated:
+          typeof myReview.rating === "number" && myReview.rating >= 0
+            ? true
+            : false,
+        reviewed:
+          typeof myReview.review === "string" && myReview.review.length > 0
+            ? true
+            : false,
+      }));
+    } catch (err) {
+      console.log(err);
     }
   };
+  const getUserBookmarkLiked = async () => {
+    const { id } = params;
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
+      );
+      console.log(res.data);
+      // Set users Review
+      const myReview = res.data[0];
+      setUserActions((prev) => ({
+        ...prev,
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /////Get Metrics
+  const getAllRR = async () => {
+    const { id } = params;
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getAllRatingReviews?movieId=${id}`
+      );
+      const data = res.data[0]
+        //Set All Movie Reviews
+        setAllReviews(data.review.all);
+        setAverageRating(data.averageRating);
+        setMetrics((prev) => ({
+          ...prev,
+          rated: data.,
+          reviewed: allReviewsTotal,
+        }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const getTotalBookmarkedLiked = async () => {
     const { id } = params;
     try {
       const res = await axios.get(
         `http://localhost:3070/getBookmarkedLikedTotalMovie?movieId=${id}`
       );
-      console.log(res.data);
+      setMetrics((prev) => ({
+        ...prev,
+        bookmarked: res.data.totalBookmarked,
+        liked: res.data.totalLiked,
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -232,14 +239,20 @@ const MoviePage = () => {
       const res = await axios.get(
         `http://localhost:3070/getWatchedTotalMovie?movieId=${id}`
       );
-      console.log(res.data);
+      setMetrics((prev) => ({
+        ...prev,
+        watched: res.data.totalWatched,
+      }));
     } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
-    getUserMovieData();
-  }, []);
+    if (loggedUser) {
+      getUserMovieData();
+      getUserRR();
+    }
+  }, [loggedUser]);
 
   useEffect(() => {
     getSelectedMoveInfo();
@@ -307,7 +320,7 @@ const MoviePage = () => {
     if (userActions.rating) {
       const res = await createRatingReview({
         id,
-        username,
+        username: loggedUser,
         profileImage,
         title,
         rating,
@@ -348,6 +361,9 @@ const MoviePage = () => {
             <h3 className="info-div-title">Get Started</h3>
             <p className="info-div-text">Click on the movie for more info </p>
             <p className="info-div-text">
+              <strong>You Must Be Logged In to Perform User Actions</strong>
+            </p>
+            <p className="info-div-text">
               <BsBookmarkStarFill
                 style={{ fontSize: "1.3em", color: "gold" }}
               />{" "}
@@ -372,126 +388,130 @@ const MoviePage = () => {
             </div>
           </div>
         )}
-        <div
-          className={`quick-action-bookmark quick-action-btn ${
-            userActions.bookmarkList ? "btn-active" : ""
-          }`}
-          onClick={() =>
-            !isDisabled &&
-            addToBookmarkList({
-              id: selectedMovieInfo.id,
-              title: selectedMovieInfo.title,
-              username,
-              poster_path: selectedMovieInfo.poster_path,
-              date: new Date().toISOString().slice(0, 10),
-              userActions,
-              setUserActions,
-            })
-          }
-        >
-          <BsBookmarkStarFill id="bookmarkIcon" />
-          {userActions.bookmarkList ? "Bookmarked" : "Bookmark"}
-        </div>
-        <div
-          className={`quick-action-like quick-action-btn ${
-            userActions.likedList ? "btn-active" : ""
-          }`}
-          onClick={() =>
-            !isDisabled &&
-            addToLikedList({
-              id: selectedMovieInfo.id,
-              title: selectedMovieInfo.title,
-              username,
-              poster_path: selectedMovieInfo.poster_path,
-              date: new Date().toISOString().slice(0, 10),
-              userActions,
-              setUserActions,
-            })
-          }
-        >
-          <BiHeartCircle id="likeIcon" />
-          {userActions.likedList ? "Liked" : "Like"}
-        </div>
-        <div
-          className={`quick-action-watched quick-action-btn ${
-            userActions.watched ? "btn-active" : ""
-          }`}
-          onClick={() =>
-            !isDisabled &&
-            addToWatched({
-              id: selectedMovieInfo.id,
-              title: selectedMovieInfo.title,
-              username,
-              poster_path: selectedMovieInfo.poster_path,
-              date: new Date().toISOString().slice(0, 10),
-              userActions,
-              setUserActions,
-            })
-          }
-        >
-          <MdTv id="watchedIcon" />
-          {userActions.watched ? "Watched" : "Mark As Watched"}
-        </div>
-        {userActions.rated ? (
-          <div className="quick-action-rated ">
-            <PiNotePencilLight />
-            Rated
-          </div>
-        ) : (
-          <div
-            className={`quick-action-rate-review quick-action-btn ${
-              userActions.rated ? "btn-active" : ""
-            }`}
-            onClick={() => {
-              setCreateReview(!createReview);
-            }}
-          >
-            <PiNotePencilLight />
-            Rate & Review
-          </div>
-        )}
-        {createReview && (
-          <div className="create-review">
-            <form onSubmit={handleRR}>
-              <div className="rating-group">
-                <p className="group-label">Rating /10</p>
-                <hr />
-                <Rating
-                  onClick={(e) => {
-                    setUserActions((prev) => ({
-                      ...prev,
-                      rating: e * 2,
-                    }));
-                  }}
-                  initialValue={userActions.rating || 0}
-                  allowFraction={true}
-                  tooltipArray={[1, 2, , 4, 5, 6, 7, 8, 9, 10]}
-                  showTooltip
-                  size={30}
-                  tooltipDefaultText="0/10"
-                />
+        {loggedUser && (
+          <div className="logged-user-actions">
+            <div
+              className={`quick-action-bookmark quick-action-btn ${
+                userActions.bookmarkList ? "btn-active" : ""
+              }`}
+              onClick={() =>
+                !isDisabled &&
+                addToBookmarkList({
+                  id: selectedMovieInfo.id,
+                  title: selectedMovieInfo.title,
+                  username: loggedUser,
+                  poster_path: selectedMovieInfo.poster_path,
+                  date: new Date().toISOString().slice(0, 10),
+                  userActions,
+                  setUserActions,
+                })
+              }
+            >
+              <BsBookmarkStarFill id="bookmarkIcon" />
+              {userActions.bookmarkList ? "Bookmarked" : "Bookmark"}
+            </div>
+            <div
+              className={`quick-action-like quick-action-btn ${
+                userActions.likedList ? "btn-active" : ""
+              }`}
+              onClick={() =>
+                !isDisabled &&
+                addToLikedList({
+                  id: selectedMovieInfo.id,
+                  title: selectedMovieInfo.title,
+                  username: loggedUser,
+                  poster_path: selectedMovieInfo.poster_path,
+                  date: new Date().toISOString().slice(0, 10),
+                  userActions,
+                  setUserActions,
+                })
+              }
+            >
+              <BiHeartCircle id="likeIcon" />
+              {userActions.likedList ? "Liked" : "Like"}
+            </div>
+            <div
+              className={`quick-action-watched quick-action-btn ${
+                userActions.watched ? "btn-active" : ""
+              }`}
+              onClick={() =>
+                !isDisabled &&
+                addToWatched({
+                  id: selectedMovieInfo.id,
+                  title: selectedMovieInfo.title,
+                  username: loggedUser,
+                  poster_path: selectedMovieInfo.poster_path,
+                  date: new Date().toISOString().slice(0, 10),
+                  userActions,
+                  setUserActions,
+                })
+              }
+            >
+              <MdTv id="watchedIcon" />
+              {userActions.watched ? "Watched" : "Mark As Watched"}
+            </div>
+            {userActions.rated ? (
+              <div className="quick-action-rated ">
+                <PiNotePencilLight />
+                Rated
               </div>
-              <div className="review-group">
-                <p className="group-label">(Optional) Leave A Review</p>
-                <hr />
-                <textarea
-                  className="review-textarea"
-                  name="review"
-                  minLength="4"
-                  value={userActions.review || ""}
-                  onChange={(e) =>
-                    setUserActions((prev) => ({
-                      ...prev,
-                      review: e.target.value,
-                    }))
-                  }
-                ></textarea>
+            ) : (
+              <div
+                className={`quick-action-rate-review quick-action-btn ${
+                  userActions.rated ? "btn-active" : ""
+                }`}
+                onClick={() => {
+                  setCreateReview(!createReview);
+                }}
+              >
+                <PiNotePencilLight />
+                Rate & Review
               </div>
+            )}
+            {createReview && (
+              <div className="create-review">
+                <form onSubmit={handleRR}>
+                  <div className="rating-group">
+                    <p className="group-label">Rating /10</p>
+                    <hr />
+                    <Rating
+                      onClick={(e) => {
+                        setUserActions((prev) => ({
+                          ...prev,
+                          rating: e * 2,
+                        }));
+                      }}
+                      initialValue={userActions.rating || 0}
+                      allowFraction={true}
+                      tooltipArray={[1, 2, , 4, 5, 6, 7, 8, 9, 10]}
+                      showTooltip
+                      size={30}
+                      tooltipDefaultText="0/10"
+                    />
+                  </div>
+                  <div className="review-group">
+                    <p className="group-label">(Optional) Leave A Review</p>
+                    <hr />
+                    <textarea
+                      className="review-textarea"
+                      name="review"
+                      minLength="4"
+                      value={userActions.review || ""}
+                      onChange={(e) =>
+                        setUserActions((prev) => ({
+                          ...prev,
+                          review: e.target.value,
+                        }))
+                      }
+                    ></textarea>
+                  </div>
 
-              <button className="submit-btn" type="submit">
-                Submit
-              </button>
-            </form>
+                  <button className="submit-btn" type="submit">
+                    Submit
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -537,100 +557,103 @@ const MoviePage = () => {
                   })}
                   <p className="age-rating">{ageRating()}</p>
                 </div>
-                <div className="action-icons-row">
-                  <VoteIcon vote={selectedMovieInfo.vote_average} />
-                  <BsBookmarkStarFill
-                    id="bookmarkIcon"
-                    className={`save-svg ${
-                      userActions.bookmarkList ? "bookmarked" : ""
-                    }`}
-                    onClick={() =>
-                      !isDisabled &&
-                      addToBookmarkList({
-                        id: selectedMovieInfo.id,
-                        title: selectedMovieInfo.title,
-                        username,
-                        poster_path: selectedMovieInfo.poster_path,
-                        date: new Date().toISOString().slice(0, 10),
-                        userActions,
-                        setUserActions,
-                      })
-                    }
-                  />
-                  <BiHeartCircle
-                    id="likeIcon"
-                    className={`heart-svg ${
-                      userActions.likedList ? "liked" : ""
-                    }`}
-                    onClick={() =>
-                      !isDisabled &&
-                      addToLikedList({
-                        id: selectedMovieInfo.id,
-                        title: selectedMovieInfo.title,
-                        username,
-                        poster_path: selectedMovieInfo.poster_path,
-                        date: new Date().toISOString().slice(0, 10),
-                        userActions,
-                        setUserActions,
-                      })
-                    }
-                  />
+                {loggedUser && (
+                  <div className="action-icons-row">
+                    <VoteIcon vote={selectedMovieInfo.vote_average} />
+                    <BsBookmarkStarFill
+                      id="bookmarkIcon"
+                      className={`save-svg ${
+                        userActions.bookmarkList ? "bookmarked" : ""
+                      }`}
+                      onClick={() =>
+                        !isDisabled &&
+                        addToBookmarkList({
+                          id: selectedMovieInfo.id,
+                          title: selectedMovieInfo.title,
+                          username: loggedUser,
+                          poster_path: selectedMovieInfo.poster_path,
+                          date: new Date().toISOString().slice(0, 10),
+                          userActions,
+                          setUserActions,
+                        })
+                      }
+                    />
+                    <BiHeartCircle
+                      id="likeIcon"
+                      className={`heart-svg ${
+                        userActions.likedList ? "liked" : ""
+                      }`}
+                      onClick={() =>
+                        !isDisabled &&
+                        addToLikedList({
+                          id: selectedMovieInfo.id,
+                          title: selectedMovieInfo.title,
+                          username: loggedUser,
+                          poster_path: selectedMovieInfo.poster_path,
+                          date: new Date().toISOString().slice(0, 10),
+                          userActions,
+                          setUserActions,
+                        })
+                      }
+                    />
 
-                  <div
-                    className="watched-action pointer"
-                    style={
-                      userActions.watched
-                        ? { backgroundColor: "#501218" }
-                        : { backgroundColor: "gray" }
-                    }
-                    onClick={() =>
-                      !isDisabled &&
-                      addToWatched({
-                        id: selectedMovieInfo.id,
-                        title: selectedMovieInfo.title,
-                        username,
-                        poster_path: selectedMovieInfo.poster_path,
-                        date: new Date().toISOString().slice(0, 10),
-                        userActions,
-                        setUserActions,
-                      })
-                    }
-                  >
-                    {userActions.watched ? (
-                      <div className="watched-svg pointer">
-                        <TbCheckbox />
-                      </div>
-                    ) : (
-                      <div className="watched-svg pointer">
-                        <MdOutlineCheckBoxOutlineBlank />
-                      </div>
-                    )}
-
-                    <p className="watched-btn pointer">
-                      {userActions.watched ? "Watched" : "Mark As Watched"}
-                    </p>
-                  </div>
-                  {userActions.rated ? (
                     <div
-                      className="rate-and-review-action"
-                      style={{ background: "#501218" }}
+                      className="watched-action pointer"
+                      style={
+                        userActions.watched
+                          ? { backgroundColor: "#501218" }
+                          : { backgroundColor: "gray" }
+                      }
+                      onClick={() =>
+                        !isDisabled &&
+                        addToWatched({
+                          id: selectedMovieInfo.id,
+                          title: selectedMovieInfo.title,
+                          username: loggedUser,
+                          poster_path: selectedMovieInfo.poster_path,
+                          date: new Date().toISOString().slice(0, 10),
+                          userActions,
+                          setUserActions,
+                        })
+                      }
                     >
-                      <p className="rate-and-review-label">Rated</p>
-                    </div>
-                  ) : (
-                    <div className="rate-and-review-action pointer">
-                      <div className="rate-svg">
-                        <PiNotePencilLight />
-                      </div>
-                      <p
-                        className="rr-btn pointer"
-                        onClick={() => setCreateReview(!createReview)}
-                      >
-                        Rate & Review
+                      {userActions.watched ? (
+                        <div className="watched-svg pointer">
+                          <TbCheckbox />
+                        </div>
+                      ) : (
+                        <div className="watched-svg pointer">
+                          <MdOutlineCheckBoxOutlineBlank />
+                        </div>
+                      )}
+
+                      <p className="watched-btn pointer">
+                        {userActions.watched ? "Watched" : "Mark As Watched"}
                       </p>
                     </div>
-                  )}
-                </div>
+                    {userActions.rated ? (
+                      <div
+                        className="rate-and-review-action"
+                        style={{ background: "#501218" }}
+                      >
+                        <p className="rate-and-review-label">Rated</p>
+                      </div>
+                    ) : (
+                      <div className="rate-and-review-action pointer">
+                        <div className="rate-svg">
+                          <PiNotePencilLight />
+                        </div>
+                        <p
+                          className="rr-btn pointer"
+                          onClick={() => setCreateReview(!createReview)}
+                        >
+                          Rate & Review
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="overview-section">
                   <h3 className="section-title">Overview</h3>
                   <p className="overview-text">{selectedMovieInfo.overview}</p>
@@ -641,23 +664,23 @@ const MoviePage = () => {
           <section className="metrics-section">
             <div className="bookmark-metric">
               <BsBookmarkStarFill />
-              <p>Total Bookmarked: {metrics?.bookmarked}</p>
+              <p>Total Bookmarked: {metrics?.totalBookmarked}</p>
             </div>
             <div className="like-metric">
               <BiHeartCircle />
-              <p>Total Liked: {metrics?.liked}</p>
+              <p>Total Liked: {metrics?.totalLiked}</p>
             </div>
             <div className="watched-metric">
               <MdTv />
-              <p>Total Watched: {metrics?.watched}</p>
+              <p>Total Watched: {metrics?.totalWatched}</p>
             </div>
             <div className="rated-metric">
               <PiNotePencilLight />
-              <p>Total Ratings:{metrics?.rated}</p>
+              <p>Total Ratings:{metrics?.totalRated}</p>
             </div>
             <div className="rated-metric">
               <PiNotePencilLight />
-              <p>Total Reviews:{metrics?.reviewed}</p>
+              <p>Total Reviews:{metrics?.totalReviewed}</p>
             </div>
           </section>
           <section className="movie-page-content">

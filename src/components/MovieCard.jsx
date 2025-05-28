@@ -32,6 +32,7 @@ const MovieCard = ({
   genres,
   userData,
   watchedFilter,
+  loggedUser,
 }) => {
   const [userActions, setUserActions] = useState({
     bookmarkList: null,
@@ -73,44 +74,47 @@ const MovieCard = ({
   return (
     <div className={`movie-card $userActionso.watched ? "watched-card" : ""}`}>
       <div className="movie-content-card">
-        <div className="movie-header">
-          <div className="header-left">
-            <BsBookmarkStarFill
-              id="bookmarkIcon"
-              className={`save-svg ${
-                userActions.bookmarkList ? "bookmarked" : ""
-              }`}
-              onClick={() =>
-                !isDisabled &&
-                addToBookmarkList({
-                  id,
-                  title,
-                  username,
-                  poster_path,
-                  date: new Date().toISOString().slice(0, 10),
-                  userActions,
-                  setUserActions,
-                })
-              }
-            />
-            <BiHeartCircle
-              id="likeIcon"
-              className={`heart-svg ${userActions.likedList ? "liked" : ""}`}
-              onClick={() =>
-                !isDisabled &&
-                addToLikedList({
-                  id,
-                  title,
-                  username,
-                  poster_path,
-                  date: new Date().toISOString().slice(0, 10),
-                  userActions,
-                  setUserActions,
-                })
-              }
-            />
+        {loggedUser && (
+          <div className="movie-header">
+            <div className="header-left">
+              <BsBookmarkStarFill
+                id="bookmarkIcon"
+                className={`save-svg ${
+                  userActions.bookmarkList ? "bookmarked" : ""
+                }`}
+                onClick={() =>
+                  !isDisabled &&
+                  addToBookmarkList({
+                    id,
+                    title,
+                    username,
+                    poster_path,
+                    date: new Date().toISOString().slice(0, 10),
+                    userActions,
+                    setUserActions,
+                  })
+                }
+              />
+              <BiHeartCircle
+                id="likeIcon"
+                className={`heart-svg ${userActions.likedList ? "liked" : ""}`}
+                onClick={() =>
+                  !isDisabled &&
+                  addToLikedList({
+                    id,
+                    title,
+                    username,
+                    poster_path,
+                    date: new Date().toISOString().slice(0, 10),
+                    userActions,
+                    setUserActions,
+                  })
+                }
+              />
+            </div>
           </div>
-        </div>
+        )}
+
         <Link to={`/moviePage/${id}`}>
           <img
             src={

@@ -98,6 +98,7 @@ input[type="checkbox"]:hover {
 .mobile-navbar {
   background-color: $turquoise;
   padding: 0 10px;
+  border-bottom: 1px solid white;
   .closed-mobile-nav {
     display: flex;
     align-items: center;
@@ -351,8 +352,12 @@ input[type="checkbox"]:hover {
     display: flex;
     align-items: center;
   }
-  .search-input {
+  .search-input-div {
     width: 80%;
+    height: 100%;
+  }
+  .search-input {
+    width: 100%;
     border: none;
     height: 100%;
     border-radius: 5px 0 0 5px;
@@ -934,6 +939,12 @@ input[type="checkbox"]:hover {
     background-image: linear-gradient(to right, $turquoise 20%, transparent 25%),
       var(--movie-bg-image);
   }
+  .logged-user-actions {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    width: 100%;
+  }
   .poster-image {
     border-radius: 5px;
     width: 80%;
@@ -1240,13 +1251,20 @@ input[type="checkbox"]:hover {
     align-items: center;
     flex-direction: column;
   }
-  .search-input {
+  .search-input-div {
     width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+  }
+  .search-input {
+    width: 95%;
     border: none;
     height: 100%;
     font-size: 20px;
     padding: 15px 0;
   }
+
   .search-input:focus {
     outline: none;
   }
@@ -1428,6 +1446,9 @@ input[type="checkbox"]:hover {
     select:focus option:hover {
       background-color: $turquoise;
     }
+  }
+  .pagination .page-link {
+    width: 25px;
   }
   /*---Mobile-Movie-card---*/
   .all-movies {

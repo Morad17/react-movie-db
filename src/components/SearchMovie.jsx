@@ -10,14 +10,17 @@ const SearchMovie = ({ movieSearch }) => {
 
   return (
     <div className="search-movie">
-      <input
-        name="search"
-        className="search-input"
-        placeholder="Search A Movie"
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <div className="search-input-div">
+        <input
+          name="search"
+          className="search-input"
+          placeholder="Search A Movie"
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       <div className="search-btn-div">
         <p onClick={handleSearch} className="search-btn" type="submit">
           Search

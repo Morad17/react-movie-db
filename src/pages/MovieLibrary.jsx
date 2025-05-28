@@ -18,6 +18,7 @@ import Banner from "../assets/images/curtain-background.png";
 import LogoSvg from "../components/LogoSvg";
 const MovieLibrary = () => {
   ////Use States////
+  const [loggedUser, setLoggedUser] = useState(null);
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [userMovieData, setUserMovieData] = useState([]);
@@ -72,6 +73,12 @@ const MovieLibrary = () => {
       console.log(err);
     }
   };
+  //Chcked Is Users Logged in
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (username) setLoggedUser(username);
+  }, [loggedUser]);
+
   useEffect(() => {
     fetchMovies();
   }, [searchQuery, currentPage, sortOption, filterTrigger, watchedFilter]);
@@ -328,6 +335,7 @@ const MovieLibrary = () => {
               : null;
             return (
               <MovieCard
+                loggedUser={loggedUser}
                 userData={userMovie}
                 key={key}
                 movie={movie}

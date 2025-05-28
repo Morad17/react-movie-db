@@ -128,6 +128,71 @@ app.get("/getAllRatingReviews", (req, res) => {
 `;
   mdb.query(queryTable, [movieId], (err, data) => {
     if (err) return res.json(err);
+    // Filter ratings and reviews
+    const ratings = data.filter(
+      (row) => typeof row.rating === "number" && row.rating !== null
+    );
+    const reviews = data.filter(
+      (row) => typeof row.review === "string" && row.review.trim().length > 0
+    );
+    // Calculate average rating
+    const averageRating =
+      ratings.length > 0
+        ? ratings.reduce((sum, row) => sum + row.rating, 0) / ratings.length
+        : null;
+
+    return res.json({
+      rating: ratings.length,
+      averageRating,
+      review: {
+        total: reviews.length,
+        all: reviews,
+      },
+    });
+  });
+});
+//////////Get All User Details for Movie ///////////////
+
+// Get User Bookmark Liked
+app.get("/getUserBookmarkLiked", (req, res) => {
+  const { movieId, username } = req.query;
+  const queryTable = `
+  SELECT bookmarked, liked
+  FROM bookMarkedLiked
+  WHERE bookmarked.movieId = ? AND username = ?
+`;
+  mdb.query(queryTable, [movieId, username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length > 0) {
+      return res.json(data);
+    } else return res.json("no records found");
+  });
+});
+// Get User Watched
+app.get("/getUserWatched", (req, res) => {
+  const { movieId, username } = req.query;
+  const queryTable = `
+  SELECT *
+  FROM watched
+  WHERE watched.movieId = ? AND username = ?
+`;
+  mdb.query(queryTable, [movieId, username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length > 0) {
+      return res.json(data);
+    } else return res.json("no records found");
+  });
+});
+// Get User Ratings & Reviews
+app.get("/getUserRatingReview", (req, res) => {
+  const { movieId, username } = req.query;
+  const queryTable = `
+  SELECT *
+  FROM ratingReview
+  WHERE ratingReview.movieId = ? AND username = ?
+`;
+  mdb.query(queryTable, [movieId, username], (err, data) => {
+    if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
     } else return res.json("no records found");
