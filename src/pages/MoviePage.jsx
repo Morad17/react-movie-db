@@ -200,15 +200,17 @@ const MoviePage = () => {
       const res = await axios.get(
         `http://localhost:3070/getAllRatingReviews?movieId=${id}`
       );
-      const data = res.data;
+      const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
       //Set All Movie Reviews
-      setAllReviews(data.review.all);
-      setAverageRating(data.averageRating);
-      setMetrics((prev) => ({
-        ...prev,
-        rated: data.rating,
-        reviewed: data.review.total,
-      }));
+      if (data) {
+        setAllReviews(data.review.all);
+        setAverageRating(data.averageRating);
+        setMetrics((prev) => ({
+          ...prev,
+          rated: data.rating,
+          reviewed: data.review.total,
+        }));
+      }
     } catch (err) {
       console.log(err);
     }
