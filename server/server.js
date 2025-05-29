@@ -1,4 +1,4 @@
-import mysql2 from "mysql2";
+import mysql from "mysql";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -8,16 +8,14 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = 3070;
+const port = process.env.PORT || 3070;
 
 /// Connection String ///
-const mdb = mysql2.createConnection({
-  host: process.env.MARIA_HOST,
-  user: process.env.MARIA_USERNAME,
-  password: process.env.MARIA_PASSWORD,
-  database: process.env.MARIA_DATABASE,
-  port: 3307,
-  connectionLimit: 5,
+const mdb = mysql.createConnection({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USERNAME,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 });
 
 mdb.connect(function (err) {
