@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,32 +30,37 @@ const MovieCard = ({
     vote_count,
   },
   genres,
-  userData,
+  bLMovie,
+  wMovie,
   watchedFilter,
   loggedUser,
 }) => {
   const [userActions, setUserActions] = useState({
-    bookmarkList: null,
-    likedList: null,
+    bookmarked: null,
+    liked: null,
     watched: null,
   });
 
   ///Bookmark and Like ///
-  const { addToBookmarkList, addToLikedList, isDisabled } = useMovieActions();
-
-  const username = localStorage.getItem("username");
+  const { addToBookmarked, addToLiked, isDisabled } = useMovieActions();
 
   const checkMovieData = () => {
-    userData &&
-      setUserActions({
-        bookmarkList: userData.bookmarkList,
-        likedList: userData.likedList,
-        watched: userData.watched,
-      });
+    console.log(bLMovie);
+    bLMovie &&
+      setUserActions((prev) => ({
+        ...prev,
+        bookmarked: bLMovie.bookmarked,
+        liked: bLMovie.liked,
+      }));
+    wMovie &&
+      setUserActions((prev) => ({
+        ...prev,
+        watched: wMovie.watched,
+      }));
   };
   useEffect(() => {
     checkMovieData();
-  }, []);
+  }, [bLMovie, wMovie]);
 
   const displayGenres = () => {
     const genreNames = genre_ids
@@ -71,8 +76,9 @@ const MovieCard = ({
   if (!watchedFilter && userActions.watched) {
     return null;
   }
+
   return (
-    <div className={`movie-card $userActionso.watched ? "watched-card" : ""}`}>
+    <div className={`movie-card $userActions.watched ? "watched-card" : ""}`}>
       <div className="movie-content-card">
         {loggedUser && (
           <div className="movie-header">
@@ -80,14 +86,14 @@ const MovieCard = ({
               <BsBookmarkStarFill
                 id="bookmarkIcon"
                 className={`save-svg ${
-                  userActions.bookmarkList ? "bookmarked" : ""
+                  userActions.bookmarked ? "bookmarked" : ""
                 }`}
                 onClick={() =>
                   !isDisabled &&
-                  addToBookmarkList({
+                  addToBookmarked({
                     id,
                     title,
-                    username,
+                    username: loggedUser,
                     poster_path,
                     date: new Date().toISOString().slice(0, 10),
                     userActions,
@@ -97,13 +103,13 @@ const MovieCard = ({
               />
               <BiHeartCircle
                 id="likeIcon"
-                className={`heart-svg ${userActions.likedList ? "liked" : ""}`}
+                className={`heart-svg ${userActions.liked ? "liked" : ""}`}
                 onClick={() =>
                   !isDisabled &&
-                  addToLikedList({
+                  addToLiked({
                     id,
                     title,
-                    username,
+                    username: loggedUser,
                     poster_path,
                     date: new Date().toISOString().slice(0, 10),
                     userActions,
@@ -127,16 +133,12 @@ const MovieCard = ({
           />
         </Link>
         <div className="movie-rating">
-          {/* <p className="vote-count">{vote_average.toFixed(1)}</p> */}
           <VoteIcon vote={vote_average} />
         </div>
       </div>
       <div className="movie-footer">
         <div className="group-row">
           <h3 className="movie-title">{title}</h3>
-          {/* <div className="vote-group">
-            <VoteIcon vote={vote_average} />
-          </div> */}
         </div>
         <p className="year-release">{release_date?.slice(0, 4)}</p>
         <div className="genre-group">

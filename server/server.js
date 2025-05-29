@@ -38,30 +38,15 @@ app.get("/get-existing-users", (req, res) => {
 });
 /// Create user
 app.post("/createUser", (req, res) => {
-  const uniqueId =
-    req.body.username.replace(/[^a-zA-Z0-9_]/g, "") + "_" + Date.now();
   const createUserQuery =
-    "INSERT into users (`username`,`name`,`profileImage`,`email`, `password`,`tableName`)VALUES (?)";
+    "INSERT into users (`username`,`name`,`profileImage`,`email`, `password`)VALUES (?)";
   const createUserVal = [
     req.body.username,
     req.body.name,
     req.body.profileImage,
     req.body.email,
     req.body.password,
-    uniqueId,
   ];
-
-  const createUserTable = `CREATE TABLE ${uniqueId}(
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        movieId INT UNIQUE,
-        movieName TEXT,
-        bookmarkList BOOLEAN DEFAULT FALSE,
-        likedList BOOLEAN DEFAULT FALSE,
-        review TEXT,
-        rating FLOAT CHECK (rating BETWEEN 1 AND 10),
-        watched BOOLEAN DEFAULT FALSE,
-        poster_path TEXT,
-    )`;
 
   // Execute the first query to create the user
   mdb.query(createUserQuery, [createUserVal], (err, data) => {
@@ -70,17 +55,6 @@ app.post("/createUser", (req, res) => {
       return res.json(err);
     } else {
       console.log("successfully added user data:", data);
-
-      // Execute the second query to create the user's table
-      mdb.query(createUserTable, (err, data) => {
-        if (err) {
-          console.error("Error executing createUserTable:", err);
-          return res.json(err);
-        } else {
-          console.log("createUserTable executed successfully:", data);
-          return res.json("success");
-        }
-      });
     }
   });
 });
@@ -93,28 +67,6 @@ app.post("/login", (req, res) => {
     if (data.length > 0) {
       return res.json(data);
     } else return res.json(0);
-  });
-});
-
-/// Get User Personal Table
-app.post("/getUserTable", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, [...valTable], (err, data) => {
-    ///Find Users Table base on users name (in user table)
-    if (err) return res.json(err);
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const qTable = `SELECT * FROM ${tableName}`;
-      mdb.query(qTable, (err, data) => {
-        if (err) {
-          console.log(err, "error finding table info");
-          return res.json({ fatal: true, error: err });
-        }
-        // Returns an array, even if empty
-        return res.json(data);
-      });
-    } else return console.log(err, "table not found");
   });
 });
 
@@ -151,21 +103,47 @@ app.get("/getAllRatingReviews", (req, res) => {
     });
   });
 });
-//////////Get All User Details for Movie ///////////////
+// Get All User Bookmark Liked Movies /////
+app.get("/getAllUserBookmarkLiked", (req, res) => {
+  const { username } = req.query;
+  const queryTable = `
+  SELECT * FROM bookmarkedLiked WHERE username = ?
+`;
+  mdb.query(queryTable, [username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length > 0) {
+      return res.json(data);
+    } else return res.json("no records found");
+  });
+});
+// Get All User Bookmark Liked Movies /////
+app.get("/getAllUserWatched", (req, res) => {
+  const { username } = req.query;
+  const queryTable = `
+  SELECT * FROM watched WHERE username = ?
+`;
+  mdb.query(queryTable, [username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length > 0) {
+      return res.json(data);
+    } else return res.json("no records found");
+  });
+});
+//////////Get All User Details for Single Movie ///////////////
 
 // Get User Bookmark Liked
 app.get("/getUserBookmarkLiked", (req, res) => {
   const { movieId, username } = req.query;
   const queryTable = `
   SELECT bookmarked, liked
-  FROM bookMarkedLiked
-  WHERE bookmarked.movieId = ? AND username = ?
+  FROM bookmarkedLiked
+  WHERE movieId = ? AND username = ?
 `;
   mdb.query(queryTable, [movieId, username], (err, data) => {
     if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
-    } else return res.json("no records found");
+    } else return res.json(false);
   });
 });
 // Get User Watched
@@ -180,7 +158,7 @@ app.get("/getUserWatched", (req, res) => {
     if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
-    } else return res.json("no records found");
+    } else return res.json(false);
   });
 });
 // Get User Ratings & Reviews
@@ -195,40 +173,14 @@ app.get("/getUserRatingReview", (req, res) => {
     if (err) return res.json(err);
     if (data.length > 0) {
       return res.json(data);
-    } else return res.json("no records found");
+    } else return res.json(false);
   });
 });
 
 ////Add Movie To Database
 
 //Bookmark List
-app.post("/addToBookmarkList", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, [...valTable], (err, data) => {
-    ///Find Users Table base on users name (in user table)
-    if (err) return res.json(err);
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const bookmarkQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,bookmarkList)VALUE (?, ?, ?,?)
-                ON DUPLICATE KEY UPDATE
-                bookmarkList = VALUES(bookmarkList)
-                `;
-      const valBookmark = [
-        req.body.movieId,
-        req.body.movieName,
-        req.body.poster_path,
-        req.body.bookmarkList,
-      ];
-      ///Add To Users Table bookmarkList
-      mdb.query(bookmarkQuery, [...valBookmark], (err, data) => {
-        if (err) return console.log(err, "error whilst pushing to table");
-        if (data.length > 0) {
-          return res.json(data);
-        } else return res.json(err);
-      });
-    }
-  });
+app.post("/addToBookmarked", (req, res) => {
   const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, bookmarked,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     bookmarked = VALUES(bookmarked)
@@ -238,93 +190,52 @@ app.post("/addToBookmarkList", (req, res) => {
     req.body.username,
     req.body.movieId,
     req.body.movieName,
-    req.body.bookmarkList,
+    req.body.bookmarked,
     req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
-    if (err) return console.log(err, "error whilst pushing to table");
-    if (data.length > 0) {
-      return res.send("Succesfully Bookmarked Movie");
-    } else return err;
+    if (!err) {
+      return res.send({
+        success: true,
+        message: "Successfully Updated Bookmarked List",
+      });
+    } else {
+      return res
+        .status(500)
+        .send({ success: false, message: "Error Updating Bookmarked List" });
+    }
   });
 });
 
 //Like List
-app.post("/addToLikedList", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, [...valTable], (err, data) => {
-    ///Find Users Table base on users name (in user table)
-    if (err) return res.json(err);
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const likeQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,likedList)VALUE (?, ?, ?,?)
-                ON DUPLICATE KEY UPDATE
-                likedList = VALUES(likedList)
-                `;
-      const valLike = [
-        req.body.movieId,
-        req.body.movieName,
-        req.body.poster_path,
-        req.body.likedList,
-      ];
-      ///Add To Users Table Like List
-      mdb.query(likeQuery, [...valLike], (err, data) => {
-        if (err) return console.log(err, "error whilst pushing to table");
-        if (data.length > 0) {
-          return res.json(data);
-        } else return res.json(err);
-      });
-    }
-  });
+app.post("/addToLiked", (req, res) => {
   const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, liked,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     liked = VALUES(liked)
     `;
-
   const valGroupTable = [
     req.body.username,
     req.body.movieId,
     req.body.movieName,
-    req.body.likedList,
+    req.body.liked,
     req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
-    if (err) return console.log(err, "error whilst pushing to table");
-    if (data.length > 0) {
-      return res.send("Succesfully Liked Movie");
-    } else return err;
+    if (!err) {
+      return res.send({
+        success: true,
+        message: "Successfully Updating Like List",
+      });
+    } else {
+      return res
+        .status(500)
+        .send({ success: false, message: "Error Updating Like List" });
+    }
   });
 });
 
 //Watched List
 app.post("/addToWatched", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, [...valTable], (err, data) => {
-    ///Find Users Table base on users name (in user table)
-    if (err) return res.json(err);
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const watchedQuery = `INSERT into ${tableName} (movieId,movieName,poster_path,watched)VALUE (?, ?, ?,?)
-                ON DUPLICATE KEY UPDATE
-                watched = VALUES(watched)
-                `;
-      const valWatched = [
-        req.body.movieId,
-        req.body.movieName,
-        req.body.poster_path,
-        req.body.watched,
-      ];
-      ///Add To Users Table Like List
-      mdb.query(watchedQuery, [...valWatched], (err, data) => {
-        if (err) return console.log(err, "error whilst pushing to table");
-        if (data.length > 0) {
-          return res.json(data);
-        } else return res.json(err);
-      });
-    }
-  });
   const groupQuery = `INSERT INTO watched (username, movieId,movieName, watched,date) VALUES (?,?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     watched = VALUES(watched)
@@ -338,46 +249,20 @@ app.post("/addToWatched", (req, res) => {
     req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
-    if (err) return console.log(err, "error whilst pushing to table");
-    if (data.length > 0) {
-      return res.send("Succesfully added Movie to Watched");
-    } else return err;
+    if (!err) {
+      return res.send({
+        success: true,
+        message: "Successfully Updating Watched List",
+      });
+    } else {
+      return res
+        .status(500)
+        .send({ success: false, message: "Error Updating Watched List" });
+    }
   });
 });
 //Create Review
 app.post("/createRatingReview", (req, res) => {
-  const queryTable = "SELECT tableName FROM users WHERE `username` = ?";
-  const valTable = [req.body.username];
-  mdb.query(queryTable, [...valTable], (err, data) => {
-    ///Find Users Table base on users name (in user table)
-    if (err) return res.json("error", err);
-    if (data.length > 0) {
-      const tableName = data[0].tableName;
-      const queryTable = `INSERT into ${tableName} (movieId,movieName, poster_path,rating,review) VALUE (?,?,?,?, ?)
-                ON DUPLICATE KEY UPDATE
-                review = VALUES(review),
-                rating = VALUES(rating)
-                `;
-      const valTable = [
-        req.body.movieId,
-        req.body.movieName,
-        req.body.poster_path,
-        req.body.rating,
-        req.body.review,
-      ];
-      ///Add To Users Table Review
-      mdb.query(queryTable, [...valTable], (err, data) => {
-        if (err) {
-          console.log(err, "error whilst pushing to user table");
-          return res.status(500).json({ success: false, error: err });
-        }
-        // Always send a response
-        return res.json({
-          success: true,
-        });
-      });
-    }
-  });
   const revTableQuery =
     "INSERT IGNORE INTO ratingReview (username, profileImage, movieId,movieName,rating, review,date) VALUES (?,?, ?, ?, ?, ?,?)";
   const valRevTable = [
@@ -390,11 +275,16 @@ app.post("/createRatingReview", (req, res) => {
     req.body.date,
   ];
   mdb.query(revTableQuery, [...valRevTable], (err, data) => {
-    if (err)
-      return console.log(err, "error whilst pushing to ratingReview table");
-    if (data.length > 0) {
-      return res.send("Succesfully Rated and Reviewed Movie");
-    } else return err;
+    if (!err) {
+      return res.send({
+        success: true,
+        message: "Successfully Created Rating/Review",
+      });
+    } else {
+      return res
+        .status(500)
+        .send({ success: false, message: "Error Rating Movie" });
+    }
   });
 });
 

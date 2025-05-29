@@ -34,8 +34,8 @@ const MoviePage = () => {
   const [movieTrailer, setMovieTrailer] = useState();
   const [cast, setCast] = useState();
   const [userActions, setUserActions] = useState({
-    bookmarkList: null,
-    likedList: null,
+    bookmarked: null,
+    liked: null,
     watched: false,
     rated: false,
     reviewed: null,
@@ -56,8 +56,8 @@ const MoviePage = () => {
   const [helpClicked, setHelpClicked] = useState(false);
   ///Bookmark and Like ///
   const {
-    addToBookmarkList,
-    addToLikedList,
+    addToBookmarked,
+    addToLiked,
     addToWatched,
     createRatingReview,
     isDisabled,
@@ -70,25 +70,6 @@ const MoviePage = () => {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
   }, [loggedUser]);
-
-  ///Find If User Bookmarked or Liked Movie
-  const getUserMovieData = async () => {
-    const { id } = params;
-    try {
-      const res = await axios.post("http://localhost:3070/getUserTable", {
-        loggedUser,
-      });
-      const movieInfo = res.data.find((movie) => movie.movieId === id);
-      movieInfo &&
-        setUserActions({
-          bookmarkList: movieInfo.bookmarkList,
-          likedList: movieInfo.likedList,
-          watched: movieInfo.watched,
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
   // Selected Movie Info
   const getSelectedMoveInfo = async () => {
     const { id } = params;
@@ -153,44 +134,59 @@ const MoviePage = () => {
     }
   };
 
-  ////Get user Actions details
+  ////Get user Actions details///
   const getUserRR = async () => {
     const { id } = params;
     try {
       const res = await axios.get(
         `http://localhost:3070/getUserRatingReview?movieId=${id}&username=${loggedUser}`
       );
-      console.log(res.data);
       // Set users Review
-      const myReview = res.data[0];
+      const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
       setUserActions((prev) => ({
         ...prev,
-        rating: myReview.rating,
-        review: myReview.review,
-        rated:
-          typeof myReview.rating === "number" && myReview.rating >= 0
-            ? true
-            : false,
-        reviewed:
-          typeof myReview.review === "string" && myReview.review.length > 0
-            ? true
-            : false,
+        rating: data && data.rating,
+        review: data && data.review,
+        rated: data && typeof data.rating === "number" && data.rating,
+        reviewed: data && typeof data.review === "string" && data.review,
       }));
     } catch (err) {
       console.log(err);
     }
   };
+  //user bookmark & like
   const getUserBookmarkLiked = async () => {
     const { id } = params;
     try {
       const res = await axios.get(
         `http://localhost:3070/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
       );
-      console.log(res.data);
       // Set users Review
-      const myReview = res.data[0];
+      const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
+      console.log(data);
       setUserActions((prev) => ({
         ...prev,
+        bookmarked:
+          data && typeof data.bookmarked === "number" ? data.bookmarked : null,
+        liked: data && typeof data.liked === "number" ? data.liked : null,
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  //user watched
+  const getUserWatched = async () => {
+    const { id } = params;
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getUserWatched?movieId=${id}&username=${loggedUser}`
+      );
+      // Set users Review
+      const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
+      setUserActions((prev) => ({
+        ...prev,
+        watched:
+          data && typeof data.watched === "number" ? data?.watched : null,
       }));
     } catch (err) {
       console.log(err);
@@ -204,15 +200,15 @@ const MoviePage = () => {
       const res = await axios.get(
         `http://localhost:3070/getAllRatingReviews?movieId=${id}`
       );
-      const data = res.data[0]
-        //Set All Movie Reviews
-        setAllReviews(data.review.all);
-        setAverageRating(data.averageRating);
-        setMetrics((prev) => ({
-          ...prev,
-          rated: data.,
-          reviewed: allReviewsTotal,
-        }));
+      const data = res.data;
+      //Set All Movie Reviews
+      setAllReviews(data.review.all);
+      setAverageRating(data.averageRating);
+      setMetrics((prev) => ({
+        ...prev,
+        rated: data.rating,
+        reviewed: data.review.total,
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -249,8 +245,9 @@ const MoviePage = () => {
   };
   useEffect(() => {
     if (loggedUser) {
-      getUserMovieData();
       getUserRR();
+      getUserBookmarkLiked();
+      getUserWatched();
     }
   }, [loggedUser]);
 
@@ -271,7 +268,7 @@ const MoviePage = () => {
 
   useEffect(() => {
     getTotalBookmarkedLiked();
-  }, [userActions.bookmarkList, userActions.likedList]);
+  }, [userActions.bookmarked, userActions.liked]);
 
   useEffect(() => {
     getTotalWatched();
@@ -392,11 +389,11 @@ const MoviePage = () => {
           <div className="logged-user-actions">
             <div
               className={`quick-action-bookmark quick-action-btn ${
-                userActions.bookmarkList ? "btn-active" : ""
+                userActions.bookmarked ? "btn-active" : ""
               }`}
               onClick={() =>
                 !isDisabled &&
-                addToBookmarkList({
+                addToBookmarked({
                   id: selectedMovieInfo.id,
                   title: selectedMovieInfo.title,
                   username: loggedUser,
@@ -408,15 +405,15 @@ const MoviePage = () => {
               }
             >
               <BsBookmarkStarFill id="bookmarkIcon" />
-              {userActions.bookmarkList ? "Bookmarked" : "Bookmark"}
+              {userActions.bookmarked ? "Bookmarked" : "Bookmark"}
             </div>
             <div
               className={`quick-action-like quick-action-btn ${
-                userActions.likedList ? "btn-active" : ""
+                userActions.liked ? "btn-active" : ""
               }`}
               onClick={() =>
                 !isDisabled &&
-                addToLikedList({
+                addToLiked({
                   id: selectedMovieInfo.id,
                   title: selectedMovieInfo.title,
                   username: loggedUser,
@@ -428,7 +425,7 @@ const MoviePage = () => {
               }
             >
               <BiHeartCircle id="likeIcon" />
-              {userActions.likedList ? "Liked" : "Like"}
+              {userActions.liked ? "Liked" : "Like"}
             </div>
             <div
               className={`quick-action-watched quick-action-btn ${
@@ -483,7 +480,7 @@ const MoviePage = () => {
                       }}
                       initialValue={userActions.rating || 0}
                       allowFraction={true}
-                      tooltipArray={[1, 2, , 4, 5, 6, 7, 8, 9, 10]}
+                      tooltipArray={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                       showTooltip
                       size={30}
                       tooltipDefaultText="0/10"
@@ -563,11 +560,11 @@ const MoviePage = () => {
                     <BsBookmarkStarFill
                       id="bookmarkIcon"
                       className={`save-svg ${
-                        userActions.bookmarkList ? "bookmarked" : ""
+                        userActions.bookmarked ? "bookmarked" : ""
                       }`}
                       onClick={() =>
                         !isDisabled &&
-                        addToBookmarkList({
+                        addToBookmarked({
                           id: selectedMovieInfo.id,
                           title: selectedMovieInfo.title,
                           username: loggedUser,
@@ -581,11 +578,11 @@ const MoviePage = () => {
                     <BiHeartCircle
                       id="likeIcon"
                       className={`heart-svg ${
-                        userActions.likedList ? "liked" : ""
+                        userActions.liked ? "liked" : ""
                       }`}
                       onClick={() =>
                         !isDisabled &&
-                        addToLikedList({
+                        addToLiked({
                           id: selectedMovieInfo.id,
                           title: selectedMovieInfo.title,
                           username: loggedUser,
@@ -610,7 +607,6 @@ const MoviePage = () => {
                           id: selectedMovieInfo.id,
                           title: selectedMovieInfo.title,
                           username: loggedUser,
-                          poster_path: selectedMovieInfo.poster_path,
                           date: new Date().toISOString().slice(0, 10),
                           userActions,
                           setUserActions,

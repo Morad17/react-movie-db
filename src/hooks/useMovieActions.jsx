@@ -5,61 +5,59 @@ import { toast } from "react-toastify";
 
 const useMovieActions = () => {
   const [isDisabled, setIsDisabled] = useState(false);
-  const addToBookmarkList = async ({
+  const addToBookmarked = async ({
     username,
     id,
     title,
-    poster_path,
     date,
-    bookmarkList,
     userActions,
     setUserActions,
   }) => {
     if (username) {
+      console.log(username, id, title, date, userActions);
       setIsDisabled(true);
-      if (userActions.bookmarkList === true || userActions.bookmarkList === 1) {
+      if (userActions.bookmarked === true || userActions.bookmarked === 1) {
         try {
           const res = await axios.post(
-            "http://localhost:3070/addToBookmarkList",
+            "http://localhost:3070/addToBookmarked",
             {
               username,
               movieId: id,
               movieName: title,
-              poster_path,
               date,
-              bookmarkList: false,
+              bookmarked: false,
             }
           );
           toast(`Successfully removed ${title} from the bookmarks list`);
-          setUserActions((prev) => ({ ...prev, bookmarkList: null }));
+          setUserActions((prev) => ({ ...prev, bookmarked: null }));
           setTimeout(() => {
             setIsDisabled(false);
           }, 2000);
           return res.data;
         } catch (err) {
           console.log(err);
-          toast("Your movie was not added");
+          toast("Your movie was not removed");
         }
       } else if (
-        userActions.bookmarkList === null ||
-        userActions.bookmarkList === 0
+        userActions.bookmarked === null ||
+        userActions.bookmarked === 0
       ) {
         try {
           const res = await axios.post(
-            "http://localhost:3070/addToBookmarkList",
+            "http://localhost:3070/addToBookmarked",
             {
               username,
               movieId: id,
               movieName: title,
-              poster_path,
               date,
-              bookmarkList: true,
+              bookmarked: true,
             }
           );
           toast(`Successfully bookmarked ${title}`);
-          setUserActions((prev) => ({ ...prev, bookmarkList: true }));
+          setUserActions((prev) => ({ ...prev, bookmarked: true }));
           setTimeout(() => {
             setIsDisabled(false);
+            console.log("timeout");
           }, 2000);
           return res.data;
         } catch (err) {
@@ -72,29 +70,27 @@ const useMovieActions = () => {
     }
   };
 
-  const addToLikedList = async ({
+  const addToLiked = async ({
     username,
     id,
     title,
-    poster_path,
     date,
     userActions,
     setUserActions,
   }) => {
     if (username) {
       setIsDisabled(true);
-      if (userActions.likedList === true || userActions.likedList === 1) {
+      if (userActions.liked === true || userActions.liked === 1) {
         try {
-          const res = await axios.post("http://localhost:3070/addToLikedList", {
+          const res = await axios.post("http://localhost:3070/addToLiked", {
             username,
             movieId: id,
             movieName: title,
-            poster_path,
             date,
-            likedList: false,
+            liked: false,
           });
           toast(`Successfully removed ${title} from the Liked list`);
-          setUserActions((prev) => ({ ...prev, likedList: null }));
+          setUserActions((prev) => ({ ...prev, liked: null }));
           setTimeout(() => {
             setIsDisabled(false);
           }, 2000);
@@ -103,21 +99,17 @@ const useMovieActions = () => {
           console.log(err);
           toast("Your movie was not added");
         }
-      } else if (
-        userActions.likedList === null ||
-        userActions.likedList === 0
-      ) {
+      } else if (userActions.liked === null || userActions.liked === 0) {
         try {
-          const res = await axios.post("http://localhost:3070/addToLikedList", {
+          const res = await axios.post("http://localhost:3070/addToLiked", {
             username,
             movieId: id,
             movieName: title,
-            poster_path,
             date,
-            likedList: true,
+            liked: true,
           });
           toast(`Successfully Liked ${title}`);
-          setUserActions((prev) => ({ ...prev, likedList: true }));
+          setUserActions((prev) => ({ ...prev, liked: true }));
           setTimeout(() => {
             setIsDisabled(false);
           }, 2000);
@@ -135,7 +127,6 @@ const useMovieActions = () => {
     username,
     id,
     title,
-    poster_path,
     date,
     userActions,
     setUserActions,
@@ -148,7 +139,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            poster_path,
             date,
             watched: false,
           });
@@ -172,7 +162,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            poster_path,
             date,
             watched: true,
           });
@@ -235,8 +224,8 @@ const useMovieActions = () => {
   };
 
   return {
-    addToBookmarkList,
-    addToLikedList,
+    addToBookmarked,
+    addToLiked,
     addToWatched,
     createRatingReview,
     isDisabled,

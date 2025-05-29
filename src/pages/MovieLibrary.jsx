@@ -21,7 +21,8 @@ const MovieLibrary = () => {
   const [loggedUser, setLoggedUser] = useState(null);
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [userMovieData, setUserMovieData] = useState([]);
+  const [userBookmarkLikeData, setUserBookmarkLikeData] = useState([]);
+  const [userWatchedData, setUserWatchedData] = useState([]);
   // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("popularity.desc");
@@ -77,7 +78,7 @@ const MovieLibrary = () => {
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
-  }, [loggedUser]);
+  }, [loggedUser, userBookmarkLikeData]);
 
   useEffect(() => {
     fetchMovies();
@@ -105,23 +106,38 @@ const MovieLibrary = () => {
     fetchGenres();
   }, []);
 
-  // Get User Liked and Bookmarked data //
-  const getUserMovieData = async () => {
-    const user = localStorage.getItem("username");
-    if (user) {
-      try {
-        const res = await axios.post("http://localhost:3070/getUserTable", {
-          username: user,
-        });
-        setUserMovieData(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+  //user bookmark & like & watched
+  const getAllUserBookmarkLiked = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getAllUserBookmarkLiked?username=${loggedUser}`
+      );
+      // Set users Review
+      const data = res.data;
+      setUserBookmarkLikeData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getAllUserWatched = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3070/getAllUserWatched?username=${loggedUser}`
+      );
+      // Set users Review
+      const data = res.data;
+      setUserWatchedData(data);
+    } catch (err) {
+      console.log(err);
     }
   };
   useEffect(() => {
-    getUserMovieData();
-  }, []);
+    if (loggedUser) {
+      getAllUserBookmarkLiked();
+      getAllUserWatched();
+      console.log("refetch");
+    }
+  }, [loggedUser]);
 
   const paginate = (number) => setCurrentPage(number);
   const handleMovieSearch = (query) => {
@@ -328,16 +344,21 @@ const MovieLibrary = () => {
         </div>
         <div className="all-movies">
           {movies.map((movie, key) => {
-            const userMovie = Array.isArray(userMovieData)
-              ? userMovieData?.find(
-                  (userMovie) => userMovie.movieName === movie.title
+            const bLMovie = Array.isArray(userBookmarkLikeData)
+              ? userBookmarkLikeData?.find(
+                  (mov) => mov.movieName === movie.title
                 )
+              : null;
+            const wMovie = Array.isArray(userWatchedData)
+              ? userWatchedData?.find((mov) => mov.movieName === movie.title)
               : null;
             return (
               <MovieCard
                 loggedUser={loggedUser}
-                userData={userMovie}
+                watchedData={userWatchedData}
                 key={key}
+                bLMovie={bLMovie}
+                wMovie={wMovie}
                 movie={movie}
                 genres={genres}
                 watchedFilter={watchedFilter}
