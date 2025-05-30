@@ -13,9 +13,8 @@ import { BsBookmarkStarFill } from "react-icons/bs";
 import { BiHeartCircle } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Banner from "../components/Banner";
 
-import Banner from "../assets/images/curtain-background.png";
-import LogoSvg from "../components/LogoSvg";
 const MobileMovieLibrary = () => {
   ////Use States////
   const [movies, setMovies] = useState([]);
@@ -183,10 +182,7 @@ const MobileMovieLibrary = () => {
   return (
     <div className="mobile-movie-library">
       <section className="movie-library-header">
-        <div className="banner" style={{ "--movie-banner": `url(${Banner})` }}>
-          <LogoSvg />
-          <h2 className="banner-title">All Movies</h2>
-        </div>
+        <Banner title={"All Movies"} />
 
         <div className="search-div">
           <SearchMovie movieSearch={handleMovieSearch} />

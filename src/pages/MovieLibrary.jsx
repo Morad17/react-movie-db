@@ -14,8 +14,7 @@ import { BiHeartCircle } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import Banner from "../assets/images/curtain-background.png";
-import LogoSvg from "../components/LogoSvg";
+import Banner from "../components/Banner";
 const MovieLibrary = () => {
   ////Use States////
   const [loggedUser, setLoggedUser] = useState(null);
@@ -240,14 +239,7 @@ const MovieLibrary = () => {
           )}
         </div>
         <div className="movie-header-center">
-          <div
-            className="banner"
-            style={{ "--movie-banner": `url(${Banner})` }}
-          >
-            <LogoSvg />
-            <h2 className="banner-title">All Movies</h2>
-          </div>
-
+          <Banner title={"All Movies"} />
           <div className="search-div">
             <SearchMovie movieSearch={handleMovieSearch} />
           </div>
