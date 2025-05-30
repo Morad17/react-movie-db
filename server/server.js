@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = process.env.PORT || 3070;
+const port = process.env.PORT || 8000;
 
 /// Connection String ///
 const mdb = mysql.createConnection({
@@ -326,5 +326,5 @@ app.get("/getWatchedTotalMovie", (req, res) => {
 
 // Initialise Node App//
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });
