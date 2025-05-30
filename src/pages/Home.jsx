@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../hooks/Authprovider";
 import { Link, useNavigate } from "react-router";
+import Banner from "../components/Banner";
 
 const Home = () => {
   //Hooks
@@ -22,7 +23,9 @@ const Home = () => {
   //Get Existing User Data //
   const getExistingUserData = async () => {
     try {
-      const res = await axios.get("http://localhost:3070/get-existing-users");
+      const res = await axios.get(
+        "https://movie-binge.onrender.com/get-existing-users"
+      );
       const data = res.data;
       const usernames = [];
       const emails = [];
@@ -71,7 +74,7 @@ const Home = () => {
     }
     try {
       const { confirm, ...userData } = register;
-      await axios.post("http://localhost:3070/createUser", userData);
+      await axios.post("https://movie-binge.onrender.com/createUser", userData);
       statusCodeHandler(201);
     } catch (err) {
       console.log(err);
@@ -177,8 +180,9 @@ const Home = () => {
 
   return (
     <div className="home-section">
-      <h1>Movie Database</h1>
-      <div className="header-section"></div>
+      <div className="header-section">
+        <Banner title={"Home"} />
+      </div>
       {user ? (
         <div className="">
           <h2>Click on the Button To Get Started</h2>

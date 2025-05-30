@@ -10,30 +10,33 @@ import { Pagination, Navigation } from "swiper/modules";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import MovieCard from "../components/MovieCard";
 import UserMovieCard from "../components/UserMovieCard";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const UserPage = () => {
   const [loggedUser, setLoggedUser] = useState();
   const [userInfo, setUserInfo] = useState([]);
   const [listToggle, setListToggle] = useState("watched");
 
-  const checkUser = async () => {
-    const username = localStorage.getItem("username");
-    setLoggedUser(username);
-    if (username) {
-      try {
-        const res = await axios.post("http://localhost:3070/getUserTable", {
-          username: username,
-        });
-        setUserInfo(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-  useEffect(() => {
-    checkUser();
-  }, []);
+  // const checkUser = async () => {
+  //   const username = localStorage.getItem("username");
+  //   setLoggedUser(username);
+  //   if (username) {
+  //     try {
+  //       const res = await axios.post(
+  //         "https://movie-binge.onrender.com/getUserTable",
+  //         {
+  //           username: username,
+  //         }
+  //       );
+  //       setUserInfo(res.data);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   checkUser();
+  // }, []);
 
   const checkIfEmpty = (listType) => {
     if (listType === "watched") {
@@ -53,6 +56,10 @@ const UserPage = () => {
             <IoPersonCircleOutline />
           </div>
           <h3>{loggedUser && loggedUser}</h3>
+          <h2>Coming Soon!</h2>
+          <Link className="link-btn" to="/library">
+            Go To Movies
+          </Link>
         </section>
         <section className="stats-right"></section>
       </div>

@@ -811,7 +811,17 @@ input[type="checkbox"]:hover {
 /*------------User Page-------------*/
 .user-page-section {
   position: relative;
-
+  .link-btn {
+    background: radial-gradient(#12504a);
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    width: 80%;
+    margin: 10px 0;
+    font-size: 17px;
+  }
   .top-row,
   .bottom-row {
     min-height: 40vh;

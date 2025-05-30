@@ -14,18 +14,17 @@ const useMovieActions = () => {
     setUserActions,
   }) => {
     if (username) {
-      console.log(username, id, title, date, userActions);
       setIsDisabled(true);
       if (userActions.bookmarked === true || userActions.bookmarked === 1) {
         try {
           const res = await axios.post(
-            "http://localhost:3070/addToBookmarked",
+            "https://movie-binge.onrender.com/addToBookmarked",
             {
               username,
               movieId: id,
               movieName: title,
               date,
-              bookmarked: false,
+              bookmarked: 0,
             }
           );
           toast(`Successfully removed ${title} from the bookmarks list`);
@@ -44,20 +43,19 @@ const useMovieActions = () => {
       ) {
         try {
           const res = await axios.post(
-            "http://localhost:3070/addToBookmarked",
+            "https://movie-binge.onrender.com/addToBookmarked",
             {
               username,
               movieId: id,
               movieName: title,
               date,
-              bookmarked: true,
+              bookmarked: 1,
             }
           );
           toast(`Successfully bookmarked ${title}`);
           setUserActions((prev) => ({ ...prev, bookmarked: true }));
           setTimeout(() => {
             setIsDisabled(false);
-            console.log("timeout");
           }, 2000);
           return res.data;
         } catch (err) {
@@ -82,13 +80,16 @@ const useMovieActions = () => {
       setIsDisabled(true);
       if (userActions.liked === true || userActions.liked === 1) {
         try {
-          const res = await axios.post("http://localhost:3070/addToLiked", {
-            username,
-            movieId: id,
-            movieName: title,
-            date,
-            liked: false,
-          });
+          const res = await axios.post(
+            "https://movie-binge.onrender.com/addToLiked",
+            {
+              username,
+              movieId: id,
+              movieName: title,
+              date,
+              liked: false,
+            }
+          );
           toast(`Successfully removed ${title} from the Liked list`);
           setUserActions((prev) => ({ ...prev, liked: null }));
           setTimeout(() => {
@@ -101,13 +102,16 @@ const useMovieActions = () => {
         }
       } else if (userActions.liked === null || userActions.liked === 0) {
         try {
-          const res = await axios.post("http://localhost:3070/addToLiked", {
-            username,
-            movieId: id,
-            movieName: title,
-            date,
-            liked: true,
-          });
+          const res = await axios.post(
+            "https://movie-binge.onrender.com/addToLiked",
+            {
+              username,
+              movieId: id,
+              movieName: title,
+              date,
+              liked: true,
+            }
+          );
           toast(`Successfully Liked ${title}`);
           setUserActions((prev) => ({ ...prev, liked: true }));
           setTimeout(() => {
@@ -135,13 +139,16 @@ const useMovieActions = () => {
       setIsDisabled(true);
       if (userActions.watched === true || userActions.watched === 1) {
         try {
-          const res = await axios.post("http://localhost:3070/addToWatched", {
-            username,
-            movieId: id,
-            movieName: title,
-            date,
-            watched: false,
-          });
+          const res = await axios.post(
+            "https://movie-binge.onrender.com/addToWatched",
+            {
+              username,
+              movieId: id,
+              movieName: title,
+              date,
+              watched: false,
+            }
+          );
           toast(`Successfully changed to not Watched`);
           setUserActions((prev) => ({ ...prev, watched: false }));
           setTimeout(() => {
@@ -158,13 +165,16 @@ const useMovieActions = () => {
         userActions.watched === 0
       ) {
         try {
-          const res = await axios.post("http://localhost:3070/addToWatched", {
-            username,
-            movieId: id,
-            movieName: title,
-            date,
-            watched: true,
-          });
+          const res = await axios.post(
+            "https://movie-binge.onrender.com/addToWatched",
+            {
+              username,
+              movieId: id,
+              movieName: title,
+              date,
+              watched: true,
+            }
+          );
           toast(`Successfully Changed to Watched`);
           setUserActions((prev) => ({ ...prev, watched: true }));
           setTimeout(() => {
@@ -194,7 +204,7 @@ const useMovieActions = () => {
     if (username) {
       try {
         const res = await axios.post(
-          "http://localhost:3070/createRatingReview",
+          "https://movie-binge.onrender.com/createRatingReview",
           {
             username,
             movieId: id,

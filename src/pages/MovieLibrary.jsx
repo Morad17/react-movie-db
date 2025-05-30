@@ -109,7 +109,7 @@ const MovieLibrary = () => {
   const getAllUserBookmarkLiked = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3070/getAllUserBookmarkLiked?username=${loggedUser}`
+        `https://movie-binge.onrender.com/getAllUserBookmarkLiked?username=${loggedUser}`
       );
       // Set users Review
       const data = res.data;
@@ -121,7 +121,7 @@ const MovieLibrary = () => {
   const getAllUserWatched = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3070/getAllUserWatched?username=${loggedUser}`
+        `https://movie-binge.onrender.com/getAllUserWatched?username=${loggedUser}`
       );
       // Set users Review
       const data = res.data;
@@ -134,7 +134,6 @@ const MovieLibrary = () => {
     if (loggedUser) {
       getAllUserBookmarkLiked();
       getAllUserWatched();
-      console.log("refetch");
     }
   }, [loggedUser]);
 

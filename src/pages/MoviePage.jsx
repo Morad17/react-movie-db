@@ -139,7 +139,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getUserRatingReview?movieId=${id}&username=${loggedUser}`
+        `https://movie-binge.onrender.com/getUserRatingReview?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
@@ -159,11 +159,10 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
+        `https://movie-binge.onrender.com/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
-      console.log(data);
       setUserActions((prev) => ({
         ...prev,
         bookmarked:
@@ -179,7 +178,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getUserWatched?movieId=${id}&username=${loggedUser}`
+        `https://movie-binge.onrender.com/getUserWatched?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
@@ -198,7 +197,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getAllRatingReviews?movieId=${id}`
+        `https://movie-binge.onrender.com/getAllRatingReviews?movieId=${id}`
       );
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
       //Set All Movie Reviews
@@ -220,7 +219,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getBookmarkedLikedTotalMovie?movieId=${id}`
+        `https://movie-binge.onrender.com/getBookmarkedLikedTotalMovie?movieId=${id}`
       );
       setMetrics((prev) => ({
         ...prev,
@@ -235,7 +234,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `http://localhost:3070/getWatchedTotalMovie?movieId=${id}`
+        `https://movie-binge.onrender.com/getWatchedTotalMovie?movieId=${id}`
       );
       setMetrics((prev) => ({
         ...prev,

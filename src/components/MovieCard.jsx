@@ -45,7 +45,6 @@ const MovieCard = ({
   const { addToBookmarked, addToLiked, isDisabled } = useMovieActions();
 
   const checkMovieData = () => {
-    console.log(bLMovie);
     bLMovie &&
       setUserActions((prev) => ({
         ...prev,

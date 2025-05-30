@@ -102,9 +102,12 @@ const MobileMovieLibrary = () => {
     const user = localStorage.getItem("username");
     if (user) {
       try {
-        const res = await axios.post("http://localhost:3070/getUserTable", {
-          username: user,
-        });
+        const res = await axios.post(
+          "https://movie-binge.onrender.com/getUserTable",
+          {
+            username: user,
+          }
+        );
         setUserMovieData(res.data);
       } catch (err) {
         console.log(err);

@@ -11,13 +11,12 @@ const AuthProvider = ({ children }) => {
 
   const loginAction = async ({ username, password, profileImage }) => {
     try {
-      const res = await axios.post("http://localhost:3070/login", {
+      const res = await axios.post("https://movie-binge.onrender.com/login", {
         username: username,
         password: password,
       });
 
       if (res.data.length > 0) {
-        console.log(res.data);
         const user = res.data[0];
         setUser(user.username);
         setToken(username);
@@ -26,7 +25,6 @@ const AuthProvider = ({ children }) => {
           "profileImage",
           "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png"
         );
-        console.log(user);
         return navigate("/userPage");
       } else {
         return 400;
@@ -40,7 +38,7 @@ const AuthProvider = ({ children }) => {
     setToken("");
     localStorage.removeItem("username");
     console.log("successfully logged out");
-    navigate(0);
+    navigate("/");
   };
 
   return (

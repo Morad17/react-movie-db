@@ -1,4 +1,4 @@
-import mysql from "mysql";
+import mysql2 from "mysql2";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -11,7 +11,7 @@ app.use(cors());
 const port = process.env.PORT || 8000;
 
 /// Connection String ///
-const mdb = mysql.createConnection({
+const mdb = mysql2.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USERNAME,
   password: process.env.MYSQL_PASSWORD,
