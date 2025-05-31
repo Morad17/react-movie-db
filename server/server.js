@@ -20,10 +20,10 @@ const mdb = mysql2.createPool({
 
 mdb.connect(function (err) {
   if (err) {
-    console.error("Error connecting to MariaDB:", err);
+    console.error("Error connecting to Mysql Server:", err);
     return;
   }
-  console.log("Connected to MariaDB");
+  console.log("Connected to Mysql Server");
 });
 
 /// Get usernames and emails

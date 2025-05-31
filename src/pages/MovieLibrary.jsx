@@ -334,7 +334,7 @@ const MovieLibrary = () => {
           )}
         </div>
         <div className="all-movies">
-          {movies.map((movie, key) => {
+          {movies?.map((movie, key) => {
             const bLMovie = Array.isArray(userBookmarkLikeData)
               ? userBookmarkLikeData?.find(
                   (mov) => mov.movieName === movie.title
