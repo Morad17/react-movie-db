@@ -70,7 +70,7 @@ const MovieLibrary = () => {
         );
       }
     } catch (err) {
-      console.log(err, process.env.REACT_APP_TMDB_API_TOKEN);
+      console.log(err);
     }
   };
   //Chcked Is Users Logged in
