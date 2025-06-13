@@ -70,11 +70,12 @@ app.post("/login", (req, res) => {
 
 //////////Fetching Movie Data from TMDB///////////////
 app.get("/fetchMovies", async (req, res) => {
-  const { currentPage, yearFilter, genres } = req.query;
+  const { currentPage, yearFilter, genres, sortOption } = req.query;
   const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${yearFilter}&sort_by=${sortOption}&with_genres=${genres}`;
 
   try {
     const response = await fetch(url, {
+      method: "GET",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
@@ -90,6 +91,21 @@ app.get("/fetchSearchedMovies", async (req, res) => {
   const { currentPage, searchQuery } = req.query;
   const url = `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`;
 
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+      },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch from TMDB" });
+  }
+});
+app.get("/fetchGenres", async (req, res) => {
+  const url = `https://api.themoviedb.org/3/genre/movie/list?language=en`;
   try {
     const response = await fetch(url, {
       headers: {

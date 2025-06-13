@@ -46,19 +46,14 @@ const MobileMovieLibrary = () => {
 
   // Get All Movies//
   const fetchMovies = async () => {
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
-    const url = searchQuery
-      ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`
-      : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${allFilters.year}&sort_by=${sortOption}&with_genres=${allFilters.genres}`;
+    const queryUrl = searchQuery
+      ? `https://movie-binge.onrender.com/fetchSearchedMovies?searchQuery=${searchQuery}&currentPage=${currentPage}`
+      : `https://movie-binge.onrender.com/fetchMovies?currentPage=${currentPage}&sortOption=${sortOption}&genres=${allFilters.genres}&yearFilter=${allFilters.year}`;
+    console.log(queryUrl);
     try {
-      const res = await fetch(url, options);
+      const res = await fetch(queryUrl);
       const data = await res.json();
+      console.log(data);
       setMovies(data.results);
       setTotalPages(data.total_pages);
       if (searchQuery) {
@@ -77,16 +72,8 @@ const MobileMovieLibrary = () => {
 
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
-    const url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
     try {
-      const res = await fetch(url, options);
+      const res = await fetch("https://movie-binge.onrender.com/fetchGenres");
       const data = await res.json();
       setGenres(data.genres);
     } catch (err) {
