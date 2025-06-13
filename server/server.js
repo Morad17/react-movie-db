@@ -18,13 +18,13 @@ const mdb = mysql2.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
-mdb.connect(function (err) {
-  if (err) {
-    console.error("Error connecting to Mysql Server:", err);
-    return;
-  }
-  console.log("Connected to Mysql Server");
-});
+// mdb.connect(function (err) {
+//   if (err) {
+//     console.error("Error connecting to Mysql Server:", err);
+//     return;
+//   }
+//   console.log("Connected to Mysql Server");
+// });
 
 /// Get usernames and emails
 app.get("/get-existing-users", (req, res) => {
@@ -66,6 +66,42 @@ app.post("/login", (req, res) => {
       return res.json(data);
     } else return res.json(0);
   });
+});
+
+//////////Fetching Movie Data from TMDB///////////////
+app.get("/fetchMovies", async (req, res) => {
+  const { currentPage, yearFilter, genres } = req.query;
+  const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&primary_release_year=${yearFilter}&sort_by=${sortOption}&with_genres=${genres}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+      },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch from TMDB" });
+  }
+});
+app.get("/fetchSearchedMovies", async (req, res) => {
+  const { currentPage, searchQuery } = req.query;
+  const url = `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+      },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch from TMDB" });
+  }
 });
 
 // Get All Ratings & Reviews
