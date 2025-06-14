@@ -8,8 +8,124 @@
   }
 }
 
+//--------Tablets---------//
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  //Nav
+  .mobile-navbar .logged-in-nav-links li,
+  .mobile-navbar .logged-out-nav-links li {
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    margin-left: 40%;
+  }
+  //Movie Library//
+  .mobile-movie-library {
+    .all-movies {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .movie-card {
+      width: 40%;
+    }
+  }
+}
+
 //--------Screen Smaller than---------//
 
 @media screen and (max-width: 768px) {
-  //Movie Library//
+  //Movie Page//
+  .movie-page-section {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .movie-section-right {
+      display: none;
+    }
+    .movie-section-left {
+      width: 100%;
+      order: 99;
+    }
+
+    .movie-section-center {
+      width: 100%;
+    }
+    .top-content {
+      flex-direction: column;
+      padding: 10px;
+    }
+    .poster-image-div {
+      display: none;
+    }
+    .mobile-poster-image-div {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .movie-info-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .movie-page-info-section {
+      width: 100%;
+    }
+    .info-icons-row,
+    .action-icons-row {
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .rate-and-review-action,
+    .watched-action {
+      margin: 5px;
+    }
+    .rr-btn,
+    .watched-btn,
+    .rate-and-review-label {
+      font-size: 14px;
+    }
+
+    .metrics-section {
+      flex-wrap: wrap;
+      > * {
+        padding: 5px;
+      }
+    }
+    .movie-page-card {
+      margin-top: 0;
+    }
+    .movie-page-content {
+      flex-direction: column;
+      align-items: center;
+    }
+    .left-content,
+    .right-content {
+      width: 95%;
+    }
+    //Cast
+    .cast-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      row-gap: 5px;
+      align-content: center;
+      width: 100%;
+      flex-direction: column;
+    }
+    .cast-card {
+      display: flex;
+      flex-direction: row;
+      max-width: none;
+      width: 100%;
+    }
+    .cast-card-img {
+      width: 64px;
+      border-bottom-left-radius: 5px;
+    }
+    .cast-card-text {
+      padding: 0 15px;
+    }
+  }
 }

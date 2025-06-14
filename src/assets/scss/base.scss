@@ -959,6 +959,9 @@ input[type="checkbox"]:hover {
     border-radius: 5px;
     width: 80%;
   }
+  .mobile-poster-image-div {
+    display: none;
+  }
   .info-div svg {
     font-size: 1.3em;
   }
@@ -1360,6 +1363,9 @@ input[type="checkbox"]:hover {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
     transform: scale(1.01);
     color: $yellow;
+  }
+  .react-datepicker-wrapper {
+    width: 100%;
   }
   .react-datepicker__year-wrapper {
     justify-content: space-around;

@@ -21,11 +21,16 @@ import MobileMovieLibrary from "./pages/MobileMovieLibrary";
 
 function App() {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [currentWidth, setCurrentWidth] = useState(window.innerWidth);
+  const [isResponsive, setIsResponsive] = useState(window.innerWidth < 1024);
 
   useEffect(() => {
-    const handleResize = () => setCurrentWidth(window.innerWidth);
+    const handleResize = () => {
+      setIsResponsive(window.innerWidth < 1024);
+    };
     window.addEventListener("resize", handleResize);
+    // Call once to set initial state
+    handleResize();
+    // Cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -42,7 +47,7 @@ function App() {
           element: (
             <div className="main-layout">
               <AuthProvider>
-                {currentWidth < 769 ? <MobileNav /> : <Navbar />}
+                {isResponsive ? <MobileNav /> : <Navbar />}
 
                 <Outlet />
                 <Footer />
@@ -60,8 +65,7 @@ function App() {
             },
             {
               path: "/library",
-              element:
-                currentWidth < 769 ? <MobileMovieLibrary /> : <MovieLibrary />,
+              element: isResponsive ? <MobileMovieLibrary /> : <MovieLibrary />,
             },
             {
               path: "/userPage",
@@ -74,14 +78,14 @@ function App() {
           ],
         },
       ]),
-    [currentWidth]
+    [isResponsive]
   );
 
   return (
     <div className="App">
       <RouterProvider
         router={router}
-        key={currentWidth < 769 ? "mobile" : "desktop"}
+        key={isResponsive ? "mobile" : "desktop"}
       />
       <ToastContainer autoClose={2000} draggable={false} />
     </div>

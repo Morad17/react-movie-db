@@ -508,6 +508,17 @@ const MoviePage = () => {
                     className="react-flag-icon"
                   />
                 </h2>
+                <div className="mobile-poster-image-div">
+                  <img
+                    src={
+                      selectedMovieInfo?.poster_path
+                        ? `http://image.tmdb.org/t/p/w500${selectedMovieInfo.poster_path}`
+                        : placeholder
+                    }
+                    alt=""
+                    className="poster-image"
+                  />
+                </div>
                 <div className="info-icons-row">
                   {selectedMovieInfo.genres.map((g, key) => {
                     return (
