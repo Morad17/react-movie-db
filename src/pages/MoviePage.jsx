@@ -93,7 +93,6 @@ const MoviePage = () => {
         const trailer = `https://www.youtube.com/embed/${trailerObj.key}`;
         setSelectedMovieInfo((prev) => ({ ...prev, movieTrailer: trailer }));
       }
-      console.log(data);
     } catch (err) {
       console.log(err);
     }
