@@ -2,6 +2,7 @@ import mysql2 from "mysql2";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import fs from "fs";
 
 dotenv.config();
 
@@ -13,18 +14,11 @@ const port = process.env.PORT || 8000;
 /// Connection String ///
 const mdb = mysql2.createPool({
   host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
   user: process.env.MYSQL_USERNAME,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 });
-
-// mdb.connect(function (err) {
-//   if (err) {
-//     console.error("Error connecting to Mysql Server:", err);
-//     return;
-//   }
-//   console.log("Connected to Mysql Server");
-// });
 
 /// Get usernames and emails
 app.get("/get-existing-users", (req, res) => {
@@ -93,6 +87,7 @@ app.get("/fetchSearchedMovies", async (req, res) => {
 
   try {
     const response = await fetch(url, {
+      method: "GET",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
@@ -108,6 +103,24 @@ app.get("/fetchGenres", async (req, res) => {
   const url = `https://api.themoviedb.org/3/genre/movie/list?language=en`;
   try {
     const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+      },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch from TMDB" });
+  }
+});
+app.get("/fetchSelectedMovie", async (req, res) => {
+  const { id } = req.query;
+  const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=release_dates%2Cvideos%2Ccredits&language=en-US`;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,

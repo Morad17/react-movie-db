@@ -16,6 +16,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Banner from "../components/Banner";
 const MovieLibrary = () => {
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+
   ////Use States////
   const [loggedUser, setLoggedUser] = useState(null);
   const [movies, setMovies] = useState([]);
@@ -49,13 +53,11 @@ const MovieLibrary = () => {
   // Get All Movies//
   const fetchMovies = async () => {
     const queryUrl = searchQuery
-      ? `https://movie-binge.onrender.com/fetchSearchedMovies?searchQuery=${searchQuery}&currentPage=${currentPage}`
-      : `https://movie-binge.onrender.com/fetchMovies?currentPage=${currentPage}&sortOption=${sortOption}&genres=${allFilters.genres}&yearFilter=${allFilters.year}`;
-    console.log(queryUrl);
+      ? `${baseUrl}/fetchSearchedMovies?searchQuery=${searchQuery}&currentPage=${currentPage}`
+      : `${baseUrl}/fetchMovies?currentPage=${currentPage}&sortOption=${sortOption}&genres=${allFilters.genres}&yearFilter=${allFilters.year}`;
     try {
       const res = await fetch(queryUrl);
       const data = await res.json();
-      console.log(data);
       setMovies(data.results);
       setTotalPages(data.total_pages);
       if (searchQuery) {
@@ -81,7 +83,7 @@ const MovieLibrary = () => {
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
     try {
-      const res = await fetch("https://movie-binge.onrender.com/fetchGenres");
+      const res = await fetch(`${baseUrl}/fetchGenres`);
       const data = await res.json();
       setGenres(data.genres);
     } catch (err) {
@@ -96,7 +98,7 @@ const MovieLibrary = () => {
   const getAllUserBookmarkLiked = async () => {
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getAllUserBookmarkLiked?username=${loggedUser}`
+        `${baseUrl}/getAllUserBookmarkLiked?username=${loggedUser}`
       );
       // Set users Review
       const data = res.data;
@@ -108,7 +110,7 @@ const MovieLibrary = () => {
   const getAllUserWatched = async () => {
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getAllUserWatched?username=${loggedUser}`
+        `${baseUrl}/getAllUserWatched?username=${loggedUser}`
       );
       // Set users Review
       const data = res.data;

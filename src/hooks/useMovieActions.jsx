@@ -4,6 +4,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const useMovieActions = () => {
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+
   const [isDisabled, setIsDisabled] = useState(false);
   const addToBookmarked = async ({
     username,
@@ -17,16 +21,13 @@ const useMovieActions = () => {
       setIsDisabled(true);
       if (userActions.bookmarked === true || userActions.bookmarked === 1) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToBookmarked",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              bookmarked: 0,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToBookmarked`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            bookmarked: 0,
+          });
           toast(`Successfully removed ${title} from the bookmarks list`);
           setUserActions((prev) => ({ ...prev, bookmarked: null }));
           setTimeout(() => {
@@ -42,16 +43,13 @@ const useMovieActions = () => {
         userActions.bookmarked === 0
       ) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToBookmarked",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              bookmarked: 1,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToBookmarked`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            bookmarked: 1,
+          });
           toast(`Successfully bookmarked ${title}`);
           setUserActions((prev) => ({ ...prev, bookmarked: true }));
           setTimeout(() => {
@@ -80,16 +78,13 @@ const useMovieActions = () => {
       setIsDisabled(true);
       if (userActions.liked === true || userActions.liked === 1) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToLiked",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              liked: false,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToLiked`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            liked: false,
+          });
           toast(`Successfully removed ${title} from the Liked list`);
           setUserActions((prev) => ({ ...prev, liked: null }));
           setTimeout(() => {
@@ -102,16 +97,13 @@ const useMovieActions = () => {
         }
       } else if (userActions.liked === null || userActions.liked === 0) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToLiked",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              liked: true,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToLiked`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            liked: true,
+          });
           toast(`Successfully Liked ${title}`);
           setUserActions((prev) => ({ ...prev, liked: true }));
           setTimeout(() => {
@@ -139,16 +131,13 @@ const useMovieActions = () => {
       setIsDisabled(true);
       if (userActions.watched === true || userActions.watched === 1) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToWatched",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              watched: false,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToWatched`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            watched: false,
+          });
           toast(`Successfully changed to not Watched`);
           setUserActions((prev) => ({ ...prev, watched: false }));
           setTimeout(() => {
@@ -165,16 +154,13 @@ const useMovieActions = () => {
         userActions.watched === 0
       ) {
         try {
-          const res = await axios.post(
-            "https://movie-binge.onrender.com/addToWatched",
-            {
-              username,
-              movieId: id,
-              movieName: title,
-              date,
-              watched: true,
-            }
-          );
+          const res = await axios.post(`${baseUrl}/addToWatched`, {
+            username,
+            movieId: id,
+            movieName: title,
+            date,
+            watched: true,
+          });
           toast(`Successfully Changed to Watched`);
           setUserActions((prev) => ({ ...prev, watched: true }));
           setTimeout(() => {
@@ -200,24 +186,30 @@ const useMovieActions = () => {
     review,
     poster_path,
     date,
+    userActions,
+    setUserActions,
   }) => {
     if (username) {
       try {
-        const res = await axios.post(
-          "https://movie-binge.onrender.com/createRatingReview",
-          {
-            username,
-            movieId: id,
-            movieName: title,
-            profileImage,
-            rating,
-            review,
-            poster_path,
-            date,
-          }
-        );
+        const res = await axios.post(`${baseUrl}/createRatingReview`, {
+          username,
+          movieId: id,
+          movieName: title,
+          profileImage,
+          rating,
+          review,
+          poster_path,
+          date,
+        });
         if (res.data && res.data.success) {
           toast(`Successfully rated ${title}`);
+          setUserActions((prev) => ({
+            ...prev,
+            rated: true,
+            reviewed: review ? true : null,
+            rating: rating,
+            review: review ? true : null,
+          }));
         } else {
           toast("Rating unsuccessful");
         }

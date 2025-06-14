@@ -16,10 +16,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import Banner from "../components/Banner";
 
 const MobileMovieLibrary = () => {
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+
   ////Use States////
+  const [loggedUser, setLoggedUser] = useState(null);
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [userMovieData, setUserMovieData] = useState([]);
+  const [userBookmarkLikeData, setUserBookmarkLikeData] = useState([]);
+  const [userWatchedData, setUserWatchedData] = useState([]);
   // Search Sort & Filter //
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("popularity.desc");
@@ -47,13 +53,11 @@ const MobileMovieLibrary = () => {
   // Get All Movies//
   const fetchMovies = async () => {
     const queryUrl = searchQuery
-      ? `https://movie-binge.onrender.com/fetchSearchedMovies?searchQuery=${searchQuery}&currentPage=${currentPage}`
-      : `https://movie-binge.onrender.com/fetchMovies?currentPage=${currentPage}&sortOption=${sortOption}&genres=${allFilters.genres}&yearFilter=${allFilters.year}`;
-    console.log(queryUrl);
+      ? `${baseUrl}/fetchSearchedMovies?searchQuery=${searchQuery}&currentPage=${currentPage}`
+      : `${baseUrl}/fetchMovies?currentPage=${currentPage}&sortOption=${sortOption}&genres=${allFilters.genres}&yearFilter=${allFilters.year}`;
     try {
       const res = await fetch(queryUrl);
       const data = await res.json();
-      console.log(data);
       setMovies(data.results);
       setTotalPages(data.total_pages);
       if (searchQuery) {
@@ -66,6 +70,12 @@ const MobileMovieLibrary = () => {
       console.log(err);
     }
   };
+  //Chcked Is Users Logged in
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (username) setLoggedUser(username);
+  }, [loggedUser, userBookmarkLikeData]);
+
   useEffect(() => {
     fetchMovies();
   }, [searchQuery, currentPage, sortOption, filterTrigger, watchedFilter]);
@@ -73,7 +83,7 @@ const MobileMovieLibrary = () => {
   // Get Genre Name from Genre Id //
   const fetchGenres = async () => {
     try {
-      const res = await fetch("https://movie-binge.onrender.com/fetchGenres");
+      const res = await fetch(`${baseUrl}/fetchGenres`);
       const data = await res.json();
       setGenres(data.genres);
     } catch (err) {
@@ -84,26 +94,37 @@ const MobileMovieLibrary = () => {
     fetchGenres();
   }, []);
 
-  // Get User Liked and Bookmarked data //
-  const getUserMovieData = async () => {
-    const user = localStorage.getItem("username");
-    if (user) {
-      try {
-        const res = await axios.post(
-          "https://movie-binge.onrender.com/getUserTable",
-          {
-            username: user,
-          }
-        );
-        setUserMovieData(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+  //user bookmark & like & watched
+  const getAllUserBookmarkLiked = async () => {
+    try {
+      const res = await axios.get(
+        `${baseUrl}/getAllUserBookmarkLiked?username=${loggedUser}`
+      );
+      // Set users Review
+      const data = res.data;
+      setUserBookmarkLikeData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getAllUserWatched = async () => {
+    try {
+      const res = await axios.get(
+        `${baseUrl}/getAllUserWatched?username=${loggedUser}`
+      );
+      // Set users Review
+      const data = res.data;
+      setUserWatchedData(data);
+    } catch (err) {
+      console.log(err);
     }
   };
   useEffect(() => {
-    getUserMovieData();
-  }, []);
+    if (loggedUser) {
+      getAllUserBookmarkLiked();
+      getAllUserWatched();
+    }
+  }, [loggedUser]);
 
   const paginate = (number) => setCurrentPage(number);
   const handleMovieSearch = (query) => {
@@ -320,16 +341,22 @@ const MobileMovieLibrary = () => {
       </section>
       <section className="all-movie-cards">
         <div className="all-movies">
-          {movies.map((movie, key) => {
-            const userMovie = Array.isArray(userMovieData)
-              ? userMovieData?.find(
-                  (userMovie) => userMovie.movieName === movie.title
+          {movies?.map((movie, key) => {
+            const bLMovie = Array.isArray(userBookmarkLikeData)
+              ? userBookmarkLikeData?.find(
+                  (mov) => mov.movieName === movie.title
                 )
+              : null;
+            const wMovie = Array.isArray(userWatchedData)
+              ? userWatchedData?.find((mov) => mov.movieName === movie.title)
               : null;
             return (
               <MovieCard
-                userData={userMovie}
+                loggedUser={loggedUser}
+                watchedData={userWatchedData}
                 key={key}
+                bLMovie={bLMovie}
+                wMovie={wMovie}
                 movie={movie}
                 genres={genres}
                 watchedFilter={watchedFilter}

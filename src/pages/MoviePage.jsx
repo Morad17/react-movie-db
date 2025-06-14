@@ -29,10 +29,15 @@ import fifteenCertificate from "../assets/images/15-certificate.png";
 import { IoIosHelpCircle } from "react-icons/io";
 
 const MoviePage = () => {
-  ///UseStates///
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+  ///-------UseStates-------///
+  //Logged In
+  const [loggedUser, setLoggedUser] = useState(null);
+  //DB Movie Info
   const [selectedMovieInfo, setSelectedMovieInfo] = useState();
-  const [movieTrailer, setMovieTrailer] = useState();
-  const [cast, setCast] = useState();
+  //Users Info
   const [userActions, setUserActions] = useState({
     bookmarked: null,
     liked: null,
@@ -42,6 +47,7 @@ const MoviePage = () => {
     rating: false,
     review: null,
   });
+  //Total Metrics
   const [metrics, setMetrics] = useState({
     totalBookmarked: 0,
     totalLiked: 0,
@@ -49,12 +55,12 @@ const MoviePage = () => {
     totalReviewed: 0,
     totalWatched: 0,
   });
-  const [loggedUser, setLoggedUser] = useState(null);
   const [allReviews, setAllReviews] = useState();
-  const [createReview, setCreateReview] = useState(false);
   const [averageRating, setAverageRating] = useState();
+  //Helper States
+  const [createReview, setCreateReview] = useState(false);
   const [helpClicked, setHelpClicked] = useState(false);
-  ///Bookmark and Like ///
+  ///-------Bookmark and Like------- ///
   const {
     addToBookmarked,
     addToLiked,
@@ -65,7 +71,7 @@ const MoviePage = () => {
   const params = useParams();
   const profileImage = localStorage.getItem("profileImage");
 
-  //Chcked Is Users Logged in
+  //Cheked Is Users Logged in
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (username) setLoggedUser(username);
@@ -73,62 +79,21 @@ const MoviePage = () => {
   // Selected Movie Info
   const getSelectedMoveInfo = async () => {
     const { id } = params;
-    const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=release_dates`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
+    const queryUrl = `${baseUrl}/fetchSelectedMovie?id=${id}`;
     try {
-      const res = await fetch(url, options);
+      const res = await fetch(queryUrl);
       const data = await res.json();
       setSelectedMovieInfo(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  //Get Trailer
-  const getTrailer = async () => {
-    const { id } = params;
-    const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
-    try {
-      const res = await fetch(url, options);
-      const data = await res.json();
-      const ytVideos = data.results.filter((video) => video.site === "YouTube");
+      //Add Trailer
+      const ytVideos = data.videos.results.filter(
+        (video) => video.site === "YouTube"
+      );
       const trailerObj = ytVideos?.find((movie) => movie.type === "Trailer");
       if (trailerObj && trailerObj.key) {
-        setMovieTrailer(`https://www.youtube.com/embed/${trailerObj.key}`);
+        const trailer = `https://www.youtube.com/embed/${trailerObj.key}`;
+        setSelectedMovieInfo((prev) => ({ ...prev, movieTrailer: trailer }));
       }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  //Get Cast
-  const getCast = async () => {
-    const { id } = params;
-    const url = `https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_TMDB_API_TOKEN}`,
-      },
-    };
-    try {
-      const res = await fetch(url, options);
-      const data = await res.json();
-      setCast(data.cast);
+      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -139,10 +104,11 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getUserRatingReview?movieId=${id}&username=${loggedUser}`
+        `${baseUrl}/getUserRatingReview?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
+
       setUserActions((prev) => ({
         ...prev,
         rating: data && data.rating,
@@ -159,7 +125,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
+        `${baseUrl}/getUserBookmarkLiked?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
@@ -178,7 +144,7 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getUserWatched?movieId=${id}&username=${loggedUser}`
+        `${baseUrl}/getUserWatched?movieId=${id}&username=${loggedUser}`
       );
       // Set users Review
       const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
@@ -197,17 +163,18 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getAllRatingReviews?movieId=${id}`
+        `${baseUrl}/getAllRatingReviews?movieId=${id}`
       );
-      const data = res.data && Array.isArray(res.data) ? res.data[0] : null;
+      const data = res.data;
       //Set All Movie Reviews
+
       if (data) {
         setAllReviews(data.review.all);
         setAverageRating(data.averageRating);
         setMetrics((prev) => ({
           ...prev,
-          rated: data.rating,
-          reviewed: data.review.total,
+          totalRated: data.rating || 0,
+          totalReviewed: data.review.total || 0,
         }));
       }
     } catch (err) {
@@ -219,12 +186,12 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getBookmarkedLikedTotalMovie?movieId=${id}`
+        `${baseUrl}/getBookmarkedLikedTotalMovie?movieId=${id}`
       );
       setMetrics((prev) => ({
         ...prev,
-        bookmarked: res.data.totalBookmarked,
-        liked: res.data.totalLiked,
+        totalBookmarked: res.data.totalBookmarked || 0,
+        totalLiked: res.data.totalLiked || 0,
       }));
     } catch (err) {
       console.log(err);
@@ -234,11 +201,11 @@ const MoviePage = () => {
     const { id } = params;
     try {
       const res = await axios.get(
-        `https://movie-binge.onrender.com/getWatchedTotalMovie?movieId=${id}`
+        `${baseUrl}/getWatchedTotalMovie?movieId=${id}`
       );
       setMetrics((prev) => ({
         ...prev,
-        watched: res.data.totalWatched,
+        totalWatched: res.data.totalWatched || 0,
       }));
     } catch (err) {
       console.log(err);
@@ -257,15 +224,8 @@ const MoviePage = () => {
   }, []);
 
   useEffect(() => {
-    getTrailer();
-  }, []);
-  useEffect(() => {
     getAllRR();
   }, [userActions.rating]);
-
-  useEffect(() => {
-    getCast();
-  }, []);
 
   useEffect(() => {
     getTotalBookmarkedLiked();
@@ -324,6 +284,8 @@ const MoviePage = () => {
         rating,
         review,
         poster_path,
+        userActions,
+        setUserActions,
         date: new Date().toISOString().slice(0, 10),
       });
       if (res && res.success) {
@@ -334,11 +296,13 @@ const MoviePage = () => {
           review,
         }));
         setCreateReview(false);
+        getAllRR();
       }
     } else {
       toast("Please add your Rating /10");
     }
   };
+  const allCast = selectedMovieInfo?.credits?.cast || [];
 
   return (
     <div className="movie-page-section">
@@ -673,22 +637,22 @@ const MoviePage = () => {
             </div>
             <div className="rated-metric">
               <PiNotePencilLight />
-              <p>Total Ratings:{metrics?.totalRated}</p>
+              <p>Total Ratings: {metrics?.totalRated}</p>
             </div>
             <div className="rated-metric">
               <PiNotePencilLight />
-              <p>Total Reviews:{metrics?.totalReviewed}</p>
+              <p>Total Reviews: {metrics?.totalReviewed}</p>
             </div>
           </section>
           <section className="movie-page-content">
             <div className="left-content">
-              {movieTrailer && (
+              {selectedMovieInfo.movieTrailer && (
                 <div className="trailer-section">
                   <h3 className="section-title">Trailer</h3>
                   <div className="trailer-video-div">
                     <iframe
                       className="trailer-video"
-                      src={movieTrailer}
+                      src={selectedMovieInfo.movieTrailer}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       title="YouTube video"
@@ -700,9 +664,9 @@ const MoviePage = () => {
               )}
               <div className="cast-section">
                 <h3 className="section-title">Top Cast</h3>
-                {cast && (
+                {allCast && (
                   <div className="cast-group">
-                    {cast.slice(0, 10).map((cast, key) => {
+                    {allCast.slice(0, 10).map((cast, key) => {
                       return (
                         <div className="cast-card" key={key}>
                           <img
