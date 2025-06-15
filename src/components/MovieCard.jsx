@@ -94,7 +94,6 @@ const MovieCard = ({
                     title,
                     username: loggedUser,
                     poster_path,
-                    date: new Date().toISOString().slice(0, 10),
                     userActions,
                     setUserActions,
                   })
@@ -110,7 +109,6 @@ const MovieCard = ({
                     title,
                     username: loggedUser,
                     poster_path,
-                    date: new Date().toISOString().slice(0, 10),
                     userActions,
                     setUserActions,
                   })

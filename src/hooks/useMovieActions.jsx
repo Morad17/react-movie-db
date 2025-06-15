@@ -13,7 +13,6 @@ const useMovieActions = () => {
     username,
     id,
     title,
-    date,
     userActions,
     setUserActions,
   }) => {
@@ -25,7 +24,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             bookmarked: 0,
           });
           toast(`Successfully removed ${title} from the bookmarks list`);
@@ -47,7 +45,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             bookmarked: 1,
           });
           toast(`Successfully bookmarked ${title}`);
@@ -70,7 +67,6 @@ const useMovieActions = () => {
     username,
     id,
     title,
-    date,
     userActions,
     setUserActions,
   }) => {
@@ -82,7 +78,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             liked: false,
           });
           toast(`Successfully removed ${title} from the Liked list`);
@@ -101,7 +96,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             liked: true,
           });
           toast(`Successfully Liked ${title}`);
@@ -123,7 +117,6 @@ const useMovieActions = () => {
     username,
     id,
     title,
-    date,
     userActions,
     setUserActions,
   }) => {
@@ -135,7 +128,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             watched: false,
           });
           toast(`Successfully changed to not Watched`);
@@ -158,7 +150,6 @@ const useMovieActions = () => {
             username,
             movieId: id,
             movieName: title,
-            date,
             watched: true,
           });
           toast(`Successfully Changed to Watched`);
@@ -185,7 +176,6 @@ const useMovieActions = () => {
     rating,
     review,
     poster_path,
-    date,
     userActions,
     setUserActions,
   }) => {
@@ -199,7 +189,6 @@ const useMovieActions = () => {
           rating,
           review,
           poster_path,
-          date,
         });
         if (res.data && res.data.success) {
           toast(`Successfully rated ${title}`);

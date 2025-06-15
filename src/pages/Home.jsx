@@ -3,14 +3,34 @@ import axios from "axios";
 import { useAuth } from "../hooks/Authprovider";
 import { Link, useNavigate } from "react-router";
 import Banner from "../components/Banner";
+import { toast, ToastContainer } from "react-toastify";
 
 const Home = () => {
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+
   //Hooks
   const navigate = useNavigate();
   const auth = useAuth();
-
-  // Check if users already logged in
+  //-----Use States -----//
   const [user, setUser] = useState(null);
+  const [existingUserData, setExistingUserData] = useState({});
+  const [register, setRegister] = useState({
+    username: "",
+    name: "",
+    profileImage: "https:fakepath",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+  const [statusCode, setStatusCode] = useState("");
+  const [loginForm, setLoginForm] = useState({
+    username: "",
+    password: "",
+  });
+  const [loginButton, setLoginButton] = useState(true);
+  // Check if users already logged in
   const checkUser = () => {
     setUser(localStorage.getItem("username"));
   };
@@ -20,62 +40,50 @@ const Home = () => {
     checkUser();
   }, [user]);
 
-  //Get Existing User Data //
-  const getExistingUserData = async () => {
-    try {
-      const res = await axios.get(
-        "https://movie-binge.onrender.com/get-existing-users"
-      );
-      const data = res.data;
-      const usernames = [];
-      const emails = [];
-      data.map((user, key) => {
-        usernames.push(user.username);
-        emails.push(user.email);
-      });
-      setExistingUserData({
-        usernames,
-        emails,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getExistingUserData();
-  }, []);
-
-  const [existingUserData, setExistingUserData] = useState({});
   const inputHandler = (val) => {
     setRegister((prev) => ({ ...prev, [val.target.name]: val.target.value }));
   };
-  const [register, setRegister] = useState({
-    username: "",
-    name: "",
-    profileImage: "",
-    email: "",
-    password: "",
-    confirm: "",
-  });
+
   ///Runs checks then submits user form ///
   const registerHandler = async (e) => {
-    // Checks for Existing users error and length error //
     e.preventDefault();
+    // Checking for existing matches
+    const checkUserExists = async (username, email) => {
+      const res = await axios.get(
+        `${baseUrl}/check-user-exists?username=${encodeURIComponent(
+          username
+        )}&email=${encodeURIComponent(email)}`
+      );
+      return res.data;
+    };
+    const existsResult = await checkUserExists(
+      register.username,
+      register.email
+    );
+    if (existsResult.exists) {
+      toast(existsResult.message);
+      return;
+    }
+    //Checking username and password //
+    const errors = [];
     if (register.username.length < 6 || register.username.length > 15) {
-      return statusCodeHandler(401);
-    } else if (register.password.length < 8) {
-      return statusCodeHandler(402);
-    } else if (register.password !== register.confirm) {
-      return statusCodeHandler(403);
-    } else if (existingUserData.usernames.includes(register.username)) {
-      return statusCodeHandler(501);
-    } else if (existingUserData.emails.includes(register.email)) {
-      return statusCodeHandler(502);
+      errors.push("Username must be between 6 and 15 characters long");
+    }
+    if (register.password.length < 8) {
+      errors.push("Password must contain at least 8 characters");
+    }
+    if (register.password !== register.confirm) {
+      errors.push("Passwords Do Not Match");
+    }
+
+    if (errors.length > 0) {
+      toast(errors[0]); // or loop through errors to show all
+      return;
     }
     try {
       const { confirm, ...userData } = register;
-      await axios.post("https://movie-binge.onrender.com/createUser", userData);
-      statusCodeHandler(201);
+      await axios.post(`${baseUrl}/createUser`, userData);
+      toast("You have successfully registered!");
     } catch (err) {
       console.log(err);
     }
@@ -85,80 +93,16 @@ const Home = () => {
   const loginInputHandler = (val) => {
     setLoginForm((prev) => ({ ...prev, [val.target.name]: val.target.value }));
   };
-  const [statusCode, setStatusCode] = useState("");
 
   /// Login input
-  const [loginForm, setLoginForm] = useState({
-    username: "",
-    password: "",
-  });
+
   const loginHandler = async (e) => {
     e.preventDefault();
     const result = await auth.loginAction(loginForm);
     if (result === 400) {
-      statusCodeHandler(400);
+      toast("Incorrect login details, Please try again");
     }
   };
-  ///Form Changer
-  const [loginButton, setLoginButton] = useState(true);
-
-  // Status Codes for error messages
-  const statusCodeHandler = (statusCode) => {
-    switch (statusCode) {
-      case 501:
-        setStatusCode("Username Already Exists");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 502:
-        setStatusCode("Email is Alreading in use");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 400:
-        setStatusCode("Incorrect login details, Please try again");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 401:
-        setStatusCode("Username must be between 6 and 15 characters long");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 402:
-        setStatusCode("Password must contain at least 8 characters");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 403:
-        setStatusCode("Passwords Do Not Match");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      case 201:
-        setStatusCode("You have successfully registered!");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-
-        break;
-      case 101:
-        setStatusCode("Only Alphabetical Characters Aloud");
-        setTimeout(() => {
-          setStatusCode(null);
-        }, 3000);
-        break;
-      default:
-        break;
-    }
-  };
-
   const setLoginButtonLogic = (e) => {
     const button = e.target.id;
     if (button === "loginBtn") {
@@ -193,7 +137,7 @@ const Home = () => {
       ) : (
         <div className="forms-container">
           <div className="login-and-register">
-            <p className="login-heading">Login To Get Started</p>
+            <p className="login-heading">Login or Register To Get Started</p>
             <button
               className="btn"
               id="loginBtn"
@@ -264,8 +208,8 @@ const Home = () => {
                   <input
                     required
                     type="file"
-                    name="name"
-                    value={register.name}
+                    name="profileImage"
+                    value={register.profileImage}
                     onChange={inputHandler}
                   />
                 </div>
@@ -299,13 +243,13 @@ const Home = () => {
                     onChange={inputHandler}
                   />
                 </div>
-                <button type="submit">Submit</button>
+                <button className="submit-btn" type="submit">
+                  Submit
+                </button>
               </form>
             </div>
           )}
-          {statusCode && (
-            <div className="status-code-message">{statusCode}</div>
-          )}
+          <ToastContainer autoClose={2000} draggable={false} />
         </div>
       )}
     </div>

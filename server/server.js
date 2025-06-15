@@ -2,7 +2,7 @@ import mysql2 from "mysql2";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
@@ -20,12 +20,24 @@ const mdb = mysql2.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
+//Configure Cloudinary
+
 /// Get usernames and emails
-app.get("/get-existing-users", (req, res) => {
-  const q = "SELECT * FROM users";
-  mdb.query(q, (err, data) => {
-    if (err) console.log(err);
-    else return res.json(data);
+app.get("/check-user-exists", (req, res) => {
+  const { username, email } = req.query;
+  const q = "SELECT username, email FROM users WHERE username = ? OR email = ?";
+  mdb.query(q, [username, email], (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    let errMsg = "";
+    if (data.length > 0) {
+      const foundUser = data[0];
+      if (foundUser.username === username) errMsg = "That Username is taken";
+      else if (foundUser.email === email)
+        errMsg = "That Email is already in use";
+    }
+    return res.json({ exists: data.length > 0, errMsg });
   });
 });
 /// Create user
@@ -44,9 +56,12 @@ app.post("/createUser", (req, res) => {
   mdb.query(createUserQuery, [createUserVal], (err, data) => {
     if (err) {
       console.error("Error executing createUserQuery:", err);
-      return res.json(err);
+      return res.status(500).json({ success: false, error: err });
     } else {
       console.log("successfully added user data:", data);
+      return res
+        .status(201)
+        .json({ success: true, message: "User created", data });
     }
   });
 });
@@ -244,7 +259,7 @@ app.get("/getUserRatingReview", (req, res) => {
 
 //Bookmark List
 app.post("/addToBookmarked", (req, res) => {
-  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, bookmarked,date) VALUES (?,?, ?, ?, ?)
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, bookmarked) VALUES (?,?, ?, ?)
     ON DUPLICATE KEY UPDATE
     bookmarked = VALUES(bookmarked)
     `;
@@ -254,7 +269,6 @@ app.post("/addToBookmarked", (req, res) => {
     req.body.movieId,
     req.body.movieName,
     req.body.bookmarked,
-    req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
     if (!err) {
@@ -272,7 +286,7 @@ app.post("/addToBookmarked", (req, res) => {
 
 //Like List
 app.post("/addToLiked", (req, res) => {
-  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, liked,date) VALUES (?,?, ?, ?, ?)
+  const groupQuery = `INSERT INTO bookmarkedLiked (username, movieId,movieName, liked) VALUES (?,?, ?, ?)
     ON DUPLICATE KEY UPDATE
     liked = VALUES(liked)
     `;
@@ -281,7 +295,6 @@ app.post("/addToLiked", (req, res) => {
     req.body.movieId,
     req.body.movieName,
     req.body.liked,
-    req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
     if (!err) {
@@ -299,7 +312,7 @@ app.post("/addToLiked", (req, res) => {
 
 //Watched List
 app.post("/addToWatched", (req, res) => {
-  const groupQuery = `INSERT INTO watched (username, movieId,movieName, watched,date) VALUES (?,?, ?, ?, ?)
+  const groupQuery = `INSERT INTO watched (username, movieId,movieName, watched) VALUES (?,?, ?, ?)
     ON DUPLICATE KEY UPDATE
     watched = VALUES(watched)
     `;
@@ -309,7 +322,6 @@ app.post("/addToWatched", (req, res) => {
     req.body.movieId,
     req.body.movieName,
     req.body.watched,
-    req.body.date,
   ];
   mdb.query(groupQuery, [...valGroupTable], (err, data) => {
     if (!err) {
@@ -327,7 +339,7 @@ app.post("/addToWatched", (req, res) => {
 //Create Review
 app.post("/createRatingReview", (req, res) => {
   const revTableQuery =
-    "INSERT IGNORE INTO ratingReview (username, profileImage, movieId,movieName,rating, review,date) VALUES (?,?, ?, ?, ?, ?,?)";
+    "INSERT IGNORE INTO ratingReview (username, profileImage, movieId,movieName,rating, review) VALUES (?,?, ?, ?, ?,?)";
   const valRevTable = [
     req.body.username,
     req.body.profileImage,
@@ -335,7 +347,6 @@ app.post("/createRatingReview", (req, res) => {
     req.body.movieName,
     req.body.rating,
     req.body.review,
-    req.body.date,
   ];
   mdb.query(revTableQuery, [...valRevTable], (err, data) => {
     if (!err) {

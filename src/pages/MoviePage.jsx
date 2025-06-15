@@ -285,7 +285,6 @@ const MoviePage = () => {
         poster_path,
         userActions,
         setUserActions,
-        date: new Date().toISOString().slice(0, 10),
       });
       if (res && res.success) {
         setUserActions((prev) => ({
@@ -362,7 +361,6 @@ const MoviePage = () => {
                   title: selectedMovieInfo.title,
                   username: loggedUser,
                   poster_path: selectedMovieInfo.poster_path,
-                  date: new Date().toISOString().slice(0, 10),
                   userActions,
                   setUserActions,
                 })
@@ -382,7 +380,6 @@ const MoviePage = () => {
                   title: selectedMovieInfo.title,
                   username: loggedUser,
                   poster_path: selectedMovieInfo.poster_path,
-                  date: new Date().toISOString().slice(0, 10),
                   userActions,
                   setUserActions,
                 })
@@ -402,7 +399,6 @@ const MoviePage = () => {
                   title: selectedMovieInfo.title,
                   username: loggedUser,
                   poster_path: selectedMovieInfo.poster_path,
-                  date: new Date().toISOString().slice(0, 10),
                   userActions,
                   setUserActions,
                 })
@@ -544,7 +540,6 @@ const MoviePage = () => {
                           title: selectedMovieInfo.title,
                           username: loggedUser,
                           poster_path: selectedMovieInfo.poster_path,
-                          date: new Date().toISOString().slice(0, 10),
                           userActions,
                           setUserActions,
                         })
@@ -562,7 +557,6 @@ const MoviePage = () => {
                           title: selectedMovieInfo.title,
                           username: loggedUser,
                           poster_path: selectedMovieInfo.poster_path,
-                          date: new Date().toISOString().slice(0, 10),
                           userActions,
                           setUserActions,
                         })
@@ -582,7 +576,6 @@ const MoviePage = () => {
                           id: selectedMovieInfo.id,
                           title: selectedMovieInfo.title,
                           username: loggedUser,
-                          date: new Date().toISOString().slice(0, 10),
                           userActions,
                           setUserActions,
                         })
