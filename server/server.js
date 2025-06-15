@@ -3,8 +3,13 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
+import multer from "multer";
 
 dotenv.config();
+
+//Multer Config
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const app = express();
 app.use(express.json());
@@ -21,9 +26,27 @@ const mdb = mysql2.createPool({
 });
 
 //Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+//Upload Profile Image
+app.post("/uploadProfileImage", upload.single("image"), (req, res) => {
+  cloudinary.uploader
+    .upload_stream({ folder: "movieBinge/profileImages" }, (error, result) => {
+      if (error) return res.status(500).json({ error });
+      return res.json({
+        url: result.secure_url,
+        public_id: result.public_id,
+      });
+    })
+    .end(req.file.buffer);
+});
 
 /// Get usernames and emails
-app.get("/check-user-exists", (req, res) => {
+app.get("/checkUserExists", (req, res) => {
   const { username, email } = req.query;
   const q = "SELECT username, email FROM users WHERE username = ? OR email = ?";
   mdb.query(q, [username, email], (err, data) => {

@@ -15,7 +15,6 @@ const Home = () => {
   const auth = useAuth();
   //-----Use States -----//
   const [user, setUser] = useState(null);
-  const [existingUserData, setExistingUserData] = useState({});
   const [register, setRegister] = useState({
     username: "",
     name: "",
@@ -24,7 +23,6 @@ const Home = () => {
     password: "",
     confirm: "",
   });
-  const [statusCode, setStatusCode] = useState("");
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: "",
@@ -34,7 +32,10 @@ const Home = () => {
   const checkUser = () => {
     setUser(localStorage.getItem("username"));
   };
-
+  //Profile Image Upload
+  const [profileImage, setProfileImage] = useState(null);
+  const [uploadedUrl, setUploadedUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState(null);
   /////////Registration///////////
   useEffect(() => {
     checkUser();
@@ -50,7 +51,7 @@ const Home = () => {
     // Checking for existing matches
     const checkUserExists = async (username, email) => {
       const res = await axios.get(
-        `${baseUrl}/check-user-exists?username=${encodeURIComponent(
+        `${baseUrl}/checkUserExists?username=${encodeURIComponent(
           username
         )}&email=${encodeURIComponent(email)}`
       );
@@ -64,6 +65,14 @@ const Home = () => {
       toast(existsResult.message);
       return;
     }
+    // Check Image Upload
+    let imageUrl = register.profileImage;
+    if (profileImage) {
+      imageUrl = await handleImageUpload();
+      console.log(imageUrl);
+      if (!imageUrl) return;
+    }
+    console.log("image");
     //Checking username and password //
     const errors = [];
     if (register.username.length < 6 || register.username.length > 15) {
@@ -80,8 +89,10 @@ const Home = () => {
       toast(errors[0]); // or loop through errors to show all
       return;
     }
+    console.log("test");
     try {
       const { confirm, ...userData } = register;
+      userData.profileImage = imageUrl;
       await axios.post(`${baseUrl}/createUser`, userData);
       toast("You have successfully registered!");
     } catch (err) {
@@ -119,6 +130,39 @@ const Home = () => {
       e.target.style.backgroundColor = "#12504A";
       e.target.disabled = true;
       setLoginButton(false);
+    }
+  };
+  // Handle Profile Image Upload
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setProfileImage(e.target.files[0]);
+    console.log(profileImage);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+  const handleImageUpload = async () => {
+    if (!profileImage) return;
+    const formData = new FormData();
+    formData.append("image", profileImage);
+    try {
+      const res = await axios.post(`${baseUrl}/uploadProfileImage`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setUploadedUrl(res.data.url);
+      return res.data.url;
+    } catch (err) {
+      alert("Upload failed");
+      console.error(err);
     }
   };
 
@@ -209,10 +253,17 @@ const Home = () => {
                     required
                     type="file"
                     name="profileImage"
-                    value={register.profileImage}
-                    onChange={inputHandler}
+                    accept="image/*"
+                    onChange={handleFileChange}
                   />
+                  {previewUrl && (
+                    <div>
+                      <p>Uploaded Image:</p>
+                      <img src={previewUrl} alt="Profile" width={150} />
+                    </div>
+                  )}
                 </div>
+
                 <div className="form-group">
                   <label>Email</label>
                   <input
