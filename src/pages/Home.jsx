@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router";
 import Banner from "../components/Banner";
 import { toast, ToastContainer } from "react-toastify";
 
+import placeholder from "../assets/images/profile-image-placeholder.png";
+
 const Home = () => {
   //For Testing vs Production
   const baseUrl =
@@ -183,14 +185,14 @@ const Home = () => {
           <div className="login-and-register">
             <p className="login-heading">Login or Register To Get Started</p>
             <button
-              className="btn"
+              className="login-btn"
               id="loginBtn"
               onClick={(e) => setLoginButtonLogic(e)}
             >
               Login
             </button>
             <button
-              className="btn"
+              className="register-btn"
               id="registerBtn"
               onClick={(e) => setLoginButtonLogic(e)}
             >
@@ -225,30 +227,16 @@ const Home = () => {
               </form>
             </div>
           ) : (
-            <div className="register-form">
-              <form onSubmit={registerHandler}>
-                <div className="form-group">
-                  <label>Username</label>
-                  <input
-                    required
-                    type="text"
-                    name="username"
-                    value={register.username}
-                    onChange={inputHandler}
+            <div className="register-form-div">
+              <h2 className="registration-title">Registration</h2>
+              <form className="registration-form" onSubmit={registerHandler}>
+                <div className="form-left">
+                  <img
+                    className="upload-image"
+                    src={previewUrl ? previewUrl : placeholder}
+                    alt="Profile"
                   />
-                </div>
-                <div className="form-group">
-                  <label>Name</label>
-                  <input
-                    required
-                    type="text"
-                    name="name"
-                    value={register.name}
-                    onChange={inputHandler}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Profile Image</label>
+                  <h3>Upload Image</h3>
                   <input
                     required
                     type="file"
@@ -256,47 +244,62 @@ const Home = () => {
                     accept="image/*"
                     onChange={handleFileChange}
                   />
-                  {previewUrl && (
-                    <div>
-                      <p>Uploaded Image:</p>
-                      <img src={previewUrl} alt="Profile" width={150} />
-                    </div>
-                  )}
                 </div>
-
-                <div className="form-group">
-                  <label>Email</label>
-                  <input
-                    required
-                    type="email"
-                    name="email"
-                    value={register.email}
-                    onChange={inputHandler}
-                  />
+                <div className="form-right">
+                  <div className="form-group">
+                    <label>Username</label>
+                    <input
+                      required
+                      type="text"
+                      name="username"
+                      value={register.username}
+                      onChange={inputHandler}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Name</label>
+                    <input
+                      required
+                      type="text"
+                      name="name"
+                      value={register.name}
+                      onChange={inputHandler}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      value={register.email}
+                      onChange={inputHandler}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      required
+                      type="password"
+                      name="password"
+                      value={register.password}
+                      onChange={inputHandler}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Re-Type Password</label>
+                    <input
+                      required
+                      type="password"
+                      name="confirm"
+                      value={register.confirm}
+                      onChange={inputHandler}
+                    />
+                  </div>
+                  <button className="submit-btn" type="submit">
+                    Submit
+                  </button>
                 </div>
-                <div className="form-group">
-                  <label>Password</label>
-                  <input
-                    required
-                    type="password"
-                    name="password"
-                    value={register.password}
-                    onChange={inputHandler}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Re-Type Password</label>
-                  <input
-                    required
-                    type="password"
-                    name="confirm"
-                    value={register.confirm}
-                    onChange={inputHandler}
-                  />
-                </div>
-                <button className="submit-btn" type="submit">
-                  Submit
-                </button>
               </form>
             </div>
           )}
