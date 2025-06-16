@@ -5,6 +5,22 @@ $gray: #bebebe;
 $red: #501218;
 $yellow: #d7ca4f;
 
+/*--------Toast-----*/
+.toast-success {
+  background: $turquoise !important;
+  color: white !important;
+  font-size: 1.2rem;
+  padding: 20px 40px;
+  border: 1px solid white;
+}
+
+.toast-warning {
+  background: $red !important;
+  color: white !important;
+  font-size: 1.2rem;
+  padding: 20px 40px;
+}
+
 /*------General Layout-------*/
 body {
   padding: 0;
@@ -44,14 +60,35 @@ input[type="checkbox"]:hover {
   padding: 10px;
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
   text-decoration: none;
-  width: 80%;
+  width: 50%;
   margin: 10px 0;
   cursor: pointer;
   font-size: 16px;
+  border: none;
 }
-.submit-btn:hover {
+.submit-btn:hover,
+.upload-image-label:hover {
   background-color: #501218;
 }
+.submit-btn-group {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.upload-input {
+  display: none;
+}
+.upload-image-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background: $turquoise;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
 //banner
 .banner {
   background-image: var(--movie-banner);
@@ -228,13 +265,30 @@ input[type="checkbox"]:hover {
     display: flex;
     flex-direction: column;
     text-align: start;
-    margin: 10px 0;
+    margin: 5px 0;
   }
   .form-group input {
     width: 90%;
     border: none;
     padding: 10px;
     margin-top: 5px;
+    outline: none;
+  }
+  .form-group label {
+    font-weight: bold;
+  }
+  .form-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 95%;
+  }
+  .form-name label {
+    font-weight: 100;
+    width: 100%;
+  }
+  .form-group-name {
+    width: 45%;
   }
   .upload-image {
     width: 100%;

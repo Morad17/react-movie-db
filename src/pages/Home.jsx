@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router";
 import Banner from "../components/Banner";
 import { toast, ToastContainer } from "react-toastify";
 
+import "react-toastify/dist/ReactToastify.css";
 import placeholder from "../assets/images/profile-image-placeholder.png";
 
 const Home = () => {
@@ -19,8 +20,9 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const [register, setRegister] = useState({
     username: "",
-    name: "",
-    profileImage: "https:fakepath",
+    firstName: "",
+    lastName: "",
+    profileImage: "",
     email: "",
     password: "",
     confirm: "",
@@ -35,8 +37,6 @@ const Home = () => {
     setUser(localStorage.getItem("username"));
   };
   //Profile Image Upload
-  const [profileImage, setProfileImage] = useState(null);
-  const [uploadedUrl, setUploadedUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   /////////Registration///////////
   useEffect(() => {
@@ -64,19 +64,43 @@ const Home = () => {
       register.email
     );
     if (existsResult.exists) {
-      toast(existsResult.message);
+      toast(existsResult.errMsg, {
+        className: "toast-warning",
+      });
       return;
     }
     // Check Image Upload
     let imageUrl = register.profileImage;
-    if (profileImage) {
+    if (imageUrl) {
       imageUrl = await handleImageUpload();
-      console.log(imageUrl);
       if (!imageUrl) return;
+    } else {
+      toast("You must upload a Profile Image", {
+        className: "toast-warning",
+      });
+      return;
     }
-    console.log("image");
-    //Checking username and password //
+    //All Form validation Checks //
     const errors = [];
+    const nameRegex = /^[A-Za-z\s'-]+$/;
+    if (!nameRegex.test(register.firstName)) {
+      toast(
+        "First name can only contain letters, spaces, apostrophes, or hyphens.",
+        {
+          className: "toast-warning",
+        }
+      );
+      return;
+    }
+    if (!nameRegex.test(register.lastName)) {
+      toast(
+        "Last name can only contain letters, spaces, apostrophes, or hyphens.",
+        {
+          className: "toast-warning",
+        }
+      );
+      return;
+    }
     if (register.username.length < 6 || register.username.length > 15) {
       errors.push("Username must be between 6 and 15 characters long");
     }
@@ -88,15 +112,30 @@ const Home = () => {
     }
 
     if (errors.length > 0) {
-      toast(errors[0]); // or loop through errors to show all
+      toast(errors[0], {
+        className: "toast-warning",
+      });
       return;
     }
-    console.log("test");
     try {
-      const { confirm, ...userData } = register;
+      const capitalize = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      };
+      // In your registerHandler:
+      const name =
+        capitalize(register.firstName.trim()) +
+        " " +
+        capitalize(register.lastName.trim());
+      const { firstName, lastName, confirm, ...rest } = register;
+      const userData = { ...rest, name };
       userData.profileImage = imageUrl;
       await axios.post(`${baseUrl}/createUser`, userData);
-      toast("You have successfully registered!");
+      toast("You have successfully registered!", {
+        className: "toast-success",
+      });
+      setTimeout(() => {
+        navigate("/login"); // Redirect to login page
+      }, 1500);
     } catch (err) {
       console.log(err);
     }
@@ -113,7 +152,9 @@ const Home = () => {
     e.preventDefault();
     const result = await auth.loginAction(loginForm);
     if (result === 400) {
-      toast("Incorrect login details, Please try again");
+      toast("Incorrect login details, Please try again", {
+        className: "toast-warning",
+      });
     }
   };
   const setLoginButtonLogic = (e) => {
@@ -137,20 +178,26 @@ const Home = () => {
   // Handle Profile Image Upload
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setProfileImage(e.target.files[0]);
-    console.log(profileImage);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (file && file.size > 2 * 1024 * 1024) {
+      // 2MB in bytes
+      alert("File size must be less than 2MB");
+      e.target.value = ""; // Clear the input
     } else {
-      setPreviewUrl(null);
+      setRegister((prev) => ({ ...prev, profileImage: file }));
+      //Image preview
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreviewUrl(null);
+      }
     }
   };
   const handleImageUpload = async () => {
+    const profileImage = register.profileImage;
     if (!profileImage) return;
     const formData = new FormData();
     formData.append("image", profileImage);
@@ -160,7 +207,6 @@ const Home = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setUploadedUrl(res.data.url);
       return res.data.url;
     } catch (err) {
       alert("Upload failed");
@@ -236,14 +282,20 @@ const Home = () => {
                     src={previewUrl ? previewUrl : placeholder}
                     alt="Profile"
                   />
-                  <h3>Upload Image</h3>
-                  <input
-                    required
-                    type="file"
-                    name="profileImage"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
+                  <label
+                    htmlFor="profile-upload"
+                    className="upload-image-label"
+                  >
+                    Upload Profile Image
+                    <input
+                      id="profile-upload"
+                      type="file"
+                      name="profileImage"
+                      accept="image/*"
+                      className="upload-input"
+                      onChange={handleFileChange}
+                    />
+                  </label>
                 </div>
                 <div className="form-right">
                   <div className="form-group">
@@ -258,13 +310,28 @@ const Home = () => {
                   </div>
                   <div className="form-group">
                     <label>Name</label>
-                    <input
-                      required
-                      type="text"
-                      name="name"
-                      value={register.name}
-                      onChange={inputHandler}
-                    />
+                    <div className="form-name">
+                      <span className="form-group-name">
+                        <input
+                          required
+                          type="text"
+                          name="firstName"
+                          value={register.firstName}
+                          onChange={inputHandler}
+                        />
+                        <label>First</label>
+                      </span>
+                      <span className="form-group-name">
+                        <input
+                          required
+                          type="text"
+                          name="lastName"
+                          value={register.lastName}
+                          onChange={inputHandler}
+                        />
+                        <label>Last</label>
+                      </span>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Email</label>
@@ -296,14 +363,15 @@ const Home = () => {
                       onChange={inputHandler}
                     />
                   </div>
-                  <button className="submit-btn" type="submit">
-                    Submit
-                  </button>
+                  <div className="submit-btn-group">
+                    <button className="submit-btn" type="submit">
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
           )}
-          <ToastContainer autoClose={2000} draggable={false} />
         </div>
       )}
     </div>

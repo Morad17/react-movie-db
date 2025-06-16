@@ -63,7 +63,12 @@ const MovieLibrary = () => {
       if (searchQuery) {
         toast(
           `Your Search For ${searchQuery} returned ${data.total_pages} Pages from ${data.total_results} results`,
-          { position: "top-center", autoClose: 5000, hideProgressBar: false }
+          {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            className: "toast-success",
+          }
         );
       }
     } catch (err) {

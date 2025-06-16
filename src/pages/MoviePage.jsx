@@ -297,7 +297,9 @@ const MoviePage = () => {
         getAllRR();
       }
     } else {
-      toast("Please add your Rating /10");
+      toast("Please add your Rating /10", {
+        className: "toast-warning",
+      });
     }
   };
   const allCast = selectedMovieInfo?.credits?.cast || [];

@@ -48,8 +48,8 @@ function App() {
             <div className="main-layout">
               <AuthProvider>
                 {isResponsive ? <MobileNav /> : <Navbar />}
-
                 <Outlet />
+                <ToastContainer autoClose={3000} draggable={false} />
                 <Footer />
               </AuthProvider>
             </div>
@@ -87,7 +87,6 @@ function App() {
         router={router}
         key={isResponsive ? "mobile" : "desktop"}
       />
-      <ToastContainer autoClose={2000} draggable={false} />
     </div>
   );
 }
