@@ -30,6 +30,18 @@
       width: 40%;
     }
   }
+
+  //Home
+  .banner {
+    min-width: 90vw;
+    padding: 10px;
+  }
+  .home-section {
+    .forms-container {
+      min-width: 90vw;
+      padding: 10px;
+    }
+  }
 }
 
 //--------Screen Smaller than---------//
@@ -126,6 +138,46 @@
     }
     .cast-card-text {
       padding: 0 15px;
+    }
+  }
+  //Home
+  .banner {
+    min-width: 90vw;
+    padding: 10px;
+  }
+  .home-section {
+    .forms-container {
+      min-width: 90vw;
+      padding: 10px;
+    }
+    .registration-title {
+      width: 100%;
+    }
+    .registration-form {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-left,
+    .form-right {
+      width: 100%;
+    }
+    .form-group {
+      align-content: center;
+      text-align: start;
+      flex-wrap: wrap;
+    }
+  }
+  //User page
+  .user-page-section {
+    padding: 0;
+    .top-row {
+      flex-direction: column;
+    }
+    .user-overview-section,
+    .stats-left,
+    .stats-right {
+      width: 100%;
     }
   }
 }

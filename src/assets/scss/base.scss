@@ -88,7 +88,25 @@ input[type="checkbox"]:hover {
   cursor: pointer;
   font-size: 14px;
 }
-
+/*////////////////Icons////////////////*/
+.save-svg {
+  padding-bottom: 15px;
+  font-size: 30px;
+  cursor: pointer;
+  color: gray;
+}
+.heart-svg {
+  font-size: 35px;
+  cursor: pointer;
+  color: gray;
+}
+.heart-svg:hover,
+.save-svg:hover {
+  color: $turquoise;
+}
+.logo-svg {
+  width: 96px;
+}
 //banner
 .banner {
   background-image: var(--movie-banner);
@@ -98,10 +116,15 @@ input[type="checkbox"]:hover {
   text-align: center;
   flex-direction: column;
   align-items: center;
-  padding: 10px 0;
+  padding: 20px;
+  min-width: 40vw;
+  border-radius: 5px;
+  margin: 5px;
 }
 .banner-title {
   color: white;
+  font-size: 50px;
+  margin: 5px;
 }
 /*---------Navbar-------*/
 .main-nav {
@@ -114,6 +137,10 @@ input[type="checkbox"]:hover {
   justify-content: space-between;
   align-items: center;
 }
+.profile-image {
+  width: 32px;
+  margin-right: 5px;
+}
 .nav-logo {
   width: 70px;
   margin-left: 1vw;
@@ -124,12 +151,15 @@ input[type="checkbox"]:hover {
   justify-content: end;
   width: 90vw;
   list-style: none;
+  align-items: center;
   .link {
     position: relative;
     text-decoration: none;
     color: white;
     margin: 0 1.5rem;
     padding: 5px;
+    display: flex;
+    align-items: center;
 
     // Remove border-bottom here
     border-bottom: none;
@@ -155,7 +185,7 @@ input[type="checkbox"]:hover {
   }
 }
 .profile-image-link {
-  width: 16px;
+  width: 24px;
   border-radius: 50%;
   background: gray;
   border: 1px solid black;
@@ -235,25 +265,7 @@ input[type="checkbox"]:hover {
     margin-bottom: 0;
   }
 }
-/*////////////////Icons////////////////*/
-.save-svg {
-  padding-bottom: 15px;
-  font-size: 30px;
-  cursor: pointer;
-  color: gray;
-}
-.heart-svg {
-  font-size: 35px;
-  cursor: pointer;
-  color: gray;
-}
-.heart-svg:hover,
-.save-svg:hover {
-  color: $turquoise;
-}
-.logo-svg {
-  width: 96px;
-}
+
 /*-------------Home Section------------*/
 .home-section {
   display: flex;
@@ -290,9 +302,30 @@ input[type="checkbox"]:hover {
   .form-group-name {
     width: 45%;
   }
-  .upload-image {
+  .upload-image,
+  .login-image {
     width: 100%;
     max-width: 200px;
+  }
+  .login-group {
+    width: 90%;
+    margin: 10px 0;
+  }
+  .login-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .login-form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .login-title {
+    margin: 0;
+    font-size: 25px;
+    text-align: center;
   }
   .forms-container {
     margin-bottom: 2vh;

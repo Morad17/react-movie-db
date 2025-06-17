@@ -5,26 +5,31 @@ import { useNavigate } from "react-router";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    username: null,
+    profileImage: null,
+  });
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
-  const loginAction = async ({ username, password, profileImage }) => {
+  //For Testing vs Production
+  const baseUrl =
+    process.env.REACT_APP_BASE_URL || "https://movie-binge.onrender.com";
+
+  const loginAction = async ({ username, password }) => {
     try {
-      const res = await axios.post("https://movie-binge.onrender.com/login", {
+      const res = await axios.post(`${baseUrl}/login`, {
         username: username,
         password: password,
       });
 
       if (res.data.length > 0) {
         const user = res.data[0];
-        setUser(user.username);
-        setToken(username);
-        localStorage.setItem("username", username);
-        localStorage.setItem(
-          "profileImage",
-          "https://cdn2.iconfinder.com/data/icons/business-hr-and-recruitment/100/account_blank_face_dummy_human_mannequin_profile_user_-512.png"
-        );
+        console.log(user);
+        setUser({ username: username, profileImage: user.profileImage });
+        setToken(user.username);
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("profileImage", user.profileImage);
         return navigate("/userPage");
       } else {
         return 400;

@@ -9,6 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { TbLogin } from "react-icons/tb";
 
 import LogoSvg2 from "./LogoSvg2";
+import placeholder from "../assets/images/profile-image-placeholder.png";
 
 const MobileNav = () => {
   const [loggedUser, setLoggedUser] = useState("");
@@ -17,7 +18,7 @@ const MobileNav = () => {
 
   useEffect(() => {
     const username = localStorage.getItem("username");
-    const profileImage = localStorage.getItem("profileImage");
+    const profileImage = localStorage.getItem("profileImage") || placeholder;
     if (username) {
       setLoggedUser({
         username,

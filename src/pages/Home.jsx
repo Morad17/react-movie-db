@@ -247,9 +247,13 @@ const Home = () => {
           </div>
 
           {loginButton ? (
-            <div className="login-form">
-              <form onSubmit={loginHandler}>
-                <div className="form-group">
+            <div className="login-form-div">
+              <h3 className="login-title">Login</h3>
+              <form className="login-form" onSubmit={loginHandler}>
+                <div className="login-image-div">
+                  <img className="login-image" src={placeholder} alt="" />
+                </div>
+                <div className="form-group login-group">
                   <label>Username</label>
                   <input
                     required
@@ -259,7 +263,7 @@ const Home = () => {
                     onChange={loginInputHandler}
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group login-group">
                   <label>Password</label>
                   <input
                     required
@@ -269,7 +273,9 @@ const Home = () => {
                     onChange={loginInputHandler}
                   />
                 </div>
-                <button type="submit">Submit</button>
+                <button className="submit-btn" type="submit">
+                  Submit
+                </button>
               </form>
             </div>
           ) : (

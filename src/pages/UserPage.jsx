@@ -12,31 +12,27 @@ import MovieCard from "../components/MovieCard";
 import UserMovieCard from "../components/UserMovieCard";
 import { Link } from "react-router-dom";
 
+import placeholder from "../assets/images/profile-image-placeholder.png";
+
 const UserPage = () => {
   const [loggedUser, setLoggedUser] = useState();
   const [userInfo, setUserInfo] = useState([]);
   const [listToggle, setListToggle] = useState("watched");
 
-  // const checkUser = async () => {
-  //   const username = localStorage.getItem("username");
-  //   setLoggedUser(username);
-  //   if (username) {
-  //     try {
-  //       const res = await axios.post(
-  //         "https://movie-binge.onrender.com/getUserTable",
-  //         {
-  //           username: username,
-  //         }
-  //       );
-  //       setUserInfo(res.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // };
-  // useEffect(() => {
-  //   checkUser();
-  // }, []);
+  const checkUser = async () => {
+    const username = localStorage.getItem("username");
+    const profileImage = localStorage.getItem("profileImage") || placeholder;
+    console.log(username);
+    if (username) {
+      setLoggedUser({
+        username,
+        profileImage,
+      });
+    }
+  };
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   const checkIfEmpty = (listType) => {
     if (listType === "watched") {
@@ -55,7 +51,7 @@ const UserPage = () => {
           <div className="user-icon">
             <IoPersonCircleOutline />
           </div>
-          <h3>{loggedUser && loggedUser}</h3>
+          <h3>{loggedUser && loggedUser.username}</h3>
           <h2>Coming Soon!</h2>
           <Link className="link-btn" to="/library">
             Go To Movies
