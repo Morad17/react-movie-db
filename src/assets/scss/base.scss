@@ -88,6 +88,18 @@ input[type="checkbox"]:hover {
   cursor: pointer;
   font-size: 14px;
 }
+/*////////////////Loading Spinner///////*/
+.loading-spinner {
+  display: flex;
+  width: 100%;
+  font-size: 2.5rem;
+  align-items: center;
+  flex-direction: column;
+  .loading-text {
+    color: $red;
+  }
+}
+
 /*////////////////Icons////////////////*/
 .save-svg {
   padding-bottom: 15px;

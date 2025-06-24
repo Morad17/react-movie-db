@@ -27,6 +27,7 @@ import pgCertificate from "../assets/images/pg-certificate.png";
 import twelveCertificate from "../assets/images/12a-certificate.png";
 import fifteenCertificate from "../assets/images/15-certificate.png";
 import { IoIosHelpCircle } from "react-icons/io";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const MoviePage = () => {
   //For Testing vs Production
@@ -756,7 +757,7 @@ const MoviePage = () => {
           </section>
         </div>
       ) : (
-        <p>Loading...</p>
+        <LoadingSpinner />
       )}
       <div className="movie-section-right"></div>
     </div>

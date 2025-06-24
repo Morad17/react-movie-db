@@ -14,6 +14,7 @@ import { BiHeartCircle } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Banner from "../components/Banner";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const MobileMovieLibrary = () => {
   //For Testing vs Production
@@ -345,36 +346,40 @@ const MobileMovieLibrary = () => {
         )}
       </section>
       <section className="all-movie-cards">
-        <div className="all-movies">
-          {movies?.map((movie, key) => {
-            const bLMovie = Array.isArray(userBookmarkLikeData)
-              ? userBookmarkLikeData?.find(
-                  (mov) => mov.movieName === movie.title
-                )
-              : null;
-            const wMovie = Array.isArray(userWatchedData)
-              ? userWatchedData?.find((mov) => mov.movieName === movie.title)
-              : null;
-            return (
-              <MovieCard
-                loggedUser={loggedUser}
-                watchedData={userWatchedData}
-                key={key}
-                bLMovie={bLMovie}
-                wMovie={wMovie}
-                movie={movie}
-                genres={genres}
-                watchedFilter={watchedFilter}
-              />
-            );
-          })}
+        {movies ? (
+          <div className="all-movies">
+            {movies.map((movie, key) => {
+              const bLMovie = Array.isArray(userBookmarkLikeData)
+                ? userBookmarkLikeData?.find(
+                    (mov) => mov.movieName === movie.title
+                  )
+                : null;
+              const wMovie = Array.isArray(userWatchedData)
+                ? userWatchedData?.find((mov) => mov.movieName === movie.title)
+                : null;
+              return (
+                <MovieCard
+                  loggedUser={loggedUser}
+                  watchedData={userWatchedData}
+                  key={key}
+                  bLMovie={bLMovie}
+                  wMovie={wMovie}
+                  movie={movie}
+                  genres={genres}
+                  watchedFilter={watchedFilter}
+                />
+              );
+            })}
 
-          <Pagination
-            paginate={paginate}
-            totalPages={totalPages}
-            pagesPerGroup={3}
-          />
-        </div>
+            <Pagination
+              paginate={paginate}
+              totalPages={totalPages}
+              pagesPerGroup={3}
+            />
+          </div>
+        ) : (
+          <LoadingSpinner />
+        )}
       </section>
     </div>
   );

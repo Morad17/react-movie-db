@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Select from "react-select";
 
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import SearchMovie from "../components/SearchMovie";
-import GenreColors from "../components/GenreColors";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 import { IoIosHelpCircle } from "react-icons/io";
 import { BsBookmarkStarFill } from "react-icons/bs";
@@ -327,32 +327,36 @@ const MovieLibrary = () => {
             </div>
           )}
         </div>
-        <div className="all-movies">
-          {movies?.map((movie, key) => {
-            const bLMovie = Array.isArray(userBookmarkLikeData)
-              ? userBookmarkLikeData?.find(
-                  (mov) => mov.movieName === movie.title
-                )
-              : null;
-            const wMovie = Array.isArray(userWatchedData)
-              ? userWatchedData?.find((mov) => mov.movieName === movie.title)
-              : null;
-            return (
-              <MovieCard
-                loggedUser={loggedUser}
-                watchedData={userWatchedData}
-                key={key}
-                bLMovie={bLMovie}
-                wMovie={wMovie}
-                movie={movie}
-                genres={genres}
-                watchedFilter={watchedFilter}
-              />
-            );
-          })}
+        {movies ? (
+          <div className="all-movies">
+            {movies.map((movie, key) => {
+              const bLMovie = Array.isArray(userBookmarkLikeData)
+                ? userBookmarkLikeData?.find(
+                    (mov) => mov.movieName === movie.title
+                  )
+                : null;
+              const wMovie = Array.isArray(userWatchedData)
+                ? userWatchedData?.find((mov) => mov.movieName === movie.title)
+                : null;
+              return (
+                <MovieCard
+                  loggedUser={loggedUser}
+                  watchedData={userWatchedData}
+                  key={key}
+                  bLMovie={bLMovie}
+                  wMovie={wMovie}
+                  movie={movie}
+                  genres={genres}
+                  watchedFilter={watchedFilter}
+                />
+              );
+            })}
 
-          <Pagination paginate={paginate} totalPages={totalPages} />
-        </div>
+            <Pagination paginate={paginate} totalPages={totalPages} />
+          </div>
+        ) : (
+          <LoadingSpinner />
+        )}
         {/*--------------Sort---------*/}
         <div className="movie-content-right">
           <p
